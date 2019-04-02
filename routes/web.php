@@ -12,5 +12,21 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
+});
+
+Route::get('/codigo', function () {
+    return view('codigo');
+});
+
+Route::get('/productos', function () {
+    return view('listado_productos');
+});
+
+Route::get('/codigo/imprimir', function () {
+    return view('pdf.impresion_codigos');
+});
+
+Route::get('/venta', function () {
+    return view('venta');
 });
