@@ -33,3 +33,21 @@
               </div>
             </div>
 @endsection
+
+@sectionr('script')
+  <script type="text/javascript">
+    function ejemploAjax(){
+      var success;
+      var url = "/ruta1/ruta2";
+      var dataForm = new FormData();
+      dataForm.append('p1',"p1");
+      dataForm.append('p2','p2');
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        //aquí se escribe todas las operaciones que se harían en el succes
+        //la variable success es el json que recibe del servidor el método AJAX
+        MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
+      });
+    }
+  </script>
+@endsection

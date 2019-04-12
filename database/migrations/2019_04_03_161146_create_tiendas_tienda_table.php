@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTiendasLoginTable extends Migration
+class CreateTiendasTiendaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTiendasLoginTable extends Migration
      */
     public function up()
     {
-        Schema::create('TIENDAS_LOGIN', function (Blueprint $table) {
-            $table->string('LOGIN_ID',150)->primary();
-            $table->string('LOGIN_CONTRASENIA');
-            $table->enum('LOGIN_CATEGORIA',['ADMINISTRADOR','ENCARGADO','CAJERO']);
-            $table->string('LOGIN_RESPONSABLE');
+        Schema::create('TIENDAS_ESPACIOS', function (Blueprint $table) {
+            $table->increments('ESPACIO_ID');
+            $table->string('ESPACIO_NOMBRE');
+            $table->string('ESPACIO_UBICACION');
+            $table->enum('ESPACIO_TIPO',['BODEGA','TIENDA']);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateTiendasLoginTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TIENDAS_LOGIN');
+        Schema::dropIfExists('TIENDAS_ESPACIOS');
     }
 }

@@ -1,5 +1,5 @@
 @extends('plantillas.menu')
-@section('title','Listado')
+@section('title','Productos')
 @section('tittle_page','Listado de Productos')
 
 @section('content')
@@ -8,182 +8,27 @@
 	    <div class="x_panel">
 	      <div class="x_title">
 	        <h2>Listado de productos</h2>
-	        <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#ModalAgregarProducto">Registrar Producto</button>
+	        <button type="button" class="btn btn-primary pull-right" onclick="ModalAgregarProducto()">Registrar Producto</button>
 	        <div class="clearfix"></div>
 	      </div>
+	      <input type="" name="" style="display: none" id="id_producto" value="">
 	      <div class="x_content">
-	        <table class="table table-hover" id="TablaDatosProductos">
-
-	          <thead>
-	            <tr>
-	              <th scope="row">#</th>
-	              <th>Producto</th>
-	              <th>Talla</th>
-	              <th>Color</th>
-	              <th>Genero</th>
-	              <th>Acciones</th>
-	            </tr>
-	          </thead>
-	          <tbody id="cuerpoTablaProductos">
-	          	<tr>
-	          		<td>1</td>
-	          		<td>PLAYERA LOBOS</td>
-	          		<td>M</td>
-	          		<td>ROJO</td>
-	          		<td>UNISEX</td>
-	          		<td>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="acciones(1)">
-						  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="agregarExistencias()">
-						  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="verCodigoBarras()">
-						  <span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>
-						</button>
-	          		</td>
-	          	</tr>
-	          	<tr>
-	          		<td>2</td>
-	          		<td>PLAYERA LOBOS</td>
-	          		<td>L</td>
-	          		<td>ROJO</td>
-	          		<td>UNISEX</td>
-	          		<td>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="acciones(2)">
-						  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="agregarExistencias()">
-						  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="verCodigoBarras()">
-						  <span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>
-						</button>
-	          		</td>
-	          	</tr>
-	          	<tr>
-	          		<td>3</td>
-	          		<td>USB LOBOS</td>
-	          		<td>SIN TALLA</td>
-	          		<td>GRIS</td>
-	          		<td>UNISEX</td>
-	          		<td>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="acciones(3)">
-						  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="agregarExistencias()">
-						  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="verCodigoBarras()">
-						  <span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>
-						</button>
-	          		</td>
-	          	</tr>
-	          	<tr>
-	          		<td>4</td>
-	          		<td>SUDADERA LOBOS</td>
-	          		<td>L</td>
-	          		<td>NEGRO</td>
-	          		<td>M</td>
-	          		<td>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="acciones(4)">
-						  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="agregarExistencias()">
-						  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						</button>
-	          			<button type="button" class="btn btn-default btn-xs" onclick="verCodigoBarras()">
-						  <span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>
-						</button>
-	          		</td>
-	          	</tr>
-	          </tbody>
-	        </table>
+	      	<div id="div_tabla_datos">
+	      		@include('tablas.tabla_listado_productos')
+	      	</div>
 	      </div>
 	    </div>
 	  </div>
 	</div>
 
-  	<!-- Modales -->
-    <div class="modal fade" id="ModalDetalleProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="table">
-	            <thead>
-	              <tr>
-	                <th scope="col" id="thOficio"></th>
-	                <th scope="col"></th>
-	              </tr>
-	            </thead>
-	            <tbody id="bodyDetalle">
-	              <tr>
-	                <th>Producto</th>
-	                <td id="td-Producto"></td>
-	              </tr>
-	              <tr>
-	                <th>Color</th>
-	                <td id="td-Color"></td>
-	              </tr>
-	              <tr>
-	                <th>Talla</th>
-	                <td id="td-Talla"></td>
-	              </tr>
-	              <tr>
-	                <th>Genero</th>
-	                <td id="td-Genero"></td>
-	              </tr>
-	              <tr>
-	                <th>Fecha de registro a DAPI</th>
-	                <td id="td-FechaRegistro"></td>
-	              </tr>
-	              <tr>
-	                <th>Número de Notas de entrada</th>
-	                <td id="td-NotasEntrada"></td>
-	              </tr>
-	              <tr>
-	                <th>Inventario en bodega</th>
-	                <td id="td-InventarioBodega"></td>
-	              </tr>
-	              <tr>
-	                <th>Inventario en tienda</th>
-	                <td id="td-InventarioTienda"></td>
-	              </tr>
-	              <tr>
-	                <th>Precio de venta</th>
-	                <td id="td-PrecioVenta"></td>
-	              </tr>
-	              <tr>
-	                <th>Unidades vendidas</th>
-	                <td id="td-UnidadesVendidas"></td>
-	              </tr>
-	              <tr>
-	                <th>Observaciones</th>
-	                <td id="td-Observaciones"></td>
-	              </tr>
-
-	            </tbody>
-        	</table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  	
 
     <!-- modal agregar producto -->
     <div class="modal fade" id="ModalAgregarProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <h5 class="modal-title" id="exampleModalLabel">Nuevo Producto</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -192,7 +37,7 @@
           	<div class="form-horizontal form-label-left">
 	          	<!-- nombre del producto -->
 	            <div class="form-group">
-	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Producto</label>
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Producto*</label>
 	              <div class="col-md-10 col-sm-10 col-xs-12">
 	                <input type="text" class="form-control" placeholder="" id="nombre_producto">
 	              </div>
@@ -205,10 +50,10 @@
 	                <input type="text" class="form-control" placeholder="" id="color_producto">
 	              </div>
 
-	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Género</label>
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Género*</label>
 	              <div class="col-md-4 col-sm-4 col-xs-12">
 	                <select class="form-control" id="select_genero" onchange="cambioTalla()">
-	                  <option value="-1">--Seleccionar--</option>
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
 	                  <option value="DAMA">DAMA</option>
 	                  <option value="CABALLERO">CABALLERO</option>
 	                  <option value="UNISEX">UNISEX</option>
@@ -218,10 +63,10 @@
 
 	            <!-- Género -->
 	            <div class="form-group">
-	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Talla</label>
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Talla*</label>
 	              <div class="col-md-4 col-sm-4 col-xs-12" id="">
 	                <select class="form-control" id="select_talla" onchange="cambioTalla(this)">
-	                  <option value="-1">--Seleccionar--</option>
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
 	                  <option value="XS">XS</option>
 	                  <option value="S">S</option>
 	                  <option value="M">M</option>
@@ -229,11 +74,11 @@
 	                  <option value="XL">XL</option>
 	                  <option value="XXL">XXL</option>
 	                  <option value="OTRA">OTRA</option>
-	                  <option value="SIN_TALLA">NO APLICA</option>
+	                  <option value="SIN TALLA">NO APLICA</option>
 	                </select>
 	              </div>
 	              <div style="display: none;" id="div_input_talla">
-	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Nueva Talla</label>
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">No. Talla*</label>
 	              	<div class="col-md-4 col-sm-4 col-xs-12">
 	                	<input type="number" class="form-control" placeholder="Especifique" id="otra_talla" min="0"  max='50' value='0'>
 	                </div>
@@ -241,23 +86,14 @@
 	            </div>
 	            <!-- Existencias -->
 	            <div class="form-group">
-	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Tienda</label>
-	              <div class="col-md-4 col-sm-4 col-xs-12" id="">
-	                <select class="form-control" id="select_talla" onchange="">
-	                  <option value="-1">--Seleccionar--</option>
-	                  <option value="XS">CCU</option>
-	                  <option value="S">CU - LOBOS</option>
-	                  <option value="M">BODEGA</option>
-	                </select>
-	              </div>
 	              <div style="display: block;" id="div_input_talla">
-	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Existencias</label>
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Precio Inicial</label>
 	              	<div class="col-md-4 col-sm-4 col-xs-12">
-	                	<input type="number" class="form-control" placeholder="Especifique" id="otra_talla" min="0"  max='50' value='0'>
+	                	<input type="number" class="form-control" placeholder="Precio" id="precio_inicial" min="0"  max='' value='' step=".01">
 	                </div>
 	              </div>
 	            </div>
-	            <!-- Existencias -->
+	            <!-- Observaciones -->
 	            <div class="form-group">
 	              <div style="display: block;" id="">
 	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Observaciones</label>
@@ -269,7 +105,7 @@
         	</div><!-- fin div form -->
           </div>
           <div class="modal-footer">
-        	<button type="button" class="btn btn-primary" onclick="agregaProducto()">Guardar</button>
+        	<button type="button" class="btn btn-primary" onclick="RegistrarProducto()">Guardar</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
@@ -288,53 +124,47 @@
           </div>
           <div class="modal-body">
           	<div class="form-horizontal form-label-left">
-          		<!-- fecha -->
-            <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12">Fecha de llegada</label>
-              <div class="col-md-4 col-sm-4 col-xs-12">
-                <div class='input-group date' id='PickerLlegada'>
-                  <input type='text' class="form-control" placeholder="Fecha de llegada" id="fecha_recibido" />
-                  <span class="input-group-addon" id="FechaLlegada">
-                     <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <!-- Cantidad -->
-            <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12">Nota de entrada</label>
-              <div class="col-md-4 col-sm-4 col-xs-12">
-                <input type="number" class="form-control" placeholder="" id="nota_entrada" min="0" value=''>
-              </div>
-              <label class="control-label col-md-2 col-sm-2 col-xs-12">Cantidad</label>
-              <div class="col-md-4 col-sm-4 col-xs-12">
-                <input type="number" class="form-control" placeholder="" id="cantidad" min="0" value=''>
-              </div>
-            </div>
-            <!-- Precio de compra y venta -->
-            <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12">Precio de compra</label>
-              <div class="col-md-4 col-sm-4 col-xs-12">
-                <input type="number" class="form-control" placeholder="" id="precio_compra" min="0" value='' step=".10">
-              </div>
-              <label class="control-label col-md-2 col-sm-2 col-xs-12">Precio de venta</label>
-              <div class="col-md-4 col-sm-4 col-xs-12">
-                <input type="number" class="form-control" placeholder="" id="precio_venta" min="0" value='' step=".10">
-              </div>
-            </div>
-            <!-- Observaciones -->
-            <div class="form-group">
-              <label class="control-label col-md-2 col-sm-2 col-xs-12">Observaciones</label>
-              <div class="col-md-10 col-sm-10 col-xs-12">
-                <textarea class="form-control" id="textarea_observaciones" rows="3" placeholder="" style="resize:none;"></textarea>
-              </div>
-            </div>
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Artículo</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <input type="number" class="form-control" id="nota_venta_id_producto" min="0" value='' disabled>
+	              </div>
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Cantidad*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <input type="number" class="form-control" placeholder="" id="nota_venta_cantidad" min="0" value=''>
+	              </div>
+	            </div>
+	            <!-- Precio de compra y venta -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Precio de compra*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <input type="number" class="form-control" placeholder="" id="nota_venta_precio_compra" min="0" value='' step=".10">
+	              </div>
+
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Bodega destino*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12" id="">
+	                <select class="form-control" id="nota_venta_select_bodega">
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
+	                  @foreach($bodegas as $bodega)
+	                  	<option value=" {{$bodega->ESPACIO_ID}} "> {{$bodega->ESPACIO_NOMBRE}} ({{$bodega->ESPACIO_UBICACION}}) </option>
+	                  @endforeach
+	                </select>
+	              </div>
+	            </div>
+
+	            <!-- Observaciones -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Observaciones</label>
+	              <div class="col-md-10 col-sm-10 col-xs-12">
+	                <textarea class="form-control" id="nota_venta_observaciones" rows="3" placeholder="" style="resize:none;"></textarea>
+	              </div>
+	            </div>
 
 
         	</div><!-- fin div form -->
           </div>
           <div class="modal-footer">
-        	<button type="button" class="btn btn-primary" onclick="agregaProducto()">Guardar</button>
+        	<button type="button" class="btn btn-primary" onclick="agregarNotaVenta()">Guardar</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
@@ -367,70 +197,315 @@
 
 
 
+    <!-- modal traspasar producto -->
+    <div class="modal fade" id="ModalEditarProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Producto</h5>
+          </div>
+          <div class="modal-body">
+          	<div class="form-horizontal form-label-left">
+	            <!-- Encabezado datos venta -->
+	            <div class="form-group">
+	              	<div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+	              		<h2>Datos del producto</h2>
+	              	</div>
+	            </div>
+	          	<!-- nombre del producto -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Producto*</label>
+	              <div class="col-md-10 col-sm-10 col-xs-12">
+	                <input type="text" class="form-control" placeholder="" id="edicion_nombre_producto">
+	              </div>
+	            </div>
+
+	            <!-- Color y Talla -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Color</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <input type="text" class="form-control" placeholder="" id="edicion_color_producto">
+	              </div>
+
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Género*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <select class="form-control" id="edicion_select_genero" onchange="cambioTalla()">
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
+	                  <option value="DAMA">DAMA</option>
+	                  <option value="CABALLERO">CABALLERO</option>
+	                  <option value="UNISEX">UNISEX</option>
+	                </select>
+	              </div>
+	            </div>
+
+	            <!-- Género -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Talla*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12" id="">
+	                <select class="form-control" id="edicion_select_talla" onchange="cambioTalla2(this)">
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
+	                  <option value="XS">XS</option>
+	                  <option value="S">S</option>
+	                  <option value="M">M</option>
+	                  <option value="L">L</option>
+	                  <option value="XL">XL</option>
+	                  <option value="XXL">XXL</option>
+	                  <option value="OTRA">OTRA</option>
+	                  <option value="SIN TALLA">NO APLICA</option>
+	                </select>
+	              </div>
+	              <div style="display: none;" id="div_edicion_input_talla">
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">No. Talla*</label>
+	              	<div class="col-md-4 col-sm-4 col-xs-12">
+	                	<input type="number" class="form-control" placeholder="Especifique" id="edicion_otra_talla" min="0"  max='50' value='0'>
+	                </div>
+	              </div>
+	            </div>
+	            <!-- Observaciones -->
+	            <div class="form-group">
+	              <div style="display: block;" id="">
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Observaciones</label>
+	              	<div class="col-md-10 col-sm-10 col-xs-12">
+                		<textarea class="form-control" id="edicion_observaciones" rows="3" placeholder="" style="resize:none;"></textarea>
+	                </div>
+	              </div>
+	            </div>
+	            <!-- Boton guardar -->
+	            <div class="form-group">
+	              	<div class="col-md-12 col-sm-12 col-xs-12">
+	              		<button type="button" class="btn btn-primary pull-right" onclick="ActualizarProducto()">Guardar</button>
+	              	</div>
+	            </div>
+
+	           	<hr>
+	            <!-- Encabezado datos venta -->
+	            <div class="form-group">
+	              	<div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+	              		<h2>Datos de venta</h2>
+	              	</div>
+	            </div>
+	            <!-- Existencias -->
+	            <div class="form-group">
+	              <div style="display: block;" id="div_input_talla">
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Precio Actual</label>
+	              	<div class="col-md-4 col-sm-4 col-xs-12">
+            			<input type="number" class="form-control" placeholder="Precio" id="edicion_precio" min="0"  max='' value='' step=".01">
+	                </div>
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Descuento Actual</label>
+	              	<div class="col-md-4 col-sm-4 col-xs-12">
+	                	<input type="number" class="form-control" placeholder="Precio" id="edicion_descuento" min="0"  max='' value='' step=".01">
+	                </div>
+	              </div>
+	            </div>
+	            <!-- Boton guardar -->
+	            <div class="form-group">
+	              	<div class="col-md-12 col-sm-12 col-xs-12">
+	              		<button type="button" class="btn btn-primary pull-right" onclick="ActualizarDatosVenta()">Guardar</button>
+	              	</div>
+	            </div>
+        	</div><!-- fin div form -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- modal traspasar producto -->
+    <div class="modal fade" id="ModalTraspasarProductos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Traspasar</h5>
+          </div>
+          <div class="modal-body">
+          	<div class="form-horizontal form-label-left">
+	          	<!-- nombre del producto -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Producto*</label>
+	              <div class="col-md-10 col-sm-10 col-xs-12">
+	                <input type="text" class="form-control" placeholder="" id="nombre_producto">
+	              </div>
+	            </div>
+
+	            <!-- Color y Talla -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Color</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <input type="text" class="form-control" placeholder="" id="color_producto">
+	              </div>
+
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Género*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <select class="form-control" id="select_genero" onchange="cambioTalla()">
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
+	                  <option value="DAMA">DAMA</option>
+	                  <option value="CABALLERO">CABALLERO</option>
+	                  <option value="UNISEX">UNISEX</option>
+	                </select>
+	              </div>
+	            </div>
+
+	            <!-- Género -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Talla*</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12" id="">
+	                <select class="form-control" id="select_talla" onchange="cambioTalla(this)">
+	                  <option value="SELECCIONAR">--Seleccionar--</option>
+	                  <option value="XS">XS</option>
+	                  <option value="S">S</option>
+	                  <option value="M">M</option>
+	                  <option value="L">L</option>
+	                  <option value="XL">XL</option>
+	                  <option value="XXL">XXL</option>
+	                  <option value="OTRA">OTRA</option>
+	                  <option value="SIN TALLA">NO APLICA</option>
+	                </select>
+	              </div>
+	              <div style="display: none;" id="div_input_talla">
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">No. Talla*</label>
+	              	<div class="col-md-4 col-sm-4 col-xs-12">
+	                	<input type="number" class="form-control" placeholder="Especifique" id="otra_talla" min="0"  max='50' value='0'>
+	                </div>
+	              </div>
+	            </div>
+	            <!-- Existencias -->
+	            <div class="form-group">
+	              <div style="display: block;" id="div_input_talla">
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Precio Inicial</label>
+	              	<div class="col-md-4 col-sm-4 col-xs-12">
+	                	<input type="number" class="form-control" placeholder="Precio" id="precio_inicial" min="0"  max='' value='' step=".01">
+	                </div>
+	              </div>
+	            </div>
+	            <!-- Observaciones -->
+	            <div class="form-group">
+	              <div style="display: block;" id="">
+	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Observaciones</label>
+	              	<div class="col-md-10 col-sm-10 col-xs-12">
+                		<textarea class="form-control" id="observaciones_nuevo_producto" rows="3" placeholder="" style="resize:none;"></textarea>
+	                </div>
+	              </div>
+	            </div>
+        	</div><!-- fin div form -->
+          </div>
+          <div class="modal-footer">
+        	<button type="button" class="btn btn-primary" onclick="RegistrarProducto()">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 @endsection
 
 @section('script')
 	<script type="text/javascript">
 		//$("#ModalAgregarProducto").modal();
 
-		function acciones(){
-			$('#td-Producto').html('PLAYERA');
-			$('#td-Color').html('ROJO');
-			$('#td-Talla').html('M');
-			$('#td-Genero').html('UNISEX');
-			$('#td-FechaRegistro').html('12/01/2019');
-			$('#td-NotasEntrada').html('1');
-			$('#td-InventarioBodega').html('38');
-			$('#td-InventarioTienda').html('12');
-			$('#td-PrecioVenta').html('$327.00');
-			$('#td-UnidadesVendidas').html('26');
-			$('#td-Observaciones').html('La playera es de tela Climacool');
+		function ModalEditarProducto(id_producto){
+			$("#id_producto").val(id_producto);
+			$("#edicion_nombre_producto").val('');
+			$("#edicion_color_producto").val('');
+			$("#edicion_select_genero").val('SELECCIONAR');
+			$("#edicion_select_talla").val('SELECCIONAR');
+			$("#edicion_otra_talla").val(0);
+			$("#edicion_observaciones").val('');
+			$("#edicion_precio").val('');
+			$("#edicion_descuento").val('');
+	        $("#div_edicion_input_talla").css('display','none');
 
-			$("#ModalDetalleProducto").modal();
+	        var success;
+				var url = "/productos/obtener_datos";
+				var dataForm = new FormData();
+				dataForm.append('id_producto',producto);
+				//dataForm.append('existencias',existencias);
+				dataForm.append('precio',precio);
+				//lamando al metodo ajax
+				metodoAjax(url,dataForm,function(success){
+				  //aquí se escribe todas las operaciones que se harían en el succes
+				  //la variable success es el json que recibe del servidor el método AJAX
+				  MensajeModal("TITULO DEL MODAL",'Los datos del producto "'+producto+'" fueron actualizados correctamente.');
+				});//*/
+
+			$("#ModalEditarProducto").modal();
 		}
-		var cont_producto = 5;
-		function agregaProducto(){
+
+		function ModalAgregarProducto(){
+			var producto = $("#nombre_producto").val('');
+			var color = $("#color_producto").val('');
+			var genero = $("#select_genero").val('SELECCIONAR');
+			var talla = $("#select_talla").val('SELECCIONAR');
+			var talla2 = $("#otra_talla").val(0);
+			var observaciones = $("#observaciones_nuevo_producto").val('');
+	        $("#div_input_talla").css('display','none');
+			$("#ModalAgregarProducto").modal();
+		}
+
+		function RegistrarProducto(){
 			var producto = $("#nombre_producto").val();
 			var color = $("#color_producto").val();
 			var genero = $("#select_genero").val();
 			var talla = $("#select_talla").val();
 			var talla2 = $("#otra_talla").val();
-			var acciones = 	'<button type="button" class="btn btn-default btn-xs" onclick="acciones(4)">'+
-						  		'<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'+
-							'</button>';
-			var acciones = acciones + 
-				' <button type="button" class="btn btn-default btn-xs" onclick="agregarExistencias()">'+
-				  '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
-				'</button>';
-			var acciones = acciones + 
-				' <button type="button" class="btn btn-default btn-xs" onclick="verCodigoBarras()">'+
-				  '<span class="glyphicon glyphicon-barcode" aria-hidden="true"></span>'+
-				'</button>';
+			var observaciones = $("#observaciones_nuevo_producto").val();
+			//var inventario_minimo = $("#inventario_minimo").val();
 
-			$("#cuerpoTablaProductos").append(
-				'<tr>'+
-	          		'<td>'+cont_producto+'</td>'+
-	          		'<td>'+producto+'</td>'+
-	          		'<td>'+((talla=='OTRA')?talla2:talla)+'</td>'+
-	          		'<td>'+color+'</td>'+
-	          		'<td>'+genero+'</td>'+
-	          		'<td>'+
-	          			acciones+
-	          		'</td>'+
-	          	'</tr>'
-			);
-			cont_producto++;
+			//var existencias = $("#existencias_iniciales").val();
+			var precio = (($("#precio_inicial").val()=='')?0:$("#precio_inicial").val());
+			if(producto == ''){
+				MensajeModal('¡ATENCIÓN!','Debe escribir el nombre del producto');
+			}else if(genero == 'SELECCIONAR'){
+				MensajeModal('¡ATENCIÓN!','Debe escribir el genero del producto, si el producto no es para un género en específico, seleccione UNISEX');
+			}else if(talla == 'SELECCIONAR'){
+				MensajeModal('¡ATENCIÓN!','Debe seleccionar la talla del producto');
+			}else if(talla == 'OTRA' && (talla2 == '' || talla2 < 0)){
+				MensajeModal('¡ATENCIÓN!','Debe escribir numero de talla del producto');
+			}else{
+				//console.log('enviando');
+				var success;
+				var url = "/productos/registrar";
+				var dataForm = new FormData();
+				dataForm.append('producto',producto);
+				dataForm.append('color',color);
+				dataForm.append('genero',genero);
+				dataForm.append('talla',(talla=='OTRA')?talla2:talla);
+				dataForm.append('observaciones',observaciones);
+				//dataForm.append('existencias',existencias);
+				dataForm.append('precio',precio);
+				//lamando al metodo ajax
+				metodoAjax(url,dataForm,function(success){
+				  //aquí se escribe todas las operaciones que se harían en el succes
+				  //la variable success es el json que recibe del servidor el método AJAX
+				  MensajeModal("TITULO DEL MODAL",'Producto "'+producto+'" agregado correctamente al inventario.');
+				});//*/
+			}
 		}
 
 
 	    function cambioTalla(elemento){
 	      var select = $("#select_talla").val();
 	      //var select = $(elemento).val();
-	      console.log(select);
+	      //console.log(select);
 	      if(select == "OTRA"){
 	        $("#div_input_talla").css('display','block');
 	      }else{
 	        $("#div_input_talla").css('display','none');
+	      }
+	    }
+
+	    //esto es en actualizacion de informacion
+	    function cambioTalla2(elemento){
+	      var select = $("#edicion_select_talla").val();
+	      //var select = $(elemento).val();
+	      //console.log(select);
+	      if(select == "OTRA"){
+	        $("#div_edicion_input_talla").css('display','block');
+	      }else{
+	        $("#div_edicion_input_talla").css('display','none');
 	      }
 	    }
 
@@ -444,24 +519,72 @@
 			locale: 'es'
 	      });
 
-	    function agregarExistencias(){
+	    function ModalAgregarNotaVenta(id_producto){
+	    	$("#nota_venta_id_producto").val(id_producto);
+	    	$("#nota_venta_cantidad").val('');
+	    	$("#nota_venta_precio_compra").val('');
+	    	//$("#nota_venta_precio_venta").val('');
+	    	$("#nota_venta_select_bodega").val('SELECCIONAR');
+	    	$("#nota_venta_observaciones").val('');
 	    	$("#ModalAgregarExistencias").modal();
 	    }
-	    function verCodigoBarras(){
-	    	var min = 10000000;
-	    	var max = 99999999;
-			var numero = "PLAYERA LOBOS";
-	    	var numero = parseInt(Math.random() * (max - min) + min);
-	    	console.log(numero);
 
-			JsBarcode("#codigo", numero);
+	    function agregarNotaVenta(){
+	    	var id_producto = $("#nota_venta_id_producto").val();
+	    	var cantidad = $("#nota_venta_cantidad").val();
+	    	var precio_compra = $("#nota_venta_precio_compra").val();
+	    	var select_bodega = $("#nota_venta_select_bodega").val();
+	    	var observaciones = $("#nota_venta_observaciones").val();
 
+	    	if(cantidad==""){
+	    		MensajeModal('¡ATENCIÓN!','Debe agregar la cantidad de productos');
+	    	}else if(precio_compra == ""){
+	    		MensajeModal('¡ATENCIÓN!','Debe agregar el precio de compra');
+	    	}else if(select_bodega == "SELECCIONAR"){
+	    		MensajeModal('¡ATENCIÓN!','Debe seleccionar la bodega en la que se almacenarán los productos');
+	    	}else{
+	    		var success;
+				var url = "/productos/agregar_nota";
+				var dataForm = new FormData();
+				dataForm.append('id_producto',id_producto);
+				dataForm.append('cantidad',cantidad);
+				dataForm.append('precio_compra',precio_compra);
+				dataForm.append('select_bodega',select_bodega);
+				dataForm.append('observaciones',observaciones);
+				//lamando al metodo ajax
+				metodoAjax(url,dataForm,function(success){
+				  //aquí se escribe todas las operaciones que se harían en el succes
+				  //la variable success es el json que recibe del servidor el método AJAX
+	    		$("#ModalAgregarExistencias").modal('hide');
+				  MensajeModal("¡ÉXITO!","Nota de venta registrada satisfactoriamente");
+				});
+	    	}
+	    	
+
+	    }
+
+	    function verCodigoBarras(codigo){
+			JsBarcode("#codigo", codigo);
 	    	$("#ModalCodigoBarras").modal();
 	    }
 
 	    function abrirCodigo(){
 	    	window.open('/codigo/imprimir','_blank');
 	    }
+
+	    function ejemploAjax(){
+			var success;
+			var url = "/ruta1/ruta2";
+			var dataForm = new FormData();
+			dataForm.append('p1',"p1");
+			dataForm.append('p2','p2');
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+			  //aquí se escribe todas las operaciones que se harían en el succes
+			  //la variable success es el json que recibe del servidor el método AJAX
+			  MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
+			});
+		}
 	</script>
 
 @endsection

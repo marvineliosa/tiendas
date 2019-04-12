@@ -152,7 +152,249 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/es.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
 
+    <!-- Modal mensaje -->
+    <div class="modal fade" id="ModalMensaje" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="TituloModalMensaje" align="center"></h2>
+            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>-->
+          </div>
+          <div class="modal-body">
+            <h3  id="CuerpoModalMensaje" align="center"> </h3>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modales -->
+    <div class="modal fade" id="ModalDetalleProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" id="thOficio"></th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody id="bodyDetalleProducto">
+              </tbody>
+          </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal historial -->
+    <div class="modal fade" id="ModalHistorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Historial</h5>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" width="75%">Historial</th>
+                  <th scope="col" width="25%">Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="BodyHistorial">
+              </tbody>
+          </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
+<script type="text/javascript">
+
+
+    function ModalVerHistorial(id_producto){
+      var success;
+      var url = "/productos/ver_historial";
+      var dataForm = new FormData();
+      dataForm.append('id_producto',id_producto);
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        //aquí se escribe todas las operaciones que se harían en el succes
+        //la variable success es el json que recibe del servidor el método AJAX
+        //console.log(success);
+        $("#BodyHistorial").html('');
+        for(var i = 0; i < success['historial'].length; i++){
+          if(success['historial'][i]){
+            $("#BodyHistorial").append(
+                '<tr>'+
+                  '<td>'+
+                    success['historial'][i]['TEXTO_HISTORIAL']+
+                  '</td>'+
+                  '<td>'+
+                    success['historial'][i]['FECHA_HISTORIAL']+
+                  '</td>'+
+                '</tr>'
+              );
+          }
+        }
+
+        $("#ModalHistorial").modal();
+      });
+    }
+
+    function MensajeModal(titulo,mensaje){
+        $("#TituloModalMensaje").text(titulo);
+        $("#CuerpoModalMensaje").text(mensaje);
+        $("#ModalMensaje").modal();
+    }
+    
+  //señor metodo maestro ajax
+  function metodoAjax(url,dataForm,callback){
+    var resultado = null;
+    
+    $.ajax({
+      url :url,
+      data : dataForm,
+      contentType:false,
+      processData:false,
+      headers:{
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+      type: 'POST',
+      dataType : 'json',
+      beforeSend: function (){
+        $("#modalCarga").modal();
+      },
+      success : function(json){
+        //resultado = json;
+        callback(json);
+      },
+      error : function(xhr, status) {
+        $("#textoModalMensaje").text('Existió un problema con la operación');
+        $("#modalMensaje").modal();
+        MensajeModal('¡ERROR!','Existió un problema, intentelo de nuevo, si el problema persiste favor de reportarlo a la extensión --.')
+      },
+      complete : function(xhr, status){
+         $("#modalCarga").modal('hide');
+      }
+    });//*/
+  }
+
+  //señor ajax de las recargas de tablas
+  function recargarTablaAjax(url) {
+      var dato_busqueda = (($('.dataTables_filter input').val())?$('.dataTables_filter input').val():' ');
+      var table = $('#tabla_datos').DataTable()
+      var pagina = (table.page.info());
+      pagina = parseInt(pagina.page) + 1;
+      //console.log("PAGINA: "+(pagina));
+      //console.log(dato_busqueda);
+      var dataForm = new FormData();
+      dataForm.append('id_sol','id_sol');
+      $.ajax({
+          method: "POST",
+          url: url,
+        headers:{
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+          success: function (response) {
+              $('.collapse').collapse('show');
+              $('#div_tabla_datos').html(response);
+              //console.log(response);
+              crearDatatable(dato_busqueda,pagina);
+          },                               
+      });//*/
+      //tabla.search( dato_busqueda ).draw();
+    }
+
+    //presentando detalle del producto
+    function VerDatosProducto(id_producto){
+      var success;
+      var url = "/productos/obtener_datos";
+      var dataForm = new FormData();
+      dataForm.append('id_producto', id_producto);
+      //lamando al metodo ajax
+      $("#bodyDetalleProducto").html('');
+      metodoAjax(url,dataForm,function(success){
+          //aquí se escribe todas las operaciones que se harían en el succes
+          //la variable success es el json que recibe del servidor el método AJAX
+        $("#bodyDetalleProducto").append(
+          '<tr>'+
+            '<th>Producto</th>'+
+            '<td id="td-Producto">'+success['producto']['NOMBRE_PRODUCTO']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Color</th>'+
+            '<td id="td-Color">'+success['producto']['COLOR_PRODUCTO']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Talla</th>'+
+            '<td id="td-Talla">'+success['producto']['TALLA_PRODUCTO']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Genero</th>'+
+            '<td id="td-Genero">'+success['producto']['GENERO_PRODUCTO']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Fecha de registro a DAPI</th>'+
+            '<td id="td-FechaRegistro">'+success['producto']['FECHA_REGISTRO']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Precio sin descuento</th>'+
+            '<td id="td-PrecioSinDescuento">$'+success['producto']['PRECIO_SIN_DESCUENTO']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Precio de venta (con descuento)</th>'+
+            '<td id="td-PrecioVenta">$'+success['producto']['PRECIO_VENTA']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Descuento</th>'+
+            '<td id="td-Decuento">'+((success['producto']['DESCUENTO_PRODUCTO'])?success['producto']['DESCUENTO_PRODUCTO']:0)+'%</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Número de Notas de entrada</th>'+
+            '<td id="td-NotasEntrada">'+success['producto']['TOTAL_NOTAS_ENTRADA']+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Unidades vendidas</th>'+
+            '<td id="td-UnidadesVendidas">'+''+'</td>'+
+          '</tr>'+
+          '<tr>'+
+            '<th>Observaciones</th>'+
+            '<td id="td-Observaciones">'+((success['producto']['OBSERVACIONES_PRODUCTO'])?success['producto']['OBSERVACIONES_PRODUCTO']:'')+'</td>'+
+          '</tr>'
+        );
+        for(var i = 0; i < success['producto']['INVENTARIO'].length; i++){
+          $("#bodyDetalleProducto").append(
+            '<tr>'+
+              '<th>Inventario en '+success['producto']['INVENTARIO'][i]['ESPACIO_EXISTENCIAS']+'</th>'+
+              '<td>'+success['producto']['INVENTARIO'][i]['CANTIDAD_EXISTENCIAS']+'</td>'+
+            '</tr>'
+          )
+        }
+        $("#ModalDetalleProducto").modal();
+      });
+    }
+</script>
+
 
 @yield('script')

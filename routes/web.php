@@ -15,13 +15,12 @@ Route::get('/', function () {
     return view('login');
 });
 
+
 Route::get('/codigo', function () {
     return view('codigo');
 });
 
-Route::get('/productos', function () {
-    return view('listado_productos');
-});
+
 
 Route::get('/codigo/imprimir', function () {
     return view('pdf.impresion_codigos');
@@ -30,3 +29,20 @@ Route::get('/codigo/imprimir', function () {
 Route::get('/venta', function () {
     return view('venta');
 });
+
+//usuarios
+Route::post('/usuarios/validar', 'UsuariosController@ValidarLogin');
+Route::get('/salir', 'UsuariosController@CerrarSesion');
+
+//espacios
+Route::get('/espacios', 'EspaciosController@VistaListadoEspacios');
+Route::post('/espacios/registrar', 'EspaciosController@RegistrarEspacio');
+
+
+
+//Productos
+Route::get('/productos', 'ProductosController@VistaListadoProductos');
+Route::post('/productos/registrar', 'ProductosController@RegistrarProducto');
+Route::post('/productos/obtener_datos', 'ProductosController@RegresarDatosProducto');
+Route::post('/productos/agregar_nota', 'ProductosController@RegistrarNotaVenta');
+Route::post('/productos/ver_historial', 'ProductosController@ObtenerHistorialProductos');

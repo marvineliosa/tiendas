@@ -1,7 +1,7 @@
 <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="javascript:void(0)" class="site_title"><i class="fa fa-university"></i> <span>DAPI - BUAP</span></a>
+              <a href="javascript:void(0)" class="site_title"><i class="fa fa-shopping-cart"></i> <span>TIENDAS BUAP</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -26,23 +26,29 @@
             <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
-                <h3>General</h3>
+                <!--<h3>General</h3>-->
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-plus-square"></i> Productos <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="/requisiciones/crear">Listado de productos</a></li>
+                      <li><a href="/productos">Listado de productos</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-calendar"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-map-marker"></i> Espacios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="/solicitudes">Listado de solicitudes</a></li>
-                      <li><a href="/solicitudes/crear">Registrar solicitud</a></li>
+                      <li><a href="/espacios">Tiendas/Bodegas</a></li>
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-file"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/reportes/inventario">Reporte de inventario</a></li>
                     </ul>
                   </li>
                   <li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="index.html">Registrar usuario</a></li>
+                      <li><a href="/usuarios">Registrar usuario</a></li>
                     </ul>
+                  </li>
+                  <li><a href="/salir"><i class="fa fa-sign-out"></i> Salir </a>
                   </li>
 
                   
