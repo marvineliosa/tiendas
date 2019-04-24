@@ -43,6 +43,9 @@ Route::post('/espacios/registrar', 'EspaciosController@RegistrarEspacio');
 //Productos
 Route::get('/productos', 'ProductosController@VistaListadoProductos');
 Route::post('/productos/registrar', 'ProductosController@RegistrarProducto');
+Route::post('/productos/actualizar_datos', 'ProductosController@ActualizarDatosProducto');
+Route::post('/productos/actualizar_datos_venta', 'ProductosController@ActualizarDatosVenta');
 Route::post('/productos/obtener_datos', 'ProductosController@RegresarDatosProducto');
 Route::post('/productos/agregar_nota', 'ProductosController@RegistrarNotaVenta');
 Route::post('/productos/ver_historial', 'ProductosController@ObtenerHistorialProductos');
+Route::post('/productos/obtener_inventario_tiendas', 'ProductosController@RegresarInventarioTiendas');

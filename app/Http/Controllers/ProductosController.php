@@ -149,6 +149,7 @@
             echo json_encode($data);//*/
         }
 
+        //esta funcion solo regresa las existencias en espacios que tengan productos, es decir, si una tienda no cuenta con el producto, esta no aparecerá en la lista
         public function ObtenerExistenciasCompletas($id_producto){
             $inventario = DB::table('REL_INVENTARIO')
                 ->where('DATOS_VENTA_FK_PROCUTO',$id_producto)
@@ -166,6 +167,49 @@
             //dd($inventario);
             return $inventario;
         }
+
+        //esta función obtendrá todas las tiendas que existen y si una de ellas no tiene el producto, aparecerá pero en existencias regresará 0
+        public function ObtenerExistenciasCompletasTodasTiendas($id_producto){
+            $inventario = array();
+            $espacios = DB::table('TIENDAS_ESPACIOS')->get();
+
+            foreach ($espacios as $espacio) {
+                $tmp_existencias = DB::table('REL_INVENTARIO')
+                    ->where([
+                                'DATOS_VENTA_FK_PROCUTO'=>$id_producto,
+                                'DATOS_VENTA_FK_ESPACIO'=>$espacio->ESPACIO_ID
+                            ])
+                    ->get();
+                //dd($tmp_existencias);
+                $tmp = array();
+                if(count($tmp_existencias)>0){
+                    $tmp['ID_ESPACIO'] = $espacio->ESPACIO_ID;
+                    $tmp['CANTIDAD_EXISTENCIAS'] = $tmp_existencias[0]->DATOS_VENTA_CANTIDAD;
+                    $tmp['MINIMO_EXISTENCIAS'] = $tmp_existencias[0]->DATOS_VENTA_INVENTARIO_MINIMO;
+                    $tmp['ESPACIO_EXISTENCIAS'] = $espacio->ESPACIO_NOMBRE;
+                }else{
+                    $tmp['ID_ESPACIO'] = $espacio->ESPACIO_ID;
+                    $tmp['CANTIDAD_EXISTENCIAS'] = 0;
+                    $tmp['MINIMO_EXISTENCIAS'] = 0;
+                    $tmp['ESPACIO_EXISTENCIAS'] = $espacio->ESPACIO_NOMBRE;
+                }
+                $inventario[]=$tmp;
+            }
+            //$inventario = (object) $inventario;
+            //dd($inventario);
+            return $inventario;
+        }
+
+        public function RegresarInventarioTiendas(Request $request){
+            $id_producto = $request['id_producto'];
+            $inventario = ProductosController::ObtenerExistenciasCompletasTodasTiendas($id_producto);
+
+            $data = array(
+                "inventario"=>$inventario
+            );
+            echo json_encode($data);//*/
+        }
+
 
         public function ObtenerNotasEntrada($id_producto){
             $notas = array();
@@ -207,10 +251,11 @@
                 $producto[0]->FECHA_REGISTRO = date("d/m/Y", strtotime($producto[0]->FECHA_REGISTRO));
                 $producto[0]->PRECIO_SIN_DESCUENTO = $datos[0]->DATOS_VENTA_PRECIO;
                 $producto[0]->DESCUENTO_PRODUCTO = $datos[0]->DATOS_VENTA_DESCUENTO;
-                $producto[0]->PRECIO_VENTA = $datos[0]->DATOS_VENTA_PRECIO - ($datos[0]->DATOS_VENTA_DESCUENTO * $datos[0]->DATOS_VENTA_PRECIO);
+                $producto[0]->PRECIO_VENTA = $datos[0]->DATOS_VENTA_PRECIO - (($datos[0]->DATOS_VENTA_DESCUENTO/100) * $datos[0]->DATOS_VENTA_PRECIO);
                 //dd($producto);
                 //obenemos existencias en tiendas
                 $producto[0]->INVENTARIO = ProductosController::ObtenerExistenciasCompletas($id_producto);
+                //$producto[0]->INVENTARIO = ProductosController::ObtenerExistenciasCompletasTodasTiendas($id_producto);
                 $producto[0]->TOTAL_NOTAS_ENTRADA = count(ProductosController::ObtenerNotasEntrada($id_producto));
 
                 return $producto[0];
@@ -244,6 +289,46 @@
                 return view('errors.505');
             }
             */
+        }
+
+        public function ActualizarDatosVenta(Request $request){
+            //dd($request['precio']);
+            $update = DB::table('TIENDAS_DATOS_VENTA_PRODUCTO')
+                ->where('DATOS_VENTA_FK_PROCUTO', $request['id_producto'])
+                ->update([
+                    'DATOS_VENTA_PRECIO' => $request['precio'],
+                    'DATOS_VENTA_DESCUENTO' => $request['descuento']
+                ]);
+
+            $texto_historial = 'Se ha actualizado los datos de venta del producto '.$request['producto']." Precio: $".$request['precio'].", Descuento: ".$request['descuento']."%";
+            ProductosController::RegistraHistorialProducto($request['id_producto'],$texto_historial);
+
+            $data = array(
+                "update"=>$update
+            );
+            echo json_encode($data);//*/
+        }
+
+        public function ActualizarDatosProducto(Request $request){
+            $update = DB::table('TIENDAS_PRODUCTOS')
+                ->where('PRODUCTOS_ID', $request['id_producto'])
+                ->update([
+                    'PRODUCTOS_NOMBRE' => $request['producto'],
+                    'PRODUCTOS_COLOR' => $request['color'],
+                    'PRODUCTOS_GENERO' => $request['genero'],
+                    'PRODUCTOS_TALLA' => $request['talla'],
+                    'PRODUCTOS_OBSERVACIONES' => $request['observaciones'],
+                    'updated_at' => ProductosController::ObtenerFechaHora()
+                ]);
+
+            $texto_historial = 'Se ha editado los datos del producto '.$request['producto'];
+            ProductosController::RegistraHistorialProducto($request['id_producto'],$texto_historial);
+
+            $data = array(
+                "update"=>$update
+            );
+
+            echo json_encode($data);//*/
         }
 
         public function RegistrarProducto(Request $request){

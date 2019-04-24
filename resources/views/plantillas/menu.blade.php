@@ -38,6 +38,15 @@
     
     <!-- bootstrap-datetimepicker -->
     <link href="{{asset('vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css')}}" rel="stylesheet">
+
+    <style type="text/css">
+      .test[style] {
+         padding-right:0 !important;
+     }
+     .test.modal-open {
+        overflow: auto;
+     }
+    </style>
   </head>
 
   <body class="nav-md">
@@ -227,10 +236,23 @@
       </div>
     </div>
 
+   <!-- Modal Carga-->
+    <div class="modal fade" id="modalCarga" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div align="center">
+          <img src="{{ asset('images/carga3.gif') }}" class="img-rounded" alt="Cinque Terre">
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
 <script type="text/javascript">
-
+    $(".modal").on('hidden.bs.modal', function () {
+    // do something…
+      $('body').addClass('test');//solución para que no se recorra el body hacia la izquierda
+      //$("#cuerpoVinculacionDescripciones").html("");
+    });
 
     function ModalVerHistorial(id_producto){
       var success;
@@ -376,7 +398,7 @@
           '</tr>'+
           '<tr>'+
             '<th>Unidades vendidas</th>'+
-            '<td id="td-UnidadesVendidas">'+''+'</td>'+
+            '<td id="td-UnidadesVendidas">'+'---FALTA AGREGAR---'+'</td>'+
           '</tr>'+
           '<tr>'+
             '<th>Observaciones</th>'+
