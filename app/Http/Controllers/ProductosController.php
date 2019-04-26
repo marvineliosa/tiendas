@@ -17,6 +17,42 @@
          * @return Response
          */
 
+        public function RegistrarMovilizacionInventario(Request $request){
+            $id_producto = $request['id_producto'];
+            $tienda_origen = $request['id_tienda_origen'];
+            $tienda_destino = $request['id_tienda_destino'];
+            $cantidad_traspaso = $request['cantidad_traspaso'];
+            $cantidad_origen = $request['cantidad_origen'];
+            $usuario = \Session::get('usuario')[0];
+
+            $nueva_cantidad = $cantidad_origen - $cantidad_traspaso;
+            //dd($nueva_cantidad);
+            $insert = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')->insert(
+                [
+                    'MOVILIZACION_FK_PROCUTO' => $id_producto,
+                    'MOVILIZACION_ORIGEN' => $tienda_origen,
+                    'MOVILIZACION_DESTINO' => $tienda_destino,
+                    'MOVILIZACION_CANTIDAD' => $cantidad_traspaso,
+                    'MOVILIZACION_FECHA_MOVIMIENTO' => ProductosController::ObtenerFecha(),
+                    'MOVILIZACION_FK_EMISOR' => $usuario
+                ]
+            );//
+
+            $update = DB::table('REL_INVENTARIO')
+                ->where([
+                    'DATOS_VENTA_FK_PROCUTO' => $id_producto, 
+                    'DATOS_VENTA_FK_ESPACIO' => $tienda_origen
+                ])
+                ->update(['DATOS_VENTA_CANTIDAD' => $nueva_cantidad]);//*/
+
+            $data = array(
+                "insert"=>$insert,
+                "update"=>$update
+            );
+
+            echo json_encode($data);//*/
+        }
+
         public function ObtenerHistoriaId($id){
             $historial = DB::table('TIENDAS_HISTORIAL')
                 ->where('HISTORIAL_ID',$id)

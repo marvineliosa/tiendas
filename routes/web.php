@@ -49,3 +49,4 @@ Route::post('/productos/obtener_datos', 'ProductosController@RegresarDatosProduc
 Route::post('/productos/agregar_nota', 'ProductosController@RegistrarNotaVenta');
 Route::post('/productos/ver_historial', 'ProductosController@ObtenerHistorialProductos');
 Route::post('/productos/obtener_inventario_tiendas', 'ProductosController@RegresarInventarioTiendas');
+Route::post('/productos/registrar_movilizacion_inventario', 'ProductosController@RegistrarMovilizacionInventario');

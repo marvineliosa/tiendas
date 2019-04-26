@@ -370,7 +370,7 @@
         	</div><!-- fin div form -->
           </div>
           <div class="modal-footer">
-        	<button type="button" class="btn btn-primary" onclick="GenerarTransporte()">Guardar</button>
+        	<button type="button" class="btn btn-primary" onclick="RegistrarMovilizacionInventario()">Guardar</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
@@ -383,14 +383,58 @@
 	<script type="text/javascript">
 		//$("#ModalAgregarProducto").modal();
 
-		var array_origen = null;
-		var array_destino = null;
+		function RegistrarMovilizacionInventario(){
+			var id_producto = $("#traspaso_codigo").val();
+			var tienda_origen = $("#select_tienda_origen").val();
+			var tienda_destino = $("#select_tienda_destino").val();
+			var cantidad_traspaso = $("#cantidad_traspaso").val();
+			/*console.log(tienda_origen);
+			console.log(tienda_destino);
+			console.log("-----------");//*/
+				
+			if(tienda_origen == 'SELECCIONAR'){
+				MensajeModal('¡ATENCIÓN!','Aún no se ha seleccionado la tienda origen.');
+			}else if(tienda_destino == 'SELECCIONAR'){
+				MensajeModal('¡ATENCIÓN!','Aún no se ha seleccionado la tienda destino.');
+			}else if(cantidad_traspaso <= 0){
+				MensajeModal('¡ATENCIÓN!','La cantidad de artículos debe ser mayor a 0.');
+			}else if(cantidad_traspaso == ''){
+				MensajeModal('¡ATENCIÓN!','La campo de cantidad de artículos no dene estar vacío.');
+			}else{
+				var success;
+				var url = "/productos/registrar_movilizacion_inventario";
+				var dataForm = new FormData();
+				var id_tienda_origen = array_origen[tienda_origen]['ID_ESPACIO'];
+				var cantidad_origen = array_destino[tienda_origen]['CANTIDAD_EXISTENCIAS'];
+				var id_tienda_destino = array_destino[tienda_destino]['ID_ESPACIO'];
+				dataForm.append('id_producto',id_producto);
+				dataForm.append('id_tienda_origen',id_tienda_origen);
+				dataForm.append('id_tienda_destino',id_tienda_destino);
+				dataForm.append('cantidad_traspaso',cantidad_traspaso);
+				dataForm.append('cantidad_origen',cantidad_origen);
+				/*console.log(tienda_origen);
+				console.log(cantidad_origen);
+				console.log(tienda_destino);//*/
+				//lamando al metodo ajax
+				metodoAjax(url,dataForm,function(success){
+				  //aquí se escribe todas las operaciones que se harían en el succes
+				  //la variable success es el json que recibe del servidor el método AJAX
+				  MensajeModal("¡ÉXITO!",'Se ha registrado el movimiento de inventario, se ha reducido la cantidad de este producto del espacio origen pero no se verá reflejado en el inventario del lugar destino hasta que se marque como recibido en el espacio destino.');
+				});//*/
+			}
+
+
+		}
+
+		var array_origen = new Array();
+		var array_destino = new Array();
 		function LlenarTiendas(select,id_producto,origen){
 			//var id_producto = $("#traspaso_codigo").val();
 			//console.log(id_producto);
 			var success;
 			var url = "/productos/obtener_inventario_tiendas";
 			var dataForm = new FormData();
+			var j = 0;
 			dataForm.append('id_producto',id_producto);
 			//lamando al metodo ajax
 			$("#"+select).html("");
@@ -404,11 +448,17 @@
 				  		$("#"+select).append(
 					  		'<option value="'+i+'">'+success['inventario'][i]['ESPACIO_EXISTENCIAS']+' ('+success['inventario'][i]['CANTIDAD_EXISTENCIAS']+')'+'</option>'
 					  	);
+					  	//array_origen[j] = success['inventario'][i];
+					  	//j++;
 				  	}
-				}else{
+				}else if(origen=='destino'){
 					$("#"+select).append(
 				  		'<option value="'+i+'">'+success['inventario'][i]['ESPACIO_EXISTENCIAS']+' ('+success['inventario'][i]['CANTIDAD_EXISTENCIAS']+')'+'</option>'
 				  	);//*/
+				  	//array_destino[j] = success['inventario'][i];
+				  	//j++;
+				}else{
+
 				}
 			  }
 			  if(origen == 'origen'){
@@ -419,7 +469,7 @@
 			  	array_destino = success['inventario'];
 			  	//console.log('Destino');
 			  	//console.log(array_destino);
-			  }
+			  }//*/
 			});//*/		
 		}
 
@@ -463,6 +513,8 @@
 		}
 
 		function ModalTraspaso(id_producto){
+			$("#div_destino").css('display','none');
+			$("#div_cantidad").css('display','none');
 			LlenarTiendas('select_tienda_origen',id_producto,'origen');
 			$("#traspaso_codigo").val(id_producto);
 			$("#ModalTraspasarProductos").modal();
