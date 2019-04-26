@@ -45,6 +45,9 @@
                 ])
                 ->update(['DATOS_VENTA_CANTIDAD' => $nueva_cantidad]);//*/
 
+            $texto_historial = 'Se ha registrado la nota de venta '.$id_nota.'. La nota de venta se ha enlazado al producto '.$id_producto;
+            ProductosController::RegistraHistorialProducto($id_producto,$texto_historial);
+
             $data = array(
                 "insert"=>$insert,
                 "update"=>$update
