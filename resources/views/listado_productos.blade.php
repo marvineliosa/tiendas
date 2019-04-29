@@ -312,7 +312,71 @@
       </div>
     </div>
 
+    <!-- modal traspasar producto -->
+    <div class="modal fade" id="ModalListadoMovilizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Listado de movilización</h5>
+          </div>
+          <div class="modal-body">
+          	
+          	<table class="table">
+			  <thead>
+			    <tr>
+			      <th scope="col">Fecha</th>
+			      <th scope="col">Origen</th>
+			      <th scope="col">Destino</th>
+			      <th scope="col">Cantidad</th>
+			      <th scope="col">Estado</th>
+			      <th scope="col">Acciones</th>
+			    </tr>
+			  </thead>
+			  <tbody id="body_movilizaciones">
+			    
+			  </tbody>
+			</table>
 
+          </div>
+          <div class="modal-footer">
+        	<button type="button" class="btn btn-primary" onclick="ModalTraspaso()">Nueva Movilización</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal traspasar producto -->
+    <div class="modal fade" id="ModalAceptarMovilizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Listado de movilizaciónes por aceptar</h5>
+          </div>
+          <div class="modal-body">
+          	
+          	<table class="table">
+			  <thead>
+			    <tr>
+			      <th scope="col">Fecha</th>
+			      <th scope="col">Origen</th>
+			      <th scope="col">Destino</th>
+			      <th scope="col">Cantidad</th>
+			      <th scope="col">Acciones</th>
+			    </tr>
+			  </thead>
+			  <tbody id="body_movilizaciones_pendientes">
+			    
+			  </tbody>
+			</table>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- modal traspasar producto -->
     <div class="modal fade" id="ModalTraspasarProductos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -351,22 +415,23 @@
 
 	            <!-- Cantidad de traspaso -->
 	            <div class="form-group" id="div_cantidad" style="display: none">
+
 	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Cantidad*</label>
+
 	              <div class="col-md-2 col-sm-2 col-xs-12">
 	                	<input type="number" class="form-control" placeholder="Especifique" id="cantidad_traspaso" min="0" value='0'>
-	                </select>
 	              </div>
+
 	              <div class="col-md-2 col-sm-2 col-xs-12">
 	                	<button type="button" class="btn btn-default btn-md" onclick="AumentarCantidad()">
 							<span class="fa fa-plus" aria-hidden="true"></span>
 						</button>
-	                </select>
 	              </div>
 	              <div class="col-md-6 col-sm-6 col-xs-12">
 	                	<h3 style="position:relative; bottom: 5px; text-align: center;" id="h_cantidad_traspaso"></h3>
-	                </select>
 	              </div>
 	            </div>
+
         	</div><!-- fin div form -->
           </div>
           <div class="modal-footer">
@@ -376,6 +441,8 @@
         </div>
       </div>
     </div>
+
+
 
 @endsection
 
@@ -512,11 +579,79 @@
 			}
 		}
 
-		function ModalTraspaso(id_producto){
+		function ModalListadoMovilizacion(id_producto){
+			$("#id_producto").val(id_producto);
+			var success;
+			var url = "/productos/traer_movilizaciones";
+			var dataForm = new FormData();
+			dataForm.append('id_producto',id_producto);
+			//lamando al metodo ajax
+			$("#body_movilizaciones").html("");
+			metodoAjax(url,dataForm,function(success){
+			  //aquí se escribe todas las operaciones que se harían en el succes
+			  //la variable success es el json que recibe del servidor el método AJAX
+			  for(var i = 0; i < success['movilizaciones'].length; i++){
+			  	var acciones = "";
+			  	if(success['movilizaciones'][i]['ESTATUS'] == 'PENDIENTE'){
+			  		acciones = '<a href="javascript:void(0);" onclick="CancelarMovilizacion('+success['movilizaciones'][i]['ID_MOVILIZACION']+')" style="color:red;">Cancelar</a>';
+			  	}else{
+			  		acciones = success['movilizaciones'][i]['ESTATUS'];
+			  	}
+			  	$("#body_movilizaciones").append(
+			  		'<tr>'+
+				      '<th scope="row">'+success['movilizaciones'][i]['FECHA_MOVIMIENTO']+'</th>'+
+				      '<td>'+success['movilizaciones'][i]['NOMBRE_ORIGEN']+'</td>'+
+				      '<td>'+success['movilizaciones'][i]['NOMBRE_DESTINO']+'</td>'+
+				      '<td>'+success['movilizaciones'][i]['CANTIDAD_UNIDADES']+'</td>'+
+				      '<td>'+success['movilizaciones'][i]['ESTATUS']+'</td>'+
+				      '<td>'+acciones+'</td>'+
+				    '</tr>'
+			  	);
+			  }
+			  
+			});//*/
+			$("#ModalListadoMovilizacion").modal();//
+		}
+
+		function ModalListadoRecibirMovilizacion(id_producto){
+			$("#id_producto").val(id_producto);
+			var success;
+			var url = "/productos/traer_movilizaciones_usuarios";
+			var dataForm = new FormData();
+			dataForm.append('id_producto',id_producto);
+			//lamando al metodo ajax
+			$("#body_movilizaciones_pendientes").html("");
+			metodoAjax(url,dataForm,function(success){
+			  //aquí se escribe todas las operaciones que se harían en el succes
+			  //la variable success es el json que recibe del servidor el método AJAX
+			  for(var i = 0; i < success['movilizaciones'].length; i++){
+			  	var acciones = "";
+			  	if(success['movilizaciones'][i]['ESTATUS'] == 'PENDIENTE'){
+			  		acciones = '<a href="javascript:void(0);" onclick="AceptarMovilizacion('+id_producto+','+success['movilizaciones'][i]['ID_MOVILIZACION']+')" style="color:green;">Aceptar</a>';
+			  		$("#body_movilizaciones_pendientes").append(
+				  		'<tr>'+
+					      '<th scope="row">'+success['movilizaciones'][i]['FECHA_MOVIMIENTO']+'</th>'+
+					      '<td>'+success['movilizaciones'][i]['NOMBRE_ORIGEN']+'</td>'+
+					      '<td>'+success['movilizaciones'][i]['NOMBRE_DESTINO']+'</td>'+
+					      '<td>'+success['movilizaciones'][i]['CANTIDAD_UNIDADES']+'</td>'+
+					      '<td>'+acciones+'</td>'+
+					    '</tr>'
+				  	);
+			  	}
+			  	
+			  }
+			  
+			});//*/
+			$("#ModalAceptarMovilizacion").modal();//
+		}
+
+		function ModalTraspaso(){
+			var id_producto = $("#id_producto").val();
 			$("#div_destino").css('display','none');
 			$("#div_cantidad").css('display','none');
 			LlenarTiendas('select_tienda_origen',id_producto,'origen');
 			$("#traspaso_codigo").val(id_producto);
+			$("#ModalListadoMovilizacion").modal('hide');
 			$("#ModalTraspasarProductos").modal();
 		}
 

@@ -33,8 +33,11 @@
           <button type="button" class="btn btn-default btn-xs" onclick="ModalEditarProducto({!! $producto->PRODUCTOS_ID !!})">
             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
           </button>
-          <button type="button" class="btn btn-default btn-xs" onclick="ModalTraspaso({!! $producto->PRODUCTOS_ID !!})">
+          <button type="button" class="btn btn-default btn-xs" onclick="ModalListadoMovilizacion({!! $producto->PRODUCTOS_ID !!})">
             <span class="fa fa-truck fa-flip-horizontal" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-default btn-xs" onclick="ModalListadoRecibirMovilizacion({!! $producto->PRODUCTOS_ID !!})">
+            <span class="fa fa-truck" aria-hidden="true"></span>
           </button>
 	  		</td>
   		</tr>

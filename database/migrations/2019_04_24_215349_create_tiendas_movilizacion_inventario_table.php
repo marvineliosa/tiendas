@@ -14,6 +14,7 @@ class CreateTiendasMovilizacionInventarioTable extends Migration
     public function up()
     {
         Schema::create('TIENDAS_MOVILIZACION_INVENTARIO', function (Blueprint $table) {
+            $table->increments('MOVILIZACION_ID');
             $table->unsignedInteger('MOVILIZACION_FK_PROCUTO');
             $table->foreign('MOVILIZACION_FK_PROCUTO')->references('PRODUCTOS_ID')->on('TIENDAS_PRODUCTOS')->onDelete('cascade')->onUpdate('cascade');
 

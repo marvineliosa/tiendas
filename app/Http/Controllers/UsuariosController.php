@@ -17,6 +17,22 @@
          * @return Response
          */
 
+        public static function ObtenerNombreUsuario($usuario){
+            //dd($usuario);
+            $nombre = DB::table('TIENDAS_LOGIN')
+                ->where('LOGIN_ID',$usuario)
+                ->select(
+                            'LOGIN_RESPONSABLE as NOMBRE_RESPONSABLE'
+                        )
+                ->get();
+            //dd($espacio);
+            if(count($nombre)>0){
+                return $nombre[0]->NOMBRE_RESPONSABLE;
+            }else{
+                return null;
+            }
+        }
+
         public function ValidarLogin(Request $request){
             \Session::forget('usuario');
             \Session::forget('categoria');
@@ -58,7 +74,7 @@
             return redirect('/');
         }
 
-        public function ObtenerTiendaUsuario($id_usuario){
+        public static function ObtenerTiendaUsuario($id_usuario){
             $tienda = DB::table('REL_USUARIO_ESPACIO')
                 ->where(['FK_USUARIO'=> $id_usuario])
                 ->get();
@@ -81,3 +97,7 @@ insert into TIENDAS_LOGIN(LOGIN_ID,LOGIN_CONTRASENIA,LOGIN_CATEGORIA,LOGIN_RESPO
 insert into TIENDAS_LOGIN(LOGIN_ID,LOGIN_CONTRASENIA,LOGIN_CATEGORIA,LOGIN_RESPONSABLE) values('cajero','123456','CAJERO','USUARIO CAJERO');
 
 insert into REL_USUARIO_ESPACIO(FK_USUARIO,FK_ESPACIO) values('cajero','3');
+
+insert into TIENDAS_LOGIN(LOGIN_ID,LOGIN_CONTRASENIA,LOGIN_CATEGORIA,LOGIN_RESPONSABLE) values('marvineliosa','123456','CAJERO','Marvin Eliosa Abaroa');
+
+insert into REL_USUARIO_ESPACIO(FK_USUARIO,FK_ESPACIO) values('marvineliosa','4');

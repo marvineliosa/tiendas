@@ -17,6 +17,98 @@
          * @return Response
          */
 
+        public function TraerMovilizacionesUsuario(Request $request){
+            $id_producto = $request['id_producto'];
+            //$movilizaciones = ProductosController::ObtenerMovilizaciones($id_producto);
+            $categoria_usuario = \Session::get('categoria')[0];
+            $espacio_usuario = \Session::get('id_tienda')[0];
+            //dd($espacio_usuario);
+            if(strcmp($categoria_usuario, 'CAJERO')==0){
+            //dd($espacio_usuario);
+                $movilizaciones = ProductosController::ObtenerMovilizacionesEspacio($id_producto,$espacio_usuario);
+            }else{
+                $movilizaciones = ProductosController::ObtenerMovilizaciones($id_producto);
+            }
+            $data = array(
+                "movilizaciones"=>$movilizaciones
+            );
+
+            echo json_encode($data);//*/
+
+        }
+
+        public function TraerMovilizacionInventario(Request $request){
+            $id_producto = $request['id_producto'];
+            $movilizaciones = ProductosController::ObtenerMovilizaciones($id_producto);
+            //dd($movilizaciones);
+            $data = array(
+                "movilizaciones"=>$movilizaciones
+            );
+
+            echo json_encode($data);//*/
+
+        }
+
+        public function ObtenerMovilizaciones($id_producto){
+            $movilizaciones = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')
+                ->select(
+                            'MOVILIZACION_ID as ID_MOVILIZACION',
+                            'MOVILIZACION_ORIGEN as ESPACIO_ORIGEN',
+                            'MOVILIZACION_DESTINO as ESPACIO_DESTINO',
+                            'MOVILIZACION_CANTIDAD as CANTIDAD_UNIDADES',
+                            'MOVILIZACION_FECHA_MOVIMIENTO as FECHA_MOVIMIENTO',
+                            'MOVILIZACION_FECHA_RECEPCION as FECHA_RECEPCION',
+                            'MOVILIZACION_FECHA_CANCELACION as FECHA_CANCELACION',
+                            'MOVILIZACION_FK_EMISOR as EMISOR',
+                            'MOVILIZACION_FK_RECEPTOR as RECEPTOR',
+                            'MOVILIZACION_ESTATUS as ESTATUS'
+                        )
+                ->where('MOVILIZACION_FK_PROCUTO',$id_producto)
+                ->get();
+
+            foreach ($movilizaciones as $movilizacion) {
+                $movilizacion->NOMBRE_ORIGEN = EspaciosController::ObtenerNombreEspacio($movilizacion->ESPACIO_ORIGEN);
+                $movilizacion->NOMBRE_DESTINO = EspaciosController::ObtenerNombreEspacio($movilizacion->ESPACIO_DESTINO);
+                $movilizacion->NOMBRE_EMISOR = UsuariosController::ObtenerNombreUsuario($movilizacion->EMISOR);
+                $movilizacion->NOMBRE_RECEPTOR = UsuariosController::ObtenerNombreUsuario($movilizacion->RECEPTOR);
+                $movilizacion->FECHA_MOVIMIENTO = date("d/m/Y", strtotime($movilizacion->FECHA_MOVIMIENTO));
+                $movilizacion->FECHA_RECEPCION = (($movilizacion->FECHA_RECEPCION)?date("d/m/Y", strtotime($movilizacion->FECHA_RECEPCION)):"");
+                $movilizacion->FECHA_CANCELACION = (($movilizacion->FECHA_CANCELACION)?date("d/m/Y", strtotime($movilizacion->FECHA_CANCELACION)):"");
+            }
+            return $movilizaciones;
+        }
+
+        public function ObtenerMovilizacionesEspacio($id_producto,$id_espacio){
+            $movilizaciones = array();
+            $tmp_movilizaciones = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')
+                ->select(
+                            'MOVILIZACION_ID as ID_MOVILIZACION',
+                            'MOVILIZACION_ORIGEN as ESPACIO_ORIGEN',
+                            'MOVILIZACION_DESTINO as ESPACIO_DESTINO',
+                            'MOVILIZACION_CANTIDAD as CANTIDAD_UNIDADES',
+                            'MOVILIZACION_FECHA_MOVIMIENTO as FECHA_MOVIMIENTO',
+                            'MOVILIZACION_FECHA_RECEPCION as FECHA_RECEPCION',
+                            'MOVILIZACION_FECHA_CANCELACION as FECHA_CANCELACION',
+                            'MOVILIZACION_FK_EMISOR as EMISOR',
+                            'MOVILIZACION_FK_RECEPTOR as RECEPTOR',
+                            'MOVILIZACION_ESTATUS as ESTATUS'
+                        )
+                ->where(['MOVILIZACION_FK_PROCUTO'=>$id_producto,'MOVILIZACION_DESTINO'=>$id_espacio])
+                ->get();
+            //dd($tmp_movilizaciones);
+            foreach ($tmp_movilizaciones as $movilizacion) {
+                $movilizacion->NOMBRE_ORIGEN = EspaciosController::ObtenerNombreEspacio($movilizacion->ESPACIO_ORIGEN);
+                $movilizacion->NOMBRE_DESTINO = EspaciosController::ObtenerNombreEspacio($movilizacion->ESPACIO_DESTINO);
+                $movilizacion->NOMBRE_EMISOR = UsuariosController::ObtenerNombreUsuario($movilizacion->EMISOR);
+                $movilizacion->NOMBRE_RECEPTOR = UsuariosController::ObtenerNombreUsuario($movilizacion->RECEPTOR);
+                $movilizacion->FECHA_MOVIMIENTO = date("d/m/Y", strtotime($movilizacion->FECHA_MOVIMIENTO));
+                $movilizacion->FECHA_RECEPCION = (($movilizacion->FECHA_RECEPCION)?date("d/m/Y", strtotime($movilizacion->FECHA_RECEPCION)):"");
+                $movilizacion->FECHA_CANCELACION = (($movilizacion->FECHA_CANCELACION)?date("d/m/Y", strtotime($movilizacion->FECHA_CANCELACION)):"");
+                $movilizaciones[] = $movilizacion;
+            }
+            return $movilizaciones;
+        }
+
         public function RegistrarMovilizacionInventario(Request $request){
             $id_producto = $request['id_producto'];
             $tienda_origen = $request['id_tienda_origen'];
@@ -45,12 +137,16 @@
                 ])
                 ->update(['DATOS_VENTA_CANTIDAD' => $nueva_cantidad]);//*/
 
-            $texto_historial = 'Se ha registrado la nota de venta '.$id_nota.'. La nota de venta se ha enlazado al producto '.$id_producto;
+            $nombre_origen = EspaciosController::ObtenerNombreEspacio($tienda_origen);
+            $nombre_destino = EspaciosController::ObtenerNombreEspacio($tienda_destino);
+
+            $texto_historial = 'Movilización de inventario del producto '.$id_producto.', de '.$nombre_origen.' a '.$nombre_destino.'. Unidades movilizadas: '.$cantidad_traspaso;
             ProductosController::RegistraHistorialProducto($id_producto,$texto_historial);
 
             $data = array(
                 "insert"=>$insert,
-                "update"=>$update
+                "update"=>$update,
+                "texto_historial"=>$texto_historial
             );
 
             echo json_encode($data);//*/

@@ -50,3 +50,5 @@ Route::post('/productos/agregar_nota', 'ProductosController@RegistrarNotaVenta')
 Route::post('/productos/ver_historial', 'ProductosController@ObtenerHistorialProductos');
 Route::post('/productos/obtener_inventario_tiendas', 'ProductosController@RegresarInventarioTiendas');
 Route::post('/productos/registrar_movilizacion_inventario', 'ProductosController@RegistrarMovilizacionInventario');
+Route::post('/productos/traer_movilizaciones', 'ProductosController@TraerMovilizacionInventario');
+Route::post('/productos/traer_movilizaciones_usuarios', 'ProductosController@TraerMovilizacionesUsuario');
