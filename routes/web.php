@@ -52,3 +52,4 @@ Route::post('/productos/obtener_inventario_tiendas', 'ProductosController@Regres
 Route::post('/productos/registrar_movilizacion_inventario', 'ProductosController@RegistrarMovilizacionInventario');
 Route::post('/productos/traer_movilizaciones', 'ProductosController@TraerMovilizacionInventario');
 Route::post('/productos/traer_movilizaciones_usuarios', 'ProductosController@TraerMovilizacionesUsuario');
+Route::post('/productos/aprobar_movilizaciones', 'ProductosController@AprobarMovilizacion');

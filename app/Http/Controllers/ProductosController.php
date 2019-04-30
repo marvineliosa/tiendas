@@ -17,6 +17,69 @@
          * @return Response
          */
 
+        public function AprobarMovilizacion(Request $request){
+            $id_movilizacion = $request['id_movilizacion'];
+
+            $movilizacion = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')
+                ->where('MOVILIZACION_ID',$id_movilizacion)
+                ->get();
+            $tienda_destino = EspaciosController::ObtenerNombreEspacio($movilizacion[0]->MOVILIZACION_DESTINO);
+            $id_producto = $movilizacion[0]->MOVILIZACION_FK_PROCUTO;
+            //dd($movilizacion);
+            //obtenemos los datos del inventario
+            $inventario_anterior = DB::table('REL_INVENTARIO')
+                ->where([
+                    'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                    'DATOS_VENTA_FK_ESPACIO' => $movilizacion[0]->MOVILIZACION_DESTINO
+                ])
+                ->get();
+
+            //dd($inventario_anterior);
+
+            if(count($inventario_anterior)>0){
+                //dd("ACTUALIZANDO");
+                $cantidad = $inventario_anterior[0]->DATOS_VENTA_CANTIDAD + $movilizacion[0]->MOVILIZACION_CANTIDAD;
+                //dd($cantidad);
+                $update = DB::table('REL_INVENTARIO')
+                    ->where([
+                        'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                        'DATOS_VENTA_FK_ESPACIO' => $movilizacion[0]->MOVILIZACION_DESTINO
+                    ])
+                    ->update([
+                        'DATOS_VENTA_CANTIDAD' => $cantidad
+                    ]);//*/   
+                //dd($update);
+            }else{
+                //dd("NUEVO");
+                DB::table('REL_INVENTARIO')->insert(
+                    [
+                        'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                        'DATOS_VENTA_FK_ESPACIO' => $movilizacion[0]->MOVILIZACION_DESTINO,
+                        'DATOS_VENTA_CANTIDAD' => $movilizacion[0]->MOVILIZACION_CANTIDAD 
+                    ]
+                );//*/
+            }
+
+            $update = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')
+                ->where('MOVILIZACION_ID', $id_movilizacion)
+                ->update([
+                    'MOVILIZACION_FECHA_RECEPCION' => ProductosController::ObtenerFechaHora(),
+                    'MOVILIZACION_FK_RECEPTOR' => \Session::get('usuario')[0],
+                    'MOVILIZACION_ESTATUS' => 'FINALIZADO'
+                ]);
+
+            $mensaje = 'Se ha marcado como FINALIZADA la movilización de inventario. Se ha registrado exitosamente '.$movilizacion[0]->MOVILIZACION_CANTIDAD.' unidades al inventario de '.$tienda_destino.'.';
+
+            $texto_historial = 'Recepción de inventario exitosa en '. $tienda_destino .' de '.$movilizacion[0]->MOVILIZACION_CANTIDAD .' unidades del producto '.$movilizacion[0]->MOVILIZACION_FK_PROCUTO;
+            ProductosController::RegistraHistorialProducto($id_producto,$texto_historial);
+
+            $data = array(
+                "update"=>$update,
+                "mensaje"=>$mensaje
+            );
+            echo json_encode($data);//*/
+        }
+
         public function TraerMovilizacionesUsuario(Request $request){
             $id_producto = $request['id_producto'];
             //$movilizaciones = ProductosController::ObtenerMovilizaciones($id_producto);

@@ -441,14 +441,47 @@
         </div>
       </div>
     </div>
-
-
-
 @endsection
 
 @section('script')
 	<script type="text/javascript">
 		//$("#ModalAgregarProducto").modal();
+
+		function CancelarMovilizacion(id_movilizacion){
+			console.log(id_movilizacion);
+			var success;
+			var url = "/productos/cancelar_movilizaciones";
+			var dataForm = new FormData();
+			dataForm.append('id_movilizacion',id_movilizacion);
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+				//aquí se escribe todas las operaciones que se harían en el succes
+				//la variable success es el json que recibe del servidor el método AJAX
+				//MensajeModal('¡ÉXITO!','Se ha marcado como recibida la movilización de inventario. Se ha registrado exitosamente '+tmp[1]+'" unidades al inventario de '+'"'+tmp[2]+'"');
+				MensajeModal('¡ÉXITO!',success['mensaje']);
+				$("#ModalAceptarMovilizacion").modal('hide');
+			});//*/
+		}
+
+		function AprobarMovilizacion(id_movilizacion){
+			/*console.log("*********************");
+			console.log(tmp);
+			id_movilizacion = tmp[0];//*/
+			console.log(id_movilizacion);
+			var success;
+			var url = "/productos/aprobar_movilizaciones";
+			var dataForm = new FormData();
+			dataForm.append('id_movilizacion',id_movilizacion);
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+				//aquí se escribe todas las operaciones que se harían en el succes
+				//la variable success es el json que recibe del servidor el método AJAX
+				//MensajeModal('¡ÉXITO!','Se ha marcado como recibida la movilización de inventario. Se ha registrado exitosamente '+tmp[1]+'" unidades al inventario de '+'"'+tmp[2]+'"');
+				MensajeModal('¡ÉXITO!',success['mensaje']);
+				$("#ModalAceptarMovilizacion").modal('hide');
+			});//*/
+			
+		}
 
 		function RegistrarMovilizacionInventario(){
 			var id_producto = $("#traspaso_codigo").val();
@@ -489,8 +522,6 @@
 				  MensajeModal("¡ÉXITO!",'Se ha registrado el movimiento de inventario, se ha reducido la cantidad de este producto del espacio origen pero no se verá reflejado en el inventario del lugar destino hasta que se marque como recibido en el espacio destino.');
 				});//*/
 			}
-
-
 		}
 
 		var array_origen = new Array();
@@ -595,7 +626,7 @@
 			  	if(success['movilizaciones'][i]['ESTATUS'] == 'PENDIENTE'){
 			  		acciones = '<a href="javascript:void(0);" onclick="CancelarMovilizacion('+success['movilizaciones'][i]['ID_MOVILIZACION']+')" style="color:red;">Cancelar</a>';
 			  	}else{
-			  		acciones = success['movilizaciones'][i]['ESTATUS'];
+			  		acciones = "";
 			  	}
 			  	$("#body_movilizaciones").append(
 			  		'<tr>'+
@@ -626,8 +657,17 @@
 			  //la variable success es el json que recibe del servidor el método AJAX
 			  for(var i = 0; i < success['movilizaciones'].length; i++){
 			  	var acciones = "";
+			  	/*var tmp = {
+			  				id_movilizacion : success['movilizaciones'][i]['ID_MOVILIZACION'],
+			  				cantidad_traspaso : success['movilizaciones'][i]['CANTIDAD_UNIDADES'],
+			  				tienda_destino : success['movilizaciones'][i]['NOMBRE_DESTINO']
+		  				};
+			  	console.log("------------------");
+			  	console.log(tmp);//*/
 			  	if(success['movilizaciones'][i]['ESTATUS'] == 'PENDIENTE'){
-			  		acciones = '<a href="javascript:void(0);" onclick="AceptarMovilizacion('+id_producto+','+success['movilizaciones'][i]['ID_MOVILIZACION']+')" style="color:green;">Aceptar</a>';
+			  		//acciones = '<a href="javascript:void(0);" onclick="AprobarMovilizacion('+tmp+')" style="color:green;">Aceptar</a>';
+			  		acciones = '<a href="javascript:void(0);" onclick="AprobarMovilizacion('+success['movilizaciones'][i]['ID_MOVILIZACION']+')" style="color:green;">Aceptar</a>';
+			  		//console.log(acciones);
 			  		$("#body_movilizaciones_pendientes").append(
 				  		'<tr>'+
 					      '<th scope="row">'+success['movilizaciones'][i]['FECHA_MOVIMIENTO']+'</th>'+
