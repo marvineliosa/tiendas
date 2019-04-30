@@ -313,7 +313,7 @@
     </div>
 
     <!-- modal traspasar producto -->
-    <div class="modal fade" id="ModalListadoMovilizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ModalListadoMovilizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll; max-height:100%;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -347,7 +347,7 @@
     </div>
 
     <!-- modal traspasar producto -->
-    <div class="modal fade" id="ModalAceptarMovilizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ModalAceptarMovilizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll; max-height:100%;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -457,9 +457,9 @@
 			metodoAjax(url,dataForm,function(success){
 				//aquí se escribe todas las operaciones que se harían en el succes
 				//la variable success es el json que recibe del servidor el método AJAX
-				//MensajeModal('¡ÉXITO!','Se ha marcado como recibida la movilización de inventario. Se ha registrado exitosamente '+tmp[1]+'" unidades al inventario de '+'"'+tmp[2]+'"');
+				//MensajeModal('¡ÉXITO!','Se ha marcado como recibida la movilización de 
 				MensajeModal('¡ÉXITO!',success['mensaje']);
-				$("#ModalAceptarMovilizacion").modal('hide');
+				$("#ModalListadoMovilizacion").modal('hide');
 			});//*/
 		}
 
@@ -520,6 +520,7 @@
 				  //aquí se escribe todas las operaciones que se harían en el succes
 				  //la variable success es el json que recibe del servidor el método AJAX
 				  MensajeModal("¡ÉXITO!",'Se ha registrado el movimiento de inventario, se ha reducido la cantidad de este producto del espacio origen pero no se verá reflejado en el inventario del lugar destino hasta que se marque como recibido en el espacio destino.');
+				  $("#ModalListadoMovilizacion").modal('hide');
 				});//*/
 			}
 		}

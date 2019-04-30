@@ -17,6 +17,56 @@
          * @return Response
          */
 
+        public function CancelarMovilizacion(Request $request){
+            $id_movilizacion = $request['id_movilizacion'];
+
+            $movilizacion = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')
+                ->where('MOVILIZACION_ID',$id_movilizacion)
+                ->get();
+            $tienda_origen = EspaciosController::ObtenerNombreEspacio($movilizacion[0]->MOVILIZACION_ORIGEN);
+            $id_producto = $movilizacion[0]->MOVILIZACION_FK_PROCUTO;
+            //dd($movilizacion);
+            //obtenemos los datos del inventario
+            $inventario_anterior = DB::table('REL_INVENTARIO')
+                ->where([
+                    'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                    'DATOS_VENTA_FK_ESPACIO' => $movilizacion[0]->MOVILIZACION_ORIGEN
+                ])
+                ->get();
+
+            //dd($inventario_anterior);
+
+            //dd("ACTUALIZANDO");
+            $cantidad = $inventario_anterior[0]->DATOS_VENTA_CANTIDAD + $movilizacion[0]->MOVILIZACION_CANTIDAD;
+            //dd($cantidad);
+            $update = DB::table('REL_INVENTARIO')
+                ->where([
+                    'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                    'DATOS_VENTA_FK_ESPACIO' => $movilizacion[0]->MOVILIZACION_ORIGEN
+                ])
+                ->update([
+                    'DATOS_VENTA_CANTIDAD' => $cantidad
+                ]);//*/   
+            //dd($update);
+
+            $update = DB::table('TIENDAS_MOVILIZACION_INVENTARIO')
+                ->where('MOVILIZACION_ID', $id_movilizacion)
+                ->update([
+                    'MOVILIZACION_FECHA_CANCELACION' => ProductosController::ObtenerFechaHora(),
+                    'MOVILIZACION_ESTATUS' => 'CANCELADO'
+                ]);
+
+            $mensaje = 'Se ha marcado como CANCELADO la movilización de inventario. La cantidad de productos que se encontraba en espera ha sido sumada nuevamente al inventario de '.$tienda_origen;
+            $texto_historial = 'Se ha cancelado la movilizacion de inventario de '.$movilizacion[0]->MOVILIZACION_CANTIDAD.' unidades del producto '.$movilizacion[0]->MOVILIZACION_FK_PROCUTO.' que tenían como destino '. $tienda_origen.'.';
+            ProductosController::RegistraHistorialProducto($id_producto,$texto_historial);
+
+            $data = array(
+                "update"=>$update,
+                "mensaje"=>$mensaje
+            );
+            echo json_encode($data);//*/
+        }
+
         public function AprobarMovilizacion(Request $request){
             $id_movilizacion = $request['id_movilizacion'];
 

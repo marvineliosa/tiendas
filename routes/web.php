@@ -53,3 +53,4 @@ Route::post('/productos/registrar_movilizacion_inventario', 'ProductosController
 Route::post('/productos/traer_movilizaciones', 'ProductosController@TraerMovilizacionInventario');
 Route::post('/productos/traer_movilizaciones_usuarios', 'ProductosController@TraerMovilizacionesUsuario');
 Route::post('/productos/aprobar_movilizaciones', 'ProductosController@AprobarMovilizacion');
+Route::post('/productos/cancelar_movilizaciones', 'ProductosController@CancelarMovilizacion');
