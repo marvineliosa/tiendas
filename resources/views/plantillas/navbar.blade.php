@@ -38,7 +38,12 @@
                       <li><a href="/espacios">Tiendas/Bodegas</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-file"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-shopping-cart"></i> Venta <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/venta">Venta de artículos</a></li>
+                    </ul>
+                  </li>
+                  <!--<li><a><i class="fa fa-file"></i> Reportes <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/reportes/inventario">Reporte de inventario</a></li>
                     </ul>
@@ -47,7 +52,7 @@
                     <ul class="nav child_menu">
                       <li><a href="/usuarios">Registrar usuario</a></li>
                     </ul>
-                  </li>
+                  </li>-->
                   <li><a href="/salir"><i class="fa fa-sign-out"></i> Salir </a>
                   </li>
 

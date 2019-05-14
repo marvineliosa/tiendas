@@ -17,6 +17,20 @@
          * @return Response
          */
 
+        public function AlmacenarVenta(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            //dd($venta->venta);
+            $venta = $venta->venta;
+            //dd('hola');
+            dd($venta);
+            foreach ($venta as $obj){
+                dd($obj);
+            }
+            //print_r($venta);
+            dd($venta);
+        }
+
         public function CancelarMovilizacion(Request $request){
             $id_movilizacion = $request['id_movilizacion'];
 
@@ -147,7 +161,6 @@
             );
 
             echo json_encode($data);//*/
-
         }
 
         public function TraerMovilizacionInventario(Request $request){
@@ -159,7 +172,6 @@
             );
 
             echo json_encode($data);//*/
-
         }
 
         public function ObtenerMovilizaciones($id_producto){
@@ -397,6 +409,22 @@
             echo json_encode($data);//*/
         }
 
+        //la siguiente función regresa el inventario de productos de una tienda por su ID
+        public static function ObtenerInventarioEspacioId($id_espacio){
+            $inventario = array();
+            $rel_inventario = DB::table('REL_INVENTARIO')
+                ->where('DATOS_VENTA_FK_ESPACIO',$id_espacio)
+                ->get();
+            foreach ($rel_inventario as $relacion) {
+                //$id_espacio = $relacion->DATOS_VENTA_FK_ESPACIO;
+                $id_producto = $relacion->DATOS_VENTA_FK_PROCUTO;
+                $nombre_producto = ProductosController::ObtenerNombreProductoId($id_producto);
+                $relacion->NOMBRE_PRODUCTO = $nombre_producto;
+                //dd($nombre_producto);
+            }
+            dd($rel_inventario);
+        }
+
         //esta funcion solo regresa las existencias en espacios que tengan productos, es decir, si una tienda no cuenta con el producto, esta no aparecerá en la lista
         public function ObtenerExistenciasCompletas($id_producto){
             $inventario = DB::table('REL_INVENTARIO')
@@ -448,6 +476,30 @@
             return $inventario;
         }
 
+        //la siguiente funcion recibe el id de un producto y verifica el inventario con el id del espacio almacenado en las variables de sesión
+        public function ObtenerExistenciasProductoId($id_producto){
+            $id_espacio = \Session::get('id_tienda')[0];
+            $rel_inventario = DB::table('REL_INVENTARIO')
+                ->where([
+                            'DATOS_VENTA_FK_ESPACIO'=>$id_espacio,
+                            'DATOS_VENTA_FK_PROCUTO'=>$id_producto
+                        ])
+                ->get();
+            //dd($rel_inventario);
+            if(count($rel_inventario)>0){
+                /*if($rel_inventario[0]->DATOS_VENTA_CANTIDAD>0){
+                    dd('HAY DE DONDE');
+
+                }else{
+                    dd('YA SE ACABARON ::O');
+                }//*/
+                return $rel_inventario[0]->DATOS_VENTA_CANTIDAD;
+            }else{
+                return null;
+            }
+
+        }
+
         public function RegresarInventarioTiendas(Request $request){
             $id_producto = $request['id_producto'];
             $inventario = ProductosController::ObtenerExistenciasCompletasTodasTiendas($id_producto);
@@ -457,7 +509,6 @@
             );
             echo json_encode($data);//*/
         }
-
 
         public function ObtenerNotasEntrada($id_producto){
             $notas = array();
@@ -475,6 +526,21 @@
             }
             //dd($notas);
             return $notas;
+        }
+
+        public static function ObtenerNombreProductoId($id_producto){
+            //dd('epale');
+            $producto = DB::table('TIENDAS_PRODUCTOS')
+                ->where('PRODUCTOS_ID',$id_producto)
+                ->select(
+                    'PRODUCTOS_NOMBRE as NOMBRE_PRODUCTO'
+                )
+                ->get();
+            if(count($producto)>0){
+                return $producto[0]->NOMBRE_PRODUCTO;
+            }else{
+                return null;
+            }
         }
 
         public function ObtenerProductoId($id_producto){
@@ -503,6 +569,9 @@
                 //dd($producto);
                 //obenemos existencias en tiendas
                 $producto[0]->INVENTARIO = ProductosController::ObtenerExistenciasCompletas($id_producto);
+                $producto[0]->INVENTARIO_SESION = ProductosController::ObtenerExistenciasProductoId($id_producto);
+                //dd($producto[0]->INVENTARIO_SESION);
+                //$producto[0]->EXTISTENCIAS_ESPACIO = 
                 //$producto[0]->INVENTARIO = ProductosController::ObtenerExistenciasCompletasTodasTiendas($id_producto);
                 $producto[0]->TOTAL_NOTAS_ENTRADA = count(ProductosController::ObtenerNotasEntrada($id_producto));
 

@@ -17,6 +17,12 @@
          * @return Response
          */
 
+        public function VerInventarioEspacio($id_espacio){
+            //dd($id_espacio);
+            $inventario = ProductosController::ObtenerInventarioEspacioId($id_espacio);
+            dd($inventario);
+        }
+
         public static function ObtenerDatosEspacioId($id_espacio){
             $espacio = DB::table('TIENDAS_ESPACIOS')
                 ->select(

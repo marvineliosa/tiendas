@@ -450,7 +450,7 @@
 		function CancelarMovilizacion(id_movilizacion){
 			console.log(id_movilizacion);
 			var success;
-			var url = "/productos/cancelar_movilizaciones";
+			var url = "/productos/obtener_datos";
 			var dataForm = new FormData();
 			dataForm.append('id_movilizacion',id_movilizacion);
 			//lamando al metodo ajax

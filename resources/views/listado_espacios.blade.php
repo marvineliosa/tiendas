@@ -98,5 +98,12 @@
 			MensajeModal("¡ÉXITO!","Espacio registrado satisfactoriamente.");
 		});
 	}
+
+	function abrirEspacio(id_espacio){
+		console.log(id_espacio);
+		var url = '/espacios/'+id_espacio+'/inventario';
+		window.open(url, '_blank');
+
+	}
 </script>
 @endsection

@@ -12,10 +12,14 @@
   	@foreach($espacios as $espacio)
   		<tr>
   			<td> {{$espacio->ID_ESPACIO}} </td>
-  			<td> <a href="/espacios/{{$espacio->ID_ESPACIO}}">{{$espacio->NOMBRE_ESPACIO}}</a> </td>
+  			<td> <a>{{$espacio->NOMBRE_ESPACIO}}</a> </td>
   			<td> {{$espacio->UBICACION_ESPACIO}} </td>
   			<td> {{$espacio->TIPO_ESPACIO}} </td>
-  			<td></td>
+  			<td>
+          <button type="button" class="btn btn-default btn-xs" onclick="abrirEspacio({!!$espacio->ID_ESPACIO!!})" data-toggle="tooltip" data-placement="top" title="VER INVENTARIO">
+            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+          </button>
+        </td>
   		</tr>
   	@endforeach
   </tbody>

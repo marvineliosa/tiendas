@@ -37,6 +37,7 @@ Route::get('/salir', 'UsuariosController@CerrarSesion');
 //espacios
 Route::get('/espacios', 'EspaciosController@VistaListadoEspacios');
 Route::post('/espacios/registrar', 'EspaciosController@RegistrarEspacio');
+Route::get('/espacios/{id_espacio}/inventario', 'EspaciosController@VerInventarioEspacio');
 
 
 
@@ -54,3 +55,5 @@ Route::post('/productos/traer_movilizaciones', 'ProductosController@TraerMoviliz
 Route::post('/productos/traer_movilizaciones_usuarios', 'ProductosController@TraerMovilizacionesUsuario');
 Route::post('/productos/aprobar_movilizaciones', 'ProductosController@AprobarMovilizacion');
 Route::post('/productos/cancelar_movilizaciones', 'ProductosController@CancelarMovilizacion');
+
+Route::post('/venta/almacenar_venta', 'ProductosController@AlmacenarVenta');
