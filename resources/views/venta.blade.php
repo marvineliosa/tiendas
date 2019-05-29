@@ -52,7 +52,7 @@
 	          	<td></td>
 	          	<td></td>
 	          	<td><br><br><br><button type="button" class="btn btn-danger pull-right" onclick="CancelarCompra()">Cancelar Compra</button></td>
-	          	<td><br><br><br><button type="button" class="btn btn-primary" onclick="finalizarCompra()">Filanizar Compra</button></td>
+	          	<td><br><br><br><button type="button" class="btn btn-primary" onclick="ModalTipoPago()">Filanizar Compra</button></td>
 
 	          </tbody>
 	      	</table>
@@ -60,63 +60,6 @@
 	      </div>
 	  </div>
 	</div>
-</div>
-
-
-
-<!-- Modal Descuento Vía Nómina -->
-<div class="modal fade" id="ModalDescuentoViaNomina" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-
-      	<div class="form-horizontal form-label-left">
-	        <!-- Encabezado datos venta -->
-	        <div class="form-group">
-	          	<div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
-	          		<h2>Descuento vía nómina</h2>
-	          	</div>
-	        </div>
-	      	<!-- ID del trabajador -->
-	        <div class="form-group">
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">ID del trabajador*</label>
-	          <div class="col-md-10 col-sm-10 col-xs-12">
-	            <input type="number" class="form-control" placeholder="" id="pago_nomina_id_tr">
-	          </div>
-	        </div>
-	      	<!-- nombre del producto -->
-	        <div class="form-group">
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Nombre del trabajador*</label>
-	          <div class="col-md-10 col-sm-10 col-xs-12">
-	            <input type="text" class="form-control" placeholder="" id="pago_nomina_nombre_tr">
-	          </div>
-	        </div>
-	      	<!-- nombre del producto -->
-	        <div class="form-group">
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Importe</label>
-	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <input type="number" class="form-control" placeholder="" id="pago_nomina_importe" disabled>
-	          </div>
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Quincenas*</label>
-	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <input type="number" class="form-control" placeholder="" id="pago_nomina_importe">
-	          </div>
-	        </div>
-        </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" onclick="finalizarCompra()">Finalizar Compra</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Modal Créditos a Unidades Académicas -->
@@ -161,34 +104,57 @@
 <div class="modal fade" id="ModalEleccionTipoPago" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="modal-header" align="center">
+        <h1>Formas de pago</h1>
       </div>
       <div class="modal-body">
 
       	<div class="form-horizontal form-label-left">
-	        <!-- Encabezado datos venta -->
+	      	<!-- ID del trabajador -->
 	        <div class="form-group">
-	          	<div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
-	          		<h2>Crédito a Unidad Académica</h2>
-	          	</div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoDebito()">Débito</button>
+	          </div>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoCredito()">Crédito</button>
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	        </div>
 	      	<!-- ID del trabajador -->
 	        <div class="form-group">
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Dependencia*</label>
-	          <div class="col-md-10 col-sm-10 col-xs-12">
-	            <input type="text" class="form-control" placeholder="" id="pago_nomina_id_tr">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <div class="col-md-4 col-sm-4 col-xs-12"> 
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoEfectivo()">Efectivo</button>
 	          </div>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoMixto()">Mixto</button>
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	        </div>
-	      	
+	      	<!-- ID del trabajador -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <div class="col-md-4 col-sm-4 col-xs-12"> 
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoTransferencia()">Transferencia</button>
+	          </div>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoDeposito()">Depósito</button>
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+	      	<!-- ID del trabajador -->
+	        <div class="form-group">
+	          <div class="col-md-4 col-sm-4 col-xs-12"></div>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoNomina()">Vía nómina</button>
+	          </div>
+	          <div class="col-md-4 col-sm-4 col-xs-12"></div>
+	        </div>
         </div>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" onclick="finalizarCompra()">Finalizar Compra</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -208,11 +174,247 @@
       <div class="modal-body">
 
       	<div align="center">
-	        	<h1>Producto Inexistente</h1>
-	        </div>
+        	<h1>Producto Inexistente</h1>
+        </div>
 
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ConfirmacionPago -->
+<div class="modal fade" id="ModalConfirmacionPago" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      	<div align="center">
+        	<h2 id="TextoConfirmacionPago"></h2>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ConfirmacionPago -->
+<div class="modal fade" id="ModalPagoMixto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h2 class="modal-title" id="exampleModalLabel">Pago Mixto</h2>
+      </div>
+      <div class="modal-body">
+
+      	<div class="form-horizontal form-label-left">
+	      	<!-- Pago débito -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Débito</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" id="PagoMixtoDébito" aria-describedby="emailHelp" placeholder="">
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+	      	<!-- Pago crédito -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Crédito</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" id="PagoMixtoCrédito" aria-describedby="emailHelp" placeholder="">
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+	      	<!-- Pago Efectivo -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Efectivo</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" id="PagoMixtoEfectivo" aria-describedby="emailHelp" placeholder="">
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+
+	      	<!-- Total a pagar -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Total:</label>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12 pull-left" id="PagoMixtoTotal"></label>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ConfirmacionPagoTransferencia -->
+<div class="modal fade" id="ModalPagoTransferencia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h2 class="modal-title" id="exampleModalLabel">Transferencia</h2>
+      </div>
+      <div class="modal-body">
+
+      	<div class="form-horizontal form-label-left">
+	      	<!-- Pago débito -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Número de operación</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" id="TransferenciaNumeroOperacion" aria-describedby="emailHelp" placeholder="">
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+	      	<!-- Total a pagar -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Total:</label>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12 pull-left" id="TransferenciaTotal"></label>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ConfirmacionPagoTransDepósito -->
+<div class="modal fade" id="ModalPagoDeposito" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h2 class="modal-title" id="exampleModalLabel">Depósito</h2>
+      </div>
+      <div class="modal-body">
+
+      	<div class="form-horizontal form-label-left">
+	      	<!-- Pago débito -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Ficha de depósito</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" id="DepositoFichaDeposito" aria-describedby="emailHelp" placeholder="">
+	          </div>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+
+	      	<!-- Total a pagar -->
+	        <div class="form-group">
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Total:</label>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12 pull-left" id="DepositoTotal"></label>
+	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
+	        </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Créditos a Unidades Académicas -->
+<div class="modal fade" id="ModalInventarioOtrasTiendas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      	<div align="center">
+        	<h3>No cuenta con inventario suficiente, puede encontrar el producto en los siguientes espacios.</h3>
+        </div>
+        <table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">Espacio</th>
+		      <th scope="col">Existencias</th>
+		    </tr>
+		  </thead>
+		  <tbody id="BodyInventarioOtrasTiendas">
+		    
+		  </tbody>
+		</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Descuento Vía Nómina -->
+<div class="modal fade" id="ModalDescuentoViaNomina" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h2 class="modal-title" id="exampleModalLabel">Descuento vía nómina</h2>
+      </div>
+      <div class="modal-body">
+
+      	<div class="form-horizontal form-label-left">
+	      	<!-- ID del trabajador -->
+	        <div class="form-group">
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">ID del trabajador*</label>
+	          <div class="col-md-10 col-sm-10 col-xs-12">
+	            <input type="number" class="form-control" placeholder="" id="pago_nomina_id_tr">
+	          </div>
+	        </div>
+	      	<!-- nombre del producto -->
+	        <div class="form-group">
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Nombre del trabajador*</label>
+	          <div class="col-md-10 col-sm-10 col-xs-12">
+	            <input type="text" class="form-control" placeholder="" id="pago_nomina_nombre_tr">
+	          </div>
+	        </div>
+	      	<!-- nombre del producto -->
+	        <div class="form-group">
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Importe</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" placeholder="" id="pago_nomina_importe" disabled>
+	          </div>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Quincenas*</label>
+	          <div class="col-md-4 col-sm-4 col-xs-12">
+	            <input type="number" class="form-control" placeholder="" id="pago_nomina_importe">
+	          </div>
+	        </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="finalizarCompra()">Finalizar Compra</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -224,7 +426,7 @@
 	<script type="text/javascript">
 		//$("#ModalDescuentoViaNomina").modal();
 		//$("#ModalCreditoUnidadAcademica").modal();
-		$("#ModalProductoInexistente").modal();
+		//$("#ModalPagoTransferencia").modal();
 		var i = 1;
 		var array_articulos = new Array();
 		var contador_articulos = 0;
@@ -246,52 +448,82 @@
 				//la variable success es el json que recibe del servidor el método AJAX
 				//console.log(success);
 				if(success['producto']){
-					var tmp_obj = {
-						id_producto : id_producto,
-						cantidad : 1,
-						precio_venta : success['producto']['PRECIO_VENTA']
-					}
-					pos = array_articulos.map(function(e) { return e.id_producto; }).indexOf(id_producto);
-					console.log('Posicion: '+pos);
-					if(pos>-1){
-						//console.log("-------------------------");
-						//console.log("#contador_"+id_producto);
-						var num = $("#contador_"+id_producto).val();
-						//console.log(num);
-						var tot_art = parseInt(num) + parseInt(1);
-						//console.log(tmp);
-						$("#contador_"+id_producto).val(tot_art);
-						var total = parseInt(success['producto']['PRECIO_VENTA']) * parseInt(tot_art);
-						array_articulos[pos].cantidad = tot_art;
+					if(success['producto']['INVENTARIO_SESION']>0){
+						var tmp_obj = {
+							id_producto : id_producto,
+							cantidad : 1,
+							precio_venta : success['producto']['PRECIO_VENTA']
+						}
+						//se verifica si el proucto ya está listado para posteriormente agregarlo o solo aumentar el contador
+						pos = array_articulos.map(function(e) { return e.id_producto; }).indexOf(id_producto);
+						//console.log('Posicion: '+pos);
 						
-						$("#subtotal_"+id_producto).html('$ '+total);
+						if(pos>-1){
+							//console.log("-------------------------");
+							//console.log("#contador_"+id_producto);
+							var num = $("#contador_"+id_producto).val();
+							if(parseInt(num)==success['producto']['INVENTARIO_SESION']){
+								alert('limite alcanzado');
+								//calcularTotal();
+							}else{
+								//console.log(num);
+								var tot_art = parseInt(num) + parseInt(1);
+								//console.log(tmp);
+								$("#contador_"+id_producto).val(tot_art);
+								var total = parseInt(success['producto']['PRECIO_VENTA']) * parseInt(tot_art);
+								array_articulos[pos].cantidad = tot_art;
+								
+								$("#subtotal_"+id_producto).html('$ '+total);
+
+							}
+						}else{
+							$("#cuerpoVenta").append(
+								'<tr id="tr_'+ id_producto +'">'+
+									'<td>'+ id_producto +'</td>'+
+									'<td>'+success['producto']['NOMBRE_PRODUCTO'] +'</td>'+
+									'<td>'+'<input type="number" class="form-control" id="contador_'+ id_producto +'" value="1" onchange="cambio(this,'+id_producto+','+success['producto']['PRECIO_VENTA']+','+success['producto']['INVENTARIO_SESION']+' )">'+'</td>'+
+									'<td>$ '+success['producto']['PRECIO_VENTA']+'</td>'+
+									'<td id="subtotal_'+ id_producto +'" >$ '+ success['producto']['PRECIO_VENTA']+'</td>'+
+									'<td id="btn_'+ id_producto +'" >'+
+										'<button type="button" class="btn btn-danger btn-xs" onclick="EliminarProductoLista('+id_producto+')" data-toggle="tooltip" data-placement="top" title="VER INFORMACIÓN">'+
+										    '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>'+
+						  				'</button>'+
+									'</td>'+
+								'</tr>'
+							);//
+							i++; 
+							array_articulos[contador_articulos] = tmp_obj;
+							contador_articulos++;
+						}
+						console.log(array_articulos);
+						calcularTotal();
 					}else{
-						$("#cuerpoVenta").append(
-							'<tr id="tr_'+ id_producto +'">'+
-								'<td>'+ id_producto +'</td>'+
-								'<td>'+success['producto']['NOMBRE_PRODUCTO'] +'</td>'+
-								'<td>'+'<input type="number" class="form-control" id="contador_'+ id_producto +'" value="1" onchange="cambio(this,'+id_producto+','+success['producto']['PRECIO_VENTA']+' )">'+'</td>'+
-								'<td>$ '+success['producto']['PRECIO_VENTA']+'</td>'+
-								'<td id="subtotal_'+ id_producto +'" >$ '+ success['producto']['PRECIO_VENTA']+'</td>'+
-								'<td id="btn_'+ id_producto +'" >'+
-									'<button type="button" class="btn btn-danger btn-xs" onclick="EliminarProductoLista('+id_producto+')" data-toggle="tooltip" data-placement="top" title="VER INFORMACIÓN">'+
-									    '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>'+
-					  				'</button>'+
-								'</td>'+
-							'</tr>'
-						);//
-						i++; 
-						array_articulos[contador_articulos] = tmp_obj;
-						contador_articulos++;
+						//alert('Sin existencias en la tienda');
+						MostrarInventarioOtrasTiendas(success['producto']['INVENTARIO']);
 					}
-					console.log(array_articulos);
-					calcularTotal();
 				}else{
 					$("#ModalProductoInexistente").modal();
 				}
 			});//*
 
 			//$("#nombre_producto").val("EPALE");
+		}
+
+		function MostrarInventarioOtrasTiendas(inventario){
+			console.log(inventario);
+			$("#BodyInventarioOtrasTiendas").html("");
+			for(var i = 0; i < inventario.length; i++){
+				$("#BodyInventarioOtrasTiendas").append(
+
+				    '<tr>'+
+				      '<th scope="row">'+ (parseInt(i)+parseInt(1)) +'</th>'+
+				      '<td>'+ inventario[i]['ESPACIO_EXISTENCIAS'] +'</td>'+
+				      '<td>'+ inventario[i]['CANTIDAD_EXISTENCIAS'] +'</td>'+
+				    '</tr>'
+				);
+			}
+			$("#ModalInventarioOtrasTiendas").modal();
+
 		}
 
 		function EliminarProductoLista(id_producto){
@@ -302,6 +534,20 @@
 			//console.log(removed);
 			console.log(array_articulos);
 			$("#tr_"+id_producto).remove();
+			calcularTotal();
+		}
+
+		function RegresaTotal(){
+			var total = 0;
+			for(var j = 0; j < array_articulos.length; j++){
+				if(array_articulos[j]){
+					cantidad = array_articulos[j].cantidad;
+					precio = array_articulos[j].precio_venta;
+					total = parseInt(total) + parseInt( parseInt(cantidad) * parseInt(precio));
+					//console.log(total);
+				}
+			}
+			return total;
 		}
 
 		function calcularTotal(){
@@ -323,20 +569,35 @@
 			console.log("-----------");
 		}
 
-		function cambio(elemento,id_producto,precio){
-			console.log(id_producto);
-			var num = $(elemento).val();
-			var total = parseInt(precio) * parseInt(num);
-			//console.log(id_producto.toString());
-			pos = array_articulos.map(function(e) { return e.id_producto; }).indexOf(id_producto.toString());
-			//console.log(pos);
-			array_articulos[pos].cantidad = num;
-			$("#subtotal_"+id_producto).html('$ '+total);
-			console.log(array_articulos);
-			calcularTotal();
+		//
+		function cambio(elemento,id_producto,precio,existencias_sesion){
+			//console.log(existencias_sesion);
+			var num = $(elemento).val();//conteo de numero de articulos actual
+			if(parseInt(num)<=parseInt(existencias_sesion)){
+				var total = parseInt(precio) * parseInt(num);
+				//console.log(id_producto.toString());
+				pos = array_articulos.map(function(e) { return e.id_producto; }).indexOf(id_producto.toString());
+				//console.log(pos);
+				array_articulos[pos].cantidad = num;
+				$("#subtotal_"+id_producto).html('$ '+total);
+				console.log(array_articulos);
+				calcularTotal();
+			}else{
+				alert('Líminte de artículos alcanzado');
+				pos = array_articulos.map(function(e) { return e.id_producto; }).indexOf(id_producto.toString());
+				//console.log(pos);
+				array_articulos[pos].cantidad = existencias_sesion;
+				$(elemento).val(existencias_sesion);
+				calcularTotal();
+			}
+			
 		}
 
-		function finalizarCompra(){
+		function ModalTipoPago(){
+			$("#ModalEleccionTipoPago").modal();
+		}
+
+		function AjaxFinalizarCompra(){
 	    	var id_producto = $("#nombre_producto").val();
 			console.log(id_producto);
 			var success;
@@ -348,6 +609,51 @@
 
 			});
 	    }//*/
+
+	    function PagoDebito(){
+	    	var total = RegresaTotal();
+	    	console.log(total);
+	    	$("#TextoConfirmacionPago").text('Se registrará la compra con tarjeta de débito por la cantidad de $ '+total);
+	    	$('#ModalConfirmacionPago').modal();
+	    }
+
+	    function PagoCredito(){
+	    	var total = RegresaTotal();
+	    	console.log(total);
+	    	$("#TextoConfirmacionPago").text('Se registrará la compra con tarjeta de crédito por la cantidad de $ '+total);
+	    	$('#ModalConfirmacionPago').modal();
+	    }
+
+	    function PagoEfectivo(){
+	    	var total = RegresaTotal();
+	    	console.log(total);
+	    	$("#TextoConfirmacionPago").text('Se registrará la compra con pago en efectivo por la cantidad de $ '+total);
+	    	$('#ModalConfirmacionPago').modal();
+	    }
+
+	    function PagoMixto(){
+	    	var total = RegresaTotal();
+	    	$("#PagoMixtoTotal").text('$ '+total);
+			$("#ModalPagoMixto").modal();
+	    }
+
+	    function PagoTransferencia(){
+	    	var total = RegresaTotal();
+	    	$("#TransferenciaTotal").text('$ '+total);
+	    	$("#ModalPagoTransferencia").modal();
+	    }
+
+	    function PagoDeposito(){
+	    	var total = RegresaTotal();
+	    	$("#DepositoTotal").text('$ '+total);
+	    	$("#ModalPagoDeposito").modal();
+	    }
+
+	    function PagoNomina(){
+	    	var total = RegresaTotal();
+	    	$("#pago_nomina_importe").val('$ '+total);
+	    	$("#ModalDescuentoViaNomina").modal();
+	    }
 
 		/*function tecla(){
 			alert('EL TECLADO BLOQUEADO')

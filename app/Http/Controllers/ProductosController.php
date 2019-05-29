@@ -495,7 +495,7 @@
                 }//*/
                 return $rel_inventario[0]->DATOS_VENTA_CANTIDAD;
             }else{
-                return null;
+                return 0;
             }
 
         }
