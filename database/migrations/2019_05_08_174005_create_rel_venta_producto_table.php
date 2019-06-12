@@ -24,7 +24,6 @@ class CreateRelVentaProductoTable extends Migration
             $table->foreign('REL_VENTA_FK_ESPACIO')->references('ESPACIO_ID')->on('TIENDAS_ESPACIOS')->onDelete('cascade')->onUpdate('cascade');//*/
 
             $table->integer('REL_VENTA_CANTIDAD');
-            $table->integer('REL_VENTA_CONSECUTIVO_DIARIO');
 
             $table->timestamps();
         });

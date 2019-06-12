@@ -34,7 +34,7 @@
             </div>
 @endsection
 
-@sectionr('script')
+@section('script')
   <script type="text/javascript">
     function ejemploAjax(){
       var success;

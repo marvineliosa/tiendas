@@ -17,6 +17,10 @@
          * @return Response
          */
 
+        public function VistaReporteVentas(){
+            return view('reporte_ventas');
+        }
+
         public function AlmacenarVenta(Request $request){
             //dd($request['venta']);
             $venta = json_decode($request['venta']);

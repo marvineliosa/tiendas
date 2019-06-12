@@ -43,12 +43,15 @@
                       <li><a href="/venta">Venta de artículos</a></li>
                     </ul>
                   </li>
-                  <!--<li><a><i class="fa fa-file"></i> Reportes <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
+                  <li><a><i class="fa fa-file"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+                    <!--<ul class="nav child_menu">
                       <li><a href="/reportes/inventario">Reporte de inventario</a></li>
+                    </ul>-->
+                    <ul class="nav child_menu">
+                      <li><a href="/reportes/ventas">Reporte de ventas</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
+                  <!--<li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/usuarios">Registrar usuario</a></li>
                     </ul>
@@ -74,9 +77,9 @@
               <a data-toggle="tooltip" data-placement="top" title="Lock">
                 <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
               </a> -->
-              <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" href="login.html">
+              <!--<a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" href="login.html">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
+              </a>-->
             </div>
             <!-- /menu footer buttons -->
           </div>

@@ -114,10 +114,10 @@
 	        <div class="form-group">
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoDebito()">Débito</button>
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoDebito()">Tarjeta de Débito</button>
 	          </div>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoCredito()">Crédito</button>
+	            <button type="button" class="btn btn-success btn-lg btn-block" onclick="PagoCredito()">Tarjeta de Crédito</button>
 	          </div>
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	        </div>
@@ -223,7 +223,7 @@
 	      	<!-- Pago débito -->
 	        <div class="form-group">
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Débito</label>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Tarjeta de Débito</label>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
 	            <input type="number" class="form-control" id="PagoMixtoDébito" aria-describedby="emailHelp" placeholder="">
 	          </div>
@@ -232,7 +232,7 @@
 	      	<!-- Pago crédito -->
 	        <div class="form-group">
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
-	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Crédito</label>
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Tarjeta de Crédito</label>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
 	            <input type="number" class="form-control" id="PagoMixtoCrédito" aria-describedby="emailHelp" placeholder="">
 	          </div>
@@ -583,7 +583,7 @@
 				console.log(array_articulos);
 				calcularTotal();
 			}else{
-				alert('Líminte de artículos alcanzado');
+				alert('Líminte de existencias alcanzado');
 				pos = array_articulos.map(function(e) { return e.id_producto; }).indexOf(id_producto.toString());
 				//console.log(pos);
 				array_articulos[pos].cantidad = existencias_sesion;
