@@ -4,6 +4,7 @@
       <th scope="row">#</th>
       <th>Nombre</th>
       <th>Ubicación</th>
+      <th>Nomenclatura</th>
       <th>Tipo</th>
       <th>Acciones</th>
     </tr>
@@ -14,6 +15,7 @@
   			<td> {{$espacio->ID_ESPACIO}} </td>
   			<td> <a>{{$espacio->NOMBRE_ESPACIO}}</a> </td>
   			<td> {{$espacio->UBICACION_ESPACIO}} </td>
+        <td> {{$espacio->NOMENCLATURA_ESPACIO}} </td>
   			<td> {{$espacio->TIPO_ESPACIO}} </td>
   			<td>
           <button type="button" class="btn btn-default btn-xs" onclick="abrirEspacio({!!$espacio->ID_ESPACIO!!})" data-toggle="tooltip" data-placement="top" title="VER INVENTARIO">

@@ -28,6 +28,7 @@
                 ->select(
                             'ESPACIO_NOMBRE as NOMBRE_ESPACIO',
                             'ESPACIO_UBICACION as UBICACION_ESPACIO',
+                            'ESPACIO_SIGLAS as NOMENCLATURA_ESPACIO',
                             'ESPACIO_TIPO as TIPO_ESPACIO'
                         )
                 ->orderBy('ESPACIO_TIPO', 'desc')
@@ -55,15 +56,30 @@
             }
         }
 
-        public function VistaListadoEspacios(){
+        public function ObtenerListadoEspacios(){
             $espacios = DB::table('TIENDAS_ESPACIOS')
             ->select(
                         'ESPACIO_ID as ID_ESPACIO',
                         'ESPACIO_NOMBRE as NOMBRE_ESPACIO',
                         'ESPACIO_UBICACION as UBICACION_ESPACIO',
+                        'ESPACIO_SIGLAS as NOMENCLATURA_ESPACIO',
                         'ESPACIO_TIPO as TIPO_ESPACIO'
                     )
             ->get();
+            return $espacios;
+        }
+
+        public function VistaListadoEspacios(){
+            /*$espacios = DB::table('TIENDAS_ESPACIOS')
+            ->select(
+                        'ESPACIO_ID as ID_ESPACIO',
+                        'ESPACIO_NOMBRE as NOMBRE_ESPACIO',
+                        'ESPACIO_UBICACION as UBICACION_ESPACIO',
+                        'ESPACIO_SIGLAS as NOMENCLATURA_ESPACIO',
+                        'ESPACIO_TIPO as TIPO_ESPACIO'
+                    )
+            ->get();//*/
+            $espacios = EspaciosController::ObtenerListadoEspacios();
             return view('listado_espacios') ->with ("espacios",$espacios);
         }
 
@@ -71,11 +87,13 @@
             $nombre = $request['nombre'];
             $ubicacion = $request['ubicacion'];
             $tipo = $request['tipo'];
+            $nomenclatura = $request['nomenclatura'];
 
             $id_espacio = DB::table('TIENDAS_ESPACIOS')->insertGetId(
                 [
                     'ESPACIO_NOMBRE' => $nombre, 
                     'ESPACIO_UBICACION' => $ubicacion,
+                    'ESPACIO_SIGLAS' => $nomenclatura,
                     'ESPACIO_TIPO' => $tipo,
                     'created_at' => ProductosController::ObtenerFechaHora()
                 ]

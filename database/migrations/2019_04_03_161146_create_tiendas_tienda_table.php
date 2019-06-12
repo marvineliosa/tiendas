@@ -17,6 +17,7 @@ class CreateTiendasTiendaTable extends Migration
             $table->increments('ESPACIO_ID');
             $table->string('ESPACIO_NOMBRE');
             $table->string('ESPACIO_UBICACION');
+            $table->string('ESPACIO_SIGLAS');
             $table->enum('ESPACIO_TIPO',['BODEGA','TIENDA']);
             $table->timestamps();
         });

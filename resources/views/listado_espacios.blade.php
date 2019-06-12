@@ -47,6 +47,14 @@
 	              </div>
 	            </div>
 
+	          	<!-- nomenclatura del espacio -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Nomenclatura*</label>
+	              <div class="col-md-10 col-sm-10 col-xs-12">
+	                <input type="text" class="form-control" placeholder="" id="nuevo-nomenclatura">
+	              </div>
+	            </div>
+
 	            <!-- Género -->
 	            <div class="form-group">
 	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Tipo*</label>
@@ -84,12 +92,15 @@
 	function RegistrarEspacio(){
 		var nombre = $("#nuevo-nombre_espacio").val();
 		var ubicacion = $("#nuevo-ubicacion_espacio").val();
+		var nomenclatura = $("#nuevo-nomenclatura").val();
 		var tipo = $("#nuevo-select_tipo_espacio").val();
 		var success;
 		var url = "/espacios/registrar";
 		var dataForm = new FormData();
+		
 		dataForm.append('nombre',nombre);
 		dataForm.append('ubicacion',ubicacion);
+		dataForm.append('nomenclatura',nomenclatura);
 		dataForm.append('tipo',tipo);
 		//lamando al metodo ajax
 		metodoAjax(url,dataForm,function(success){
