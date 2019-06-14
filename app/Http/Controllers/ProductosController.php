@@ -35,6 +35,82 @@
             dd($venta);
         }
 
+        public function AlmacenarVentaDebito(Request $request){
+            //dd($request['venta']);
+            //dd('DEBITO');
+            $venta = json_decode($request['venta']);
+            //dd($venta->venta);
+            $venta = $venta->venta;
+            //dd($venta[1]->id_producto);
+
+            //dd($venta);
+            //$tipo_pago = 'DEBITO';
+            $id_venta = ProductosController::InsertarVenta('TARJETA DÉBITO',$venta);
+            foreach ($venta as $obj){
+                dd($obj);
+            }
+            //print_r($venta);
+            dd($venta);
+        }
+
+        public function InsertarVenta($tipo_pago,$listado_venta){
+            $espacio = \Session::get('id_tienda')[0];
+            DB::raw('lock tables SOLICITUDES_SOLICITUD write');
+            $consecutivo_anual = ProductosController::ObtenerConsecutivoAnual();
+            //dd('Consecutivo anual: '.$consecutivo_anual);
+            $id_venta = DB::table('TIENDAS_VENTAS')->insertGetId(
+                [
+                    'VENTAS_TIPO_PAGO' => $tipo_pago,
+                    'VENTAS_CONSECUTIVO_ANUAL' => $consecutivo_anual,
+                    'created_at' => ProductosController::ObtenerFechaHora()
+                ]
+            );//*/
+
+            foreach ($listado_venta as $listado) {
+                DB::table('REL_VENTA_PRODUCTO')->insert(
+                    [
+                        'REL_VENTA_FK_VENTA' => $id_venta,
+                        'REL_VENTA_FK_PROCUTO' => $listado->id_producto,
+                        'REL_VENTA_FK_ESPACIO' => $espacio,
+                        'REL_VENTA_PRECIO' => $listado->precio_venta,
+                        'REL_VENTA_CANTIDAD' => $listado->cantidad,
+                        'created_at' => ProductosController::ObtenerFechaHora()
+                    ]
+                );
+            }
+            
+            DB::raw('unlock tables');
+            //dd($id_venta);
+
+        }
+
+        public function ObtenerConsecutivoAnual(){
+            $id_espacio = \Session::get('id_tienda')[0];
+            /*$rel_ventas = DB::table('REL_VENTA_PRODUCTO')
+                ->select('name', 'email as user_email')
+                ->get();//*/
+
+            $rel_ventas = DB::table('REL_VENTA_PRODUCTO')
+                ->join('TIENDAS_VENTAS', function ($join) use($id_espacio) {
+                    //dd($id_espacio);
+                    //$dia_uno = date(date('Y').'-01-01');
+                    //dd($dia_uno);
+                    $join->on('REL_VENTA_PRODUCTO.REL_VENTA_FK_VENTA', '=', 'TIENDAS_VENTAS.VENTAS_ID')
+                        ->where(['REL_VENTA_PRODUCTO.REL_VENTA_FK_ESPACIO'=>$id_espacio])
+                        ->whereYear('TIENDAS_VENTAS.created_at',date('Y'));
+                })
+                ->orderBy('TIENDAS_VENTAS.created_at', 'desc')
+                ->get();//*/
+            //dd($rel_ventas);
+            if(count($rel_ventas)==0){
+                $consecutivo_anual = 1;
+            }else{
+                $consecutivo_actual = $rel_ventas[0]->VENTAS_CONSECUTIVO_ANUAL;
+                $consecutivo_anual = $consecutivo_actual + 1;
+            }
+            return $consecutivo_anual;
+        }
+
         public function CancelarMovilizacion(Request $request){
             $id_movilizacion = $request['id_movilizacion'];
 

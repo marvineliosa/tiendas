@@ -419,7 +419,7 @@
 	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Cantidad*</label>
 
 	              <div class="col-md-2 col-sm-2 col-xs-12">
-	                	<input type="number" class="form-control" placeholder="Especifique" id="cantidad_traspaso" min="0" value='0'>
+	                	<input type="number" class="form-control" placeholder="Especifique" id="cantidad_traspaso" min="0" value='0' onchange="AumentarCantidad()">
 	              </div>
 
 	              <div class="col-md-2 col-sm-2 col-xs-12">
@@ -435,7 +435,7 @@
         	</div><!-- fin div form -->
           </div>
           <div class="modal-footer">
-        	<button type="button" class="btn btn-primary" onclick="RegistrarMovilizacionInventario()">Guardar</button>
+        	<button type="button" class="btn btn-primary" id="btn_MovilizacionInventario" onclick="RegistrarMovilizacionInventario()">Guardar</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
@@ -499,8 +499,14 @@
 			}else if(cantidad_traspaso <= 0){
 				MensajeModal('¡ATENCIÓN!','La cantidad de artículos debe ser mayor a 0.');
 			}else if(cantidad_traspaso == ''){
-				MensajeModal('¡ATENCIÓN!','La campo de cantidad de artículos no dene estar vacío.');
+				MensajeModal('¡ATENCIÓN!','La campo de cantidad de artículos no debe estar vacío.');
 			}else{
+				//document.getElementById("btn_MovilizacionInventario").value = "Enviando...";
+			    //document.getElementById("btn_MovilizacionInventario").disabled = true;
+			    $("#btn_MovilizacionInventario").attr("disabled", true);
+			    $("#btn_MovilizacionInventario").text('Enviando...');
+
+			    //*/
 				var success;
 				var url = "/productos/registrar_movilizacion_inventario";
 				var dataForm = new FormData();
@@ -608,6 +614,12 @@
 				var tmp = parseInt(existencias_destino) + parseInt(cantidad);
 				//console.log(tmp);
 				$("#h_cantidad_traspaso").text(tmp);
+			}else if(cantidad==0 || cantidad == '' || cantidad<0){
+				MensajeModal('¡ATENCIÓN!','Favor de asignar una cantidad mayor a 0');
+				$("#cantidad_traspaso").val(1);
+			}else{
+				MensajeModal('¡ATENCIÓN!','Se ha excedido el máximo de inventario de la tienda origen.');
+				$("#cantidad_traspaso").val(existencias_origen);
 			}
 		}
 
@@ -687,6 +699,8 @@
 		}
 
 		function ModalTraspaso(){
+			$("#btn_MovilizacionInventario").attr("disabled", false);
+			$("#btn_MovilizacionInventario").text('Guardar');
 			var id_producto = $("#id_producto").val();
 			$("#div_destino").css('display','none');
 			$("#div_cantidad").css('display','none');

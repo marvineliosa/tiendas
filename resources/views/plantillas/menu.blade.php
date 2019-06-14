@@ -182,7 +182,7 @@
     </div>
 
     <!-- Modales -->
-    <div class="modal fade" id="ModalDetalleProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ModalDetalleProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll; max-height:100%;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -318,6 +318,7 @@
       },
       complete : function(xhr, status){
          $("#modalCarga").modal('hide');
+         $("#nombre_producto").focus();
       }
     });//*/
   }

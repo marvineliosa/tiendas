@@ -21,7 +21,7 @@
 	  			<button type="button" class="btn btn-default btn-xs" onclick="VerDatosProducto({!! $producto->PRODUCTOS_ID !!})" data-toggle="tooltip" data-placement="top" title="VER INFORMACIÓN">
 				    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
   				</button>
-	  			<button type="button" class="btn btn-default btn-xs" onclick="ModalAgregarNotaVenta({!! $producto->PRODUCTOS_ID !!})" data-toggle="tooltip" data-placement="top" title="NOTAS DE VENTA">
+	  			<button type="button" class="btn btn-default btn-xs" onclick="ModalAgregarNotaVenta({!! $producto->PRODUCTOS_ID !!})" data-toggle="tooltip" data-placement="top" title="NOTAS DE ENTRADA">
   				  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
   				</button>
           <button type="button" class="btn btn-default btn-xs" onclick="verCodigoBarras({!! $producto->PRODUCTOS_ID !!})" data-toggle="tooltip" data-placement="top" title="CÓDIGO DE BARRAS">

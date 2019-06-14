@@ -11,7 +11,7 @@
 	          	<!-- nombre del producto -->
 	            <form class="form-group" onsubmit="return CancelarSubmit();">
 	              	<div class="col-md-3 col-sm-3 col-xs-12">
-	                	<input type="number" class="form-control" placeholder="" id="nombre_producto">
+	                	<input type="number" class="form-control" placeholder="Ingrese el código" id="nombre_producto">
 	              	</div>
 	              	<div class="col-md-2 col-sm-2 col-xs-12">
 	        			<button type="submit" class="btn btn-primary" onclick="agregarArticulo()">Agregar Producto</button> 
@@ -179,6 +179,31 @@
 
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ConfirmacionPago -->
+<div class="modal fade" id="ModalPagoDebito" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      	<div align="center">
+        	<h2 id="TextoPagoDebito"></h2>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="BtnPagoDebito" onclick="AjaxPagoDebito(this)">Confirmar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -497,6 +522,7 @@
 						}
 						console.log(array_articulos);
 						calcularTotal();
+						//$("#nombre_producto").focus();
 					}else{
 						//alert('Sin existencias en la tienda');
 						MostrarInventarioOtrasTiendas(success['producto']['INVENTARIO']);
@@ -506,7 +532,11 @@
 				}
 			});//*
 
-			//$("#nombre_producto").val("EPALE");
+			//$("#nombre_producto").focus();
+
+			$("#nombre_producto").val("");
+			//$("#nombre_producto").focus();
+			//$("#nombre_producto").focus();
 		}
 
 		function MostrarInventarioOtrasTiendas(inventario){
@@ -613,8 +643,25 @@
 	    function PagoDebito(){
 	    	var total = RegresaTotal();
 	    	console.log(total);
-	    	$("#TextoConfirmacionPago").text('Se registrará la compra con tarjeta de débito por la cantidad de $ '+total);
-	    	$('#ModalConfirmacionPago').modal();
+	    	$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $'+total);
+	    	//$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $158.60');
+	    	$("#BtnPagoDebito").attr('disabled',false);
+	    	$('#ModalPagoDebito').modal();
+	    }
+
+	    function AjaxPagoDebito(boton){
+	    	$("#BtnPagoDebito").attr('disabled',true);
+	    	console.log('DEBITO');
+	    	var id_producto = $("#nombre_producto").val();
+			console.log(id_producto);
+			var success;
+			var url = "/venta/almacenar_venta/debito";
+			var dataForm = new FormData();
+			dataForm.append('venta',JSON.stringify({venta:array_articulos}));
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+
+			});
 	    }
 
 	    function PagoCredito(){

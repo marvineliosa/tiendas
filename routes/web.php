@@ -57,5 +57,6 @@ Route::post('/productos/aprobar_movilizaciones', 'ProductosController@AprobarMov
 Route::post('/productos/cancelar_movilizaciones', 'ProductosController@CancelarMovilizacion');
 
 Route::post('/venta/almacenar_venta', 'ProductosController@AlmacenarVenta');
+Route::post('/venta/almacenar_venta/debito', 'ProductosController@AlmacenarVentaDebito');
 
 Route::get('/reportes/ventas', 'ProductosController@VistaReporteVentas');
