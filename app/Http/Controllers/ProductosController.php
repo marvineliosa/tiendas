@@ -944,7 +944,7 @@
                     'PRODUCTOS_COLOR' => $request['color'],
                     'PRODUCTOS_GENERO' => $request['genero'],
                     'PRODUCTOS_TALLA' => $request['talla'],
-                    'PRODUCTOS_CONSECUTIVO' => $request['consecutivo'],
+                    //'PRODUCTOS_CONSECUTIVO' => $request['consecutivo'],
                     'PRODUCTOS_OBSERVACIONES' => $request['observaciones'],
                     'created_at' => ProductosController::ObtenerFechaHora()
 

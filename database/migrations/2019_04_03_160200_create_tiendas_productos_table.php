@@ -19,7 +19,7 @@ class CreateTiendasProductosTable extends Migration
             $table->string('PRODUCTOS_COLOR',100)->nullable();
             $table->enum('PRODUCTOS_GENERO',['DAMA','CABALLERO','UNISEX']);
             $table->char('PRODUCTOS_TALLA',10)->nullable();
-            $table->char('PRODUCTOS_CONSECUTIVO',10);
+            //$table->char('PRODUCTOS_CONSECUTIVO',10);
             $table->text('PRODUCTOS_OBSERVACIONES')->nullable();
             $table->timestamps();
         });

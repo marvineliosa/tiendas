@@ -92,7 +92,7 @@
 	                	<input type="number" class="form-control" placeholder="Precio" id="precio_inicial" min="0"  max='' value='' step=".01">
 	                </div>
 	              </div>
-	              <div id="div_input_talla">
+	              <!--<div id="div_input_talla">
 	              	<label class="control-label col-md-2 col-sm-2 col-xs-12">Etiquetas Consecutivas</label>
 	              	<div class="col-md-4 col-sm-4 col-xs-12">
 	                <select class="form-control" id="select_consecutivo">
@@ -100,7 +100,7 @@
 	                  <option value="NO">NO</option>
 	                </select>
 	                </div>
-	              </div>
+	              </div>-->
 	            </div>
 	            <!-- Observaciones -->
 	            <div class="form-group">
@@ -161,7 +161,7 @@
 	              </div>
 	            </div>
 	            <!-- Consecutivos -->
-	            <div class="form-group">
+	            <!--<div class="form-group">
 	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Consecutivo inicial*</label>
 	              <div class="col-md-4 col-sm-4 col-xs-12">
 	                <input type="number" class="form-control" placeholder="" id="nota_venta_consecutivo_inicial" min="0" value='' step="1">
@@ -171,7 +171,7 @@
 	              <div class="col-md-4 col-sm-4 col-xs-12">
 	                <input type="number" class="form-control" placeholder="" id="nota_venta_consecutivo_final" min="0" value='' onchange="calcularConsecutivo(this)" step="1" disabled="true">
 	              </div>
-	            </div>
+	            </div>-->
 
 	            <!-- Observaciones -->
 	            <div class="form-group">
@@ -861,7 +861,7 @@
 			var genero = $("#select_genero").val();
 			var talla = $("#select_talla").val();
 			var talla2 = $("#otra_talla").val();
-			var consecutivo = $("#select_consecutivo").val();
+			//var consecutivo = $("#select_consecutivo").val();
 			var observaciones = $("#observaciones_nuevo_producto").val();
 			//var inventario_minimo = $("#inventario_minimo").val();
 
@@ -883,7 +883,7 @@
 				dataForm.append('producto',producto);
 				dataForm.append('color',color);
 				dataForm.append('genero',genero);
-				dataForm.append('consecutivo',consecutivo);
+				//dataForm.append('consecutivo',consecutivo);
 				dataForm.append('talla',(talla=='OTRA')?talla2:talla);
 				dataForm.append('observaciones',observaciones);
 				//dataForm.append('existencias',existencias);
@@ -955,8 +955,8 @@
 	    	var cantidad = $("#nota_venta_cantidad").val();
 	    	var precio_compra = $("#nota_venta_precio_compra").val();
 	    	var select_bodega = $("#nota_venta_select_bodega").val();
-	    	var consecutivo_inicial = $("#nota_venta_consecutivo_inicial").val();
-	    	var consecutivo_final = $("#nota_venta_consecutivo_final").val();
+	    	//var consecutivo_inicial = $("#nota_venta_consecutivo_inicial").val();
+	    	//var consecutivo_final = $("#nota_venta_consecutivo_final").val();
 	    	var observaciones = $("#nota_venta_observaciones").val();
 
 	    	if(cantidad==""){
@@ -972,8 +972,8 @@
 				dataForm.append('id_producto',id_producto);
 				dataForm.append('cantidad',cantidad);
 				dataForm.append('precio_compra',precio_compra);
-				dataForm.append('consecutivo_inicial',consecutivo_inicial);
-				dataForm.append('consecutivo_final',consecutivo_final);
+				//dataForm.append('consecutivo_inicial',consecutivo_inicial);
+				//dataForm.append('consecutivo_final',consecutivo_final);
 				dataForm.append('select_bodega',select_bodega);
 				dataForm.append('observaciones',observaciones);
 				//lamando al metodo ajax
