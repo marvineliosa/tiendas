@@ -51,8 +51,8 @@
 	          	<td></td>
 	          	<td></td>
 	          	<td></td>
-	          	<td><br><br><br><button type="button" class="btn btn-danger pull-right" onclick="CancelarCompra()">Cancelar Compra</button></td>
-	          	<td><br><br><br><button type="button" class="btn btn-primary" onclick="ModalTipoPago()">Filanizar Compra</button></td>
+	          	<td><br><br><br><button id="GlCancelarCompra" type="button" class="btn btn-danger pull-right" onclick="CancelarCompra()">Cancelar Compra</button></td>
+	          	<td><br><br><br><button id="GlFinalizarCompra" type="button" class="btn btn-primary" onclick="ModalTipoPago()">Filanizar Compra</button></td>
 
 	          </tbody>
 	      	</table>
@@ -445,6 +445,38 @@
     </div>
   </div>
 </div>
+
+<!-- Modal CompraFinalizada -->
+<div class="modal fade" id="ModalCompraFinalizada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h2 class="modal-title" id="exampleModalLabel">¡Éxito!</h2>
+      </div>
+      <div class="modal-body">
+
+      	<h2 class="modal-title" id="TxtFinalizacionCompra" align="center">La compra ha sido almacenada satisfactoriamente, por favor ingrese el correo electrónico al que se enviará la remisión.</h2>
+      	<h2 class="modal-title" align="center"><strong  id="TxtNumeroNota"></strong></h2>
+      	<div class="form-horizontal form-label-left">
+	      	<!-- correo electronico -->
+	        <div class="form-group">
+	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Correo Electrónico</label>
+	          <div class="col-md-10 col-sm-10 col-xs-12">
+	            <input type="email" class="form-control" placeholder="" id="email_remision">
+	          </div>
+	        </div>
+	      	
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="finalizarCompra()">Enviar remisión</button>
+        <button type="button" class="btn btn-primary" onclick="finalizarCompra()">Imprimir remisión</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('script')
@@ -459,6 +491,8 @@
 	      console.log("Epale");
 	      return false;
 	    }
+
+	    $("#ModalCompraFinalizada").modal();
 
 		function agregarArticulo(){
 			var id_producto = $("#nombre_producto").val();
@@ -637,6 +671,8 @@
 			//lamando al metodo ajax
 			metodoAjax(url,dataForm,function(success){
 
+				//$('#ModalPagoDebito').modal('hide');
+
 			});
 	    }//*/
 
@@ -660,6 +696,13 @@
 			dataForm.append('venta',JSON.stringify({venta:array_articulos}));
 			//lamando al metodo ajax
 			metodoAjax(url,dataForm,function(success){
+				$('#ModalPagoDebito').modal('hide');
+				$("#ModalEleccionTipoPago").modal('hide');
+				//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+				$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+				$("#ModalCompraFinalizada").modal();
+				$("#GlCancelarCompra").attr('disabled',true);
+				$("#GlFinalizarCompra").attr('disabled',true);
 
 			});
 	    }

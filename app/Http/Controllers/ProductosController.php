@@ -17,7 +17,50 @@
          * @return Response
          */
 
+        public function CrearReporteIntervalo(Request $request){
+            //dd($request['fecha_fin']);
+            $fecha_inicio = str_replace('/', '-', $request['fecha_inicio']);
+            //echo date('Y-m-d', strtotime($date));
+            $fecha_inicio = date("Y-m-d", strtotime($fecha_inicio));
+
+            $fecha_fin = str_replace('/', '-', $request['fecha_fin']);
+            $fecha_fin = date("Y-m-d", strtotime($fecha_fin));
+            //$fecha_fin = $request['fecha_fin'];
+            //dd($fecha_inicio.'/'.$fecha_fin);
+            //date("Y-m-d", strtotime($var) )
+            $ventas = DB::table('TIENDAS_VENTAS')
+                     //->select('VENTAS_ID')
+                     //->whereIn('DATOS_CGA_ESTATUS',$array_estatus)
+                     ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
+                     ->orderBy('created_at','desc')
+                     ->get();
+
+            $data = array(
+                "ventas"=>$ventas
+            );
+
+            echo json_encode($data);//*/
+
+        }
+
+        public function ObtenerDatosVenta($id_venta){
+            /*$tmp_movilizaciones = DB::table('REL_MOVILIZACION_PRODUCTO')
+                ->join('TIENDAS_MOVILIZACION_INVENTARIO', function ($join) use($id_producto,$id_espacio) {
+                    //dd($id_producto);
+                    $join->on('REL_MOVILIZACION_PRODUCTO.REL_MOV_FK_MOVILIZACION', '=', 'TIENDAS_MOVILIZACION_INVENTARIO.MOVILIZACION_ID')
+                        ->where(['REL_MOVILIZACION_PRODUCTO.REL_MOV_FK_PROCUTO'=>$id_producto,'TIENDAS_MOVILIZACION_INVENTARIO.MOVILIZACION_DESTINO'=>$id_espacio]);
+                })
+                ->get();//*/
+            $ventas = DB::table('REL_VENTA_PRODUCTO')
+                ->select('REL_VENTA_FK_VENTA')
+                ->distinct()
+                ->get();
+
+            dd($ventas);
+        }
+
         public function VistaReporteVentas(){
+
             return view('reporte_ventas');
         }
 
@@ -37,27 +80,31 @@
 
         public function AlmacenarVentaDebito(Request $request){
             //dd($request['venta']);
-            //dd('DEBITO');
             $venta = json_decode($request['venta']);
             //dd($venta->venta);
             $venta = $venta->venta;
             //dd($venta[1]->id_producto);
-
             //dd($venta);
-            //$tipo_pago = 'DEBITO';
             $id_venta = ProductosController::InsertarVenta('TARJETA DÉBITO',$venta);
-            foreach ($venta as $obj){
-                dd($obj);
-            }
-            //print_r($venta);
-            dd($venta);
+
+
+            $data = array(
+                "id_nota"=>$id_venta
+            );
+
+            echo json_encode($data);//*/
         }
 
         public function InsertarVenta($tipo_pago,$listado_venta){
             $espacio = \Session::get('id_tienda')[0];
+
+            //bloqueamos las tablas para que no haya un conflicto al crear alguno de los datos únicos
             DB::raw('lock tables SOLICITUDES_SOLICITUD write');
+
+            //obtenemos el consecutivo anual
             $consecutivo_anual = ProductosController::ObtenerConsecutivoAnual();
             //dd('Consecutivo anual: '.$consecutivo_anual);
+            //insertamos la venta en la tabla de ventas
             $id_venta = DB::table('TIENDAS_VENTAS')->insertGetId(
                 [
                     'VENTAS_TIPO_PAGO' => $tipo_pago,
@@ -66,6 +113,7 @@
                 ]
             );//*/
 
+            //insertamos cada producto vendido en la tabla de relaciones
             foreach ($listado_venta as $listado) {
                 DB::table('REL_VENTA_PRODUCTO')->insert(
                     [
@@ -77,11 +125,57 @@
                         'created_at' => ProductosController::ObtenerFechaHora()
                     ]
                 );
+                //aqui disminuimos el inventario de los productos que se vendieron en su respectivo espacio
+                ProductosController::DisminuirInventario($listado->id_producto,$espacio,$listado->cantidad);
             }
             
+            //finalizada la operaición, se desbloquea la tabla
             DB::raw('unlock tables');
             //dd($id_venta);
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($consecutivo_anual);
+            return $consecutivo_formato;
 
+        }
+
+        public function DisminuirInventario($id_producto, $id_espacio, $cantidad_venta){
+            //DB::raw('lock tables SOLICITUDES_SOLICITUD write');
+
+            //obtenemos el inventario actual
+            $inventario_anterior = DB::table('REL_INVENTARIO')
+                ->where([
+                    'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                    'DATOS_VENTA_FK_ESPACIO' => $id_espacio
+                ])
+                ->get();
+
+            //dd($inventario_anterior);
+
+            //Solo por seguridad, si existe un inventario actual, entonces se reduce las unidades vendidas
+            if(count($inventario_anterior)>0){
+                //dd("ACTUALIZANDO");
+                $cantidad = $inventario_anterior[0]->DATOS_VENTA_CANTIDAD - $cantidad_venta;
+                //dd($cantidad);
+                $update = DB::table('REL_INVENTARIO')
+                    ->where([
+                        'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                        'DATOS_VENTA_FK_ESPACIO' => $id_espacio
+                    ])
+                    ->update([
+                        'DATOS_VENTA_CANTIDAD' => $cantidad
+                    ]);//*/   
+                //dd($update);
+            }
+            //DB::raw('unlock tables');
+            return $cantidad;
+        }
+
+        public function DarFormatoConsecutivo($consecutivo){
+            $id_espacio = \Session::get('id_tienda')[0];
+            $anio = date('Y');
+            $datos_espacio = EspaciosController::ObtenerDatosEspacioId($id_espacio);
+            //dd($datos_espacio);
+            $consecutivo = $datos_espacio->NOMENCLATURA_ESPACIO.'/'.$consecutivo.'/'.$anio;
+            return $consecutivo;
         }
 
         public function ObtenerConsecutivoAnual(){
@@ -527,12 +621,16 @@
             $precio_compra = $request['precio_compra'];
             $select_bodega = $request['select_bodega'];
             $observaciones = $request['observaciones'];
+            //$consecutivo_inicial = $request['consecutivo_inicial'];
+            //$consecutivo_final = $request['consecutivo_final'];
 
             //insertamos la nota de entrada
             $id_nota = DB::table('TIENDAS_NOTA_ENTRADA')->insertGetId(
                 [
                     'NOTA_ENTRADA_PRECIO_COMPRA' => $precio_compra,
                     'NOTA_ENTRADA_CANTIDAD' => $cantidad,
+                    //'NOTA_ENTRADA_INICIO' => $consecutivo_inicial,
+                    //'NOTA_ENTRADA_FIN' => $consecutivo_final,
                     'NOTA_ENTRADA_OBSERVACIONES' => $observaciones,
                     'created_at' => ProductosController::ObtenerFechaHora(),
                     
@@ -823,6 +921,7 @@
                     'PRODUCTOS_COLOR' => $request['color'],
                     'PRODUCTOS_GENERO' => $request['genero'],
                     'PRODUCTOS_TALLA' => $request['talla'],
+                    //'PRODUCTOS_CONSECUTIVO' => $request['consecutivo'],
                     'PRODUCTOS_OBSERVACIONES' => $request['observaciones'],
                     'updated_at' => ProductosController::ObtenerFechaHora()
                 ]);
@@ -845,6 +944,7 @@
                     'PRODUCTOS_COLOR' => $request['color'],
                     'PRODUCTOS_GENERO' => $request['genero'],
                     'PRODUCTOS_TALLA' => $request['talla'],
+                    'PRODUCTOS_CONSECUTIVO' => $request['consecutivo'],
                     'PRODUCTOS_OBSERVACIONES' => $request['observaciones'],
                     'created_at' => ProductosController::ObtenerFechaHora()
 

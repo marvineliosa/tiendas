@@ -14,13 +14,25 @@
         </div>
         <div class="x_content">
             <div class="well" style="overflow: auto">
-              <div class="col-md-3 col-sm-3 col-xs-12"></div>
               <div class="col-md-3 col-sm-3 col-xs-12">
                 <fieldset>
                   <div class="control-group">
                     <div class="controls">
                       <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                        <input type="text" class="form-control has-feedback-left" id="FechaCalendario" placeholder="First Name" aria-describedby="inputSuccess2Status4">
+                        <input type="text" class="form-control has-feedback-left" id="FechaInicioCalendario" placeholder="Fecha inicio" aria-describedby="inputSuccess2Status4">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        <span id="inputSuccess2Status4" class="sr-only">(success)</span>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <fieldset>
+                  <div class="control-group">
+                    <div class="controls">
+                      <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                        <input type="text" class="form-control has-feedback-left" id="FechaFinCalendario" placeholder="Fecha fin" aria-describedby="inputSuccess2Status4">
                         <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                         <span id="inputSuccess2Status4" class="sr-only">(success)</span>
                       </div>
@@ -69,26 +81,48 @@
     function GenerarReporte(){
       var min = 70;
       var max = 2000;
-      var fecha = $("#FechaCalendario").val();
-      console.log(fecha);
-      $("#fecha_tabla").text("Ventas del día "+fecha);
-      $("#body-reportes").html('');
-      for (var i = 0; i < 10; i++) {
-        $("#body-reportes").append(
+      var fecha_inicio = $("#FechaInicioCalendario").val();
+      var fecha_fin = $("#FechaFinCalendario").val();
+      //console.log(fecha_inicio);
+      var success;
+      var url = "/reportes/reporte_intervalo";
+      var dataForm = new FormData();
+      dataForm.append('fecha_inicio',fecha_inicio);
+      dataForm.append('fecha_fin',fecha_fin);
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        //aquí se escribe todas las operaciones que se harían en el succes
+        //la variable success es el json que recibe del servidor el método AJAX
+        //MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
+        $("#fecha_tabla").text("Ventas del día "+fecha_inicio + ' al día '+fecha_fin);
+        $("#body-reportes").html('');
+        for (var i = 0; i < success['ventas'].length; i++) {
+          var botones = '<button type="button" class="btn btn-default btn-xs" onclick="Devolucion()" data-toggle="tooltip" data-placement="top" title="VER INFORMACIÓN">'+
+            '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'+
+          '</button>';
+          $("#body-reportes").append(
 
-          '<tr>'+
-            '<td>'+ "Remisión "+ parseInt(i+1) +'</td>'+
-            '<td>$ '+ (Math.floor(Math.random() * (max - min)) + min) +'</td>'+
-            '<td>'+ 'Efectivo' +'</td>'+
-            '<td>'+ parseInt(i+1) +'</td>'+
-            '<td>'+ ""  +'</td>'+
-          '</tr>'
+            '<tr>'+
+              '<td>'+ "Remisión "+ success['ventas'][i]['VENTAS_CONSECUTIVO_ANUAL'] +'</td>'+
+              '<td>$ '+ (Math.floor(Math.random() * (max - min)) + min) +'</td>'+
+              '<td>'+ success['ventas'][i]['VENTAS_TIPO_PAGO'] +'</td>'+
+              '<td>'+ '' +'</td>'+
+              '<td>'+ botones  +'</td>'+
+            '</tr>'
 
-        );
-      }
+          );
+        }
+      });
     }
 
-    $('#FechaCalendario').daterangepicker({
+    $('#FechaInicioCalendario').daterangepicker({
+        singleDatePicker: true,
+        singleClasses: "picker_4"
+      }, function(start, end, label) {
+        console.log(start.toISOString(), end.toISOString(), label);
+      });
+
+    $('#FechaFinCalendario').daterangepicker({
         singleDatePicker: true,
         singleClasses: "picker_4"
       }, function(start, end, label) {

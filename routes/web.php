@@ -60,3 +60,4 @@ Route::post('/venta/almacenar_venta', 'ProductosController@AlmacenarVenta');
 Route::post('/venta/almacenar_venta/debito', 'ProductosController@AlmacenarVentaDebito');
 
 Route::get('/reportes/ventas', 'ProductosController@VistaReporteVentas');
+Route::post('/reportes/reporte_intervalo', 'ProductosController@CrearReporteIntervalo');

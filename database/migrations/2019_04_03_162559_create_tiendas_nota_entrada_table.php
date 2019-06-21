@@ -17,6 +17,8 @@ class CreateTiendasNotaEntradaTable extends Migration
             $table->increments('NOTA_ENTRADA_ID');
             $table->integer('NOTA_ENTRADA_PRECIO_COMPRA');
             $table->integer('NOTA_ENTRADA_CANTIDAD');
+            $table->integer('NOTA_ENTRADA_INICIO')->nullable();
+            $table->integer('NOTA_ENTRADA_FIN')->nullable();
             $table->text('NOTA_ENTRADA_OBSERVACIONES')->nullable();
             $table->timestamps();
         });

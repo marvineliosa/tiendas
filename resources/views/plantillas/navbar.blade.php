@@ -51,11 +51,11 @@
                       <li><a href="/reportes/ventas">Reporte de ventas</a></li>
                     </ul>
                   </li>
-                  <!--<li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/usuarios">Registrar usuario</a></li>
                     </ul>
-                  </li>-->
+                  </li>
                   <li><a href="/salir"><i class="fa fa-sign-out"></i> Salir </a>
                   </li>
 
