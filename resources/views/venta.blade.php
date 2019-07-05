@@ -210,7 +210,57 @@
   </div>
 </div>
 
-<!-- Modal ConfirmacionPago -->
+<!-- Modal ModalPagoCredito -->
+<div class="modal fade" id="ModalPagoCredito" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      	<div align="center">
+        	<h2 id="TextoPagoCredito"></h2>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="BtnPagoCredito" onclick="AjaxPagoCredito(this)">Confirmar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ModalPagoEfectivo -->
+<div class="modal fade" id="ModalPagoEfectivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      	<div align="center">
+        	<h2 id="TextoPagoEfectivo"></h2>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="BtnPagoEfectivo" onclick="AjaxPagoEfectivo(this)">Confirmar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ModalConfirmacionPago -->
 <div class="modal fade" id="ModalConfirmacionPago" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -235,7 +285,7 @@
   </div>
 </div>
 
-<!-- Modal ConfirmacionPago -->
+<!-- Modal ModalPagoMixto -->
 <div class="modal fade" id="ModalPagoMixto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -250,7 +300,7 @@
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Tarjeta de Débito</label>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <input type="number" class="form-control" id="PagoMixtoDébito" aria-describedby="emailHelp" placeholder="">
+	            <input type="number" class="form-control" id="PagoMixtoDebito" aria-describedby="emailHelp" placeholder="">
 	          </div>
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	        </div>
@@ -259,7 +309,7 @@
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Tarjeta de Crédito</label>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <input type="number" class="form-control" id="PagoMixtoCrédito" aria-describedby="emailHelp" placeholder="">
+	            <input type="number" class="form-control" id="PagoMixtoCredito" aria-describedby="emailHelp" placeholder="">
 	          </div>
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	        </div>
@@ -285,14 +335,14 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-primary" id="BtnPagoMixto" onclick="AjaxPagoMixto(this)">Confirmar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal ConfirmacionPagoTransferencia -->
+<!-- Modal ModalPagoTransferencia -->
 <div class="modal fade" id="ModalPagoTransferencia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -307,7 +357,7 @@
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Número de operación</label>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <input type="number" class="form-control" id="TransferenciaNumeroOperacion" aria-describedby="emailHelp" placeholder="">
+	            <input type="text" class="form-control" id="TransferenciaNumeroOperacion" placeholder="">
 	          </div>
 	          <div class="col-md-2 col-sm-2 col-xs-12"></div>
 	        </div>
@@ -321,14 +371,14 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-primary" id="BtnPagoTransferencia" onclick="AjaxPagoTransferencia()">Confirmar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal ConfirmacionPagoTransDepósito -->
+<!-- Modal ModalPagoDeposito -->
 <div class="modal fade" id="ModalPagoDeposito" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -358,7 +408,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+        <button type="button" class="btn btn-primary" id="BtnPagoDeposito" onclick="AjaxPagoDeposito(this)">Confirmar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -414,7 +464,7 @@
 	        <div class="form-group">
 	          <label class="control-label col-md-2 col-sm-2 col-xs-12">ID del trabajador*</label>
 	          <div class="col-md-10 col-sm-10 col-xs-12">
-	            <input type="number" class="form-control" placeholder="" id="pago_nomina_id_tr">
+	            <input type="text" class="form-control" placeholder="" id="id_trabajador_pago_nomina">
 	          </div>
 	        </div>
 	      	<!-- nombre del producto -->
@@ -432,14 +482,22 @@
 	          </div>
 	          <label class="control-label col-md-2 col-sm-2 col-xs-12">Quincenas*</label>
 	          <div class="col-md-4 col-sm-4 col-xs-12">
-	            <input type="number" class="form-control" placeholder="" id="pago_nomina_importe">
+	            <select class="form-control" id="pago_nomina_quincenas">
+			      <option value="NA">SELECCIONAR</option>
+			      <option value="1">1</option>
+			      <option value="2">2</option>
+			      <option value="3">3</option>
+			      <option value="4">4</option>
+			      <option value="5">5</option>
+			      <option value="6">6</option>
+			    </select>
 	          </div>
 	        </div>
         </div>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" onclick="finalizarCompra()">Finalizar Compra</button>
+        <button type="button" class="btn btn-primary" id="BtnPagoNomina" onclick="AjaxPagoNomina()">Finalizar Compra</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -492,7 +550,7 @@
 	      return false;
 	    }
 
-	    $("#ModalCompraFinalizada").modal();
+	    //$("#ModalCompraFinalizada").modal();
 
 		function agregarArticulo(){
 			var id_producto = $("#nombre_producto").val();
@@ -554,7 +612,7 @@
 							array_articulos[contador_articulos] = tmp_obj;
 							contador_articulos++;
 						}
-						console.log(array_articulos);
+						//console.log(array_articulos);
 						calcularTotal();
 						//$("#nombre_producto").focus();
 					}else{
@@ -574,7 +632,7 @@
 		}
 
 		function MostrarInventarioOtrasTiendas(inventario){
-			console.log(inventario);
+			//console.log(inventario);
 			$("#BodyInventarioOtrasTiendas").html("");
 			for(var i = 0; i < inventario.length; i++){
 				$("#BodyInventarioOtrasTiendas").append(
@@ -678,22 +736,27 @@
 
 	    function PagoDebito(){
 	    	var total = RegresaTotal();
-	    	console.log(total);
-	    	$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $'+total);
-	    	//$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $158.60');
-	    	$("#BtnPagoDebito").attr('disabled',false);
-	    	$('#ModalPagoDebito').modal();
+	    	//console.log(total);
+	    	if(total > 0){
+		    	$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $'+total);
+		    	//$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $158.60');
+		    	$("#BtnPagoDebito").attr('disabled',false);
+		    	$('#ModalPagoDebito').modal();
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
 	    }
 
 	    function AjaxPagoDebito(boton){
 	    	$("#BtnPagoDebito").attr('disabled',true);
 	    	console.log('DEBITO');
+	    	var total = RegresaTotal();
 	    	var id_producto = $("#nombre_producto").val();
 			console.log(id_producto);
 			var success;
 			var url = "/venta/almacenar_venta/debito";
 			var dataForm = new FormData();
-			dataForm.append('venta',JSON.stringify({venta:array_articulos}));
+			dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total}));
 			//lamando al metodo ajax
 			metodoAjax(url,dataForm,function(success){
 				$('#ModalPagoDebito').modal('hide');
@@ -709,40 +772,253 @@
 
 	    function PagoCredito(){
 	    	var total = RegresaTotal();
-	    	console.log(total);
-	    	$("#TextoConfirmacionPago").text('Se registrará la compra con tarjeta de crédito por la cantidad de $ '+total);
-	    	$('#ModalConfirmacionPago').modal();
+	    	//console.log(total);
+	    	if(total > 0){
+		    	$("#TextoPagoCredito").text('Se registrará la compra con tarjeta de crédito por la cantidad de $'+total);
+		    	//$("#TextoPagoDebito").text('Se registrará la compra con tarjeta de débito por la cantidad de $158.60');
+		    	$("#BtnPagoCredito").attr('disabled',false);
+		    	$('#ModalPagoCredito').modal();
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
+	    }
+
+	    function AjaxPagoCredito(boton){
+	    	$("#BtnPagoCredito").attr('disabled',true);
+	    	console.log('CREDITO');
+	    	var total = RegresaTotal();
+	    	var id_producto = $("#nombre_producto").val();
+			console.log(id_producto);
+			var success;
+			var url = "/venta/almacenar_venta/credito";
+			var dataForm = new FormData();
+			dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total}));
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+				$('#ModalPagoCredito').modal('hide');
+				$("#ModalEleccionTipoPago").modal('hide');
+				//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+				$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+				$("#ModalCompraFinalizada").modal();
+				$("#GlCancelarCompra").attr('disabled',true);
+				$("#GlFinalizarCompra").attr('disabled',true);
+
+			});
 	    }
 
 	    function PagoEfectivo(){
 	    	var total = RegresaTotal();
 	    	console.log(total);
-	    	$("#TextoConfirmacionPago").text('Se registrará la compra con pago en efectivo por la cantidad de $ '+total);
-	    	$('#ModalConfirmacionPago').modal();
+	    	if(total > 0){
+		    	$("#TextoPagoEfectivo").text('Se registrará la compra con pago en efectivo por la cantidad de $ '+total);
+		    	$("#BtnPagoEfectivo").attr('disabled',false);
+		    	$('#ModalPagoEfectivo').modal();
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
+	    }
+
+	    function AjaxPagoEfectivo(boton){
+	    	$("#BtnPagoEfectivo").attr('disabled',true);
+	    	console.log('EFECTIVO');
+	    	var total = RegresaTotal();
+	    	var id_producto = $("#nombre_producto").val();
+			console.log(id_producto);
+			var success;
+			var url = "/venta/almacenar_venta/efectivo";
+			var dataForm = new FormData();
+			dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total}));
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+				$('#ModalPagoEfectivo').modal('hide');
+				$("#ModalEleccionTipoPago").modal('hide');
+				//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+				$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+				$("#ModalCompraFinalizada").modal();
+				$("#GlCancelarCompra").attr('disabled',true);
+				$("#GlFinalizarCompra").attr('disabled',true);
+
+			});
 	    }
 
 	    function PagoMixto(){
 	    	var total = RegresaTotal();
-	    	$("#PagoMixtoTotal").text('$ '+total);
-			$("#ModalPagoMixto").modal();
+	    	if(total > 0){
+		    	$("#PagoMixtoTotal").text('$ '+total);
+	    		$("#BtnPagoMixto").attr('disabled',false);
+				$("#ModalPagoMixto").modal();
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
+	    }
+
+	    function AjaxPagoMixto(elemento){
+	    	$("#BtnPagoMixto").attr('disabled',true);
+	    	var total = RegresaTotal();
+	    	var cantidad_debito = $("#PagoMixtoDebito").val();
+	    	cantidad_debito = ((cantidad_debito)?cantidad_debito:0);
+	    	var cantidad_credito = $("#PagoMixtoCredito").val();
+	    	cantidad_credito = ((cantidad_credito)?cantidad_credito:0);
+	    	var cantidad_efectivo = $("#PagoMixtoEfectivo").val();
+	    	cantidad_efectivo = ((cantidad_efectivo)?cantidad_efectivo:0);
+	    	var acumulado = parseInt(cantidad_debito) + parseInt(cantidad_credito) + parseInt(cantidad_efectivo);
+	    	//console.log(acumulado);
+
+	    	if(acumulado >= total){
+	    		console.log('Cantidad completada');
+		    	$("#BtnPagoMixto").attr('disabled',true);
+		    	console.log('PAGO MIXTO');
+		    	var total = RegresaTotal();
+		    	var id_producto = $("#nombre_producto").val();
+				//console.log(id_producto);
+				var success;
+				var url = "/venta/almacenar_venta/mixto";
+				var dataForm = new FormData();
+				//console.log(array_articulos);
+				var pagos={'efectivo':cantidad_efectivo,'credito':cantidad_credito,'debito':cantidad_debito};
+				dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total,pagos:pagos}));
+				//lamando al metodo ajax - 1379.75 / 1563.58
+				metodoAjax(url,dataForm,function(success){
+					$('#ModalPagoMixto').modal('hide');
+					$("#ModalEleccionTipoPago").modal('hide');
+					//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+					$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+					$("#ModalCompraFinalizada").modal();
+					$("#GlCancelarCompra").attr('disabled',true);
+					$("#GlFinalizarCompra").attr('disabled',true);
+
+				});//*/
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','Aún no se ha cubierto el total');
+	    	}
 	    }
 
 	    function PagoTransferencia(){
 	    	var total = RegresaTotal();
-	    	$("#TransferenciaTotal").text('$ '+total);
-	    	$("#ModalPagoTransferencia").modal();
+	    	if(total > 0){
+		    	$("#TransferenciaTotal").text('$ '+total);
+		    	$("#ModalPagoTransferencia").modal();
+	    		$("#BtnPagoTransferencia").attr('disabled',false);
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
 	    }
+
+	    function AjaxPagoTransferencia(){
+	    	var numero_operacion = $("#TransferenciaNumeroOperacion").val();
+	    	console.log(numero_operacion);
+	    	if(numero_operacion != ''){
+	    		$("#BtnPagoTransferencia").attr('disabled',true);
+		    	console.log('PAGO TRANSFERENCIA: '+numero_operacion);
+		    	var total = RegresaTotal();
+		    	var id_producto = $("#nombre_producto").val();
+				//console.log(id_producto);
+				var success;
+				var url = "/venta/almacenar_venta/transferencia";
+				var dataForm = new FormData();
+				//console.log(array_articulos);
+				dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total,operacion:numero_operacion}));
+				//lamando al metodo ajax - 1379.75 / 1563.58
+				metodoAjax(url,dataForm,function(success){
+					$('#ModalPagoTransferencia').modal('hide');
+					$("#ModalEleccionTipoPago").modal('hide');
+					//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+					$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+					$("#ModalCompraFinalizada").modal();
+					$("#GlCancelarCompra").attr('disabled',true);
+					$("#GlFinalizarCompra").attr('disabled',true);
+				});//*/
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','Ingrese el número de operación');
+	    	}
+	    }//*/
 
 	    function PagoDeposito(){
 	    	var total = RegresaTotal();
-	    	$("#DepositoTotal").text('$ '+total);
-	    	$("#ModalPagoDeposito").modal();
+	    	if(total > 0){
+		    	$("#DepositoTotal").text('$ '+total);
+		    	$("#ModalPagoDeposito").modal();
+	    		$("#BtnPagoDeposito").attr('disabled',false);
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
+	    }
+
+	    function AjaxPagoDeposito(){
+	    	var ficha = $("#DepositoFichaDeposito").val();
+	    	if(ficha != ''){
+	    		console.log('DEPOSITO:' + ficha);
+	    		$("#BtnPagoDeposito").attr('disabled',true);
+		    	var total = RegresaTotal();
+		    	var id_producto = $("#nombre_producto").val();
+				var success;
+				var url = "/venta/almacenar_venta/deposito";
+				var dataForm = new FormData();
+				//console.log(array_articulos);
+				dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total,ficha:ficha}));
+				//lamando al metodo ajax - 1379.75 / 1563.58
+				metodoAjax(url,dataForm,function(success){
+					$('#ModalPagoDeposito').modal('hide');
+					$("#ModalEleccionTipoPago").modal('hide');
+					//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+					$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+					$("#ModalCompraFinalizada").modal();
+					$("#GlCancelarCompra").attr('disabled',true);
+					$("#GlFinalizarCompra").attr('disabled',true);
+				});//*/
+
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','Favor de registrar la ficha de depósito')
+	    	}
 	    }
 
 	    function PagoNomina(){
 	    	var total = RegresaTotal();
-	    	$("#pago_nomina_importe").val('$ '+total);
-	    	$("#ModalDescuentoViaNomina").modal();
+	    	if(total > 0){
+		    	$("#pago_nomina_importe").val(total);
+		    	$("#ModalDescuentoViaNomina").modal();
+	    		$("#BtnPagoNomina").attr('disabled',false);
+	    	}else{
+	    		MensajeModal('¡ATENCIÓN!','No se han agregado artículos a la lista');
+	    	}
+	    }
+
+	    function AjaxPagoNomina(elemento){
+	    	var id_trabajador = $("#id_trabajador_pago_nomina").val();
+	    	var nombre_trabajador = $("#pago_nomina_nombre_tr").val();
+	    	var importe = $("#pago_nomina_importe").val();
+	    	var quincenas = $("#pago_nomina_quincenas").val();
+	    	/*console.log(id_trabajador);
+	    	console.log(nombre_trabajador);
+	    	console.log(quincenas);//*/
+	    	if(id_trabajador == ''){
+	    		MensajeModal('¡ATENCIÓN!','Favor de registrar el ID del trabajador');
+	    	}else if(nombre_trabajador == ''){
+	    		MensajeModal('¡ATENCIÓN!','Favor de registrar el nombre del trabajador');
+	    	}else if(quincenas == 'NA'){
+	    		MensajeModal('¡ATENCIÓN!','Favor de registrar el número de quincenas');
+	    	}else{
+	    		var total = RegresaTotal();
+	    		console.log('NOMINA: '+total);
+	    		$("#BtnPagoNomina").attr('disabled',true);
+	    		var success;
+				var url = "/venta/almacenar_venta/nomina";
+				var dataForm = new FormData();
+				dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total}));
+				dataForm.append('id_trabajador',id_trabajador);
+				dataForm.append('nombre_trabajador',nombre_trabajador);
+				dataForm.append('quincenas',parseInt(quincenas));
+				//lamando al metodo ajax - 1379.75 / 1563.58
+				metodoAjax(url,dataForm,function(success){
+					$('#ModalPagoNomina').modal('hide');
+					$("#ModalEleccionTipoPago").modal('hide');
+					//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+					$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+					$("#ModalCompraFinalizada").modal();
+					$("#GlCancelarCompra").attr('disabled',true);
+					$("#GlFinalizarCompra").attr('disabled',true);
+				});//*/
+	    	}
 	    }
 
 		/*function tecla(){

@@ -101,3 +101,5 @@ insert into REL_USUARIO_ESPACIO(FK_USUARIO,FK_ESPACIO) values('cajero','2');
 insert into TIENDAS_LOGIN(LOGIN_ID,LOGIN_CONTRASENIA,LOGIN_CATEGORIA,LOGIN_RESPONSABLE) values('marvineliosa','123456','CAJERO','Marvin Eliosa Abaroa');
 
 insert into REL_USUARIO_ESPACIO(FK_USUARIO,FK_ESPACIO) values('marvineliosa','3');
+
+//*/

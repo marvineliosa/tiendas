@@ -17,6 +17,27 @@
          * @return Response
          */
 
+        public function RegresarConteo(Request $request){
+            $id_producto = $request['id_producto'];
+            $id_espacio = $request['id_espacio'];
+            $conteo = ProductosController::ObtenerConteo($id_producto,$id_espacio);
+            $producto = ProductosController::ObtenerProductoId($id_producto);
+            $data = array(
+                "conteo"=>$conteo,
+                "producto"=>$producto
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function ObtenerConteo($id_producto,$id_espacio){
+            $conteo = DB::table('REL_CONTEO_INVENTARIO')
+                ->where(['CONTEO_FK_PROCUTO'=>$id_producto,'CONTEO_FK_ESPACIO'=>$id_espacio])
+                ->get();
+            return ((count($conteo)>0)?$conteo[0]:$conteo);
+            //dd($ventas);
+        }
+
         public function CrearReporteIntervalo(Request $request){
             //dd($request['fecha_fin']);
             $fecha_inicio = str_replace('/', '-', $request['fecha_inicio']);
@@ -34,13 +55,21 @@
                      ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
                      ->orderBy('created_at','desc')
                      ->get();
+            //dd($ventas);
+
+            foreach ($ventas as $venta) {
+                //dd($venta->created_at);
+                $formato = ProductosController::DarFormatoConsecutivo2($venta->VENTAS_CONSECUTIVO_ANUAL, $venta->created_at);
+                //$formato = ProductosController::DarFormatoConsecutivo($venta->VENTAS_ID, $venta->created_at);
+                $venta->VENTAS_CONSECUTIVO_ANUAL = $formato;
+            }
+            //dd($ventas);
 
             $data = array(
                 "ventas"=>$ventas
             );
 
             echo json_encode($data);//*/
-
         }
 
         public function ObtenerDatosVenta($id_venta){
@@ -64,6 +93,13 @@
             return view('reporte_ventas');
         }
 
+        public function VistaRegistrarInventario(){
+            //$espacios = array();
+            $espacios = EspaciosController::ObtenerListadoEspacios();
+            //return view('aceptacion_terminos_titular')->with (["datos"=>$datos]);
+            return view('inventario')->with(['espacios'=>$espacios]);
+        }
+
         public function AlmacenarVenta(Request $request){
             //dd($request['venta']);
             $venta = json_decode($request['venta']);
@@ -80,24 +116,201 @@
 
         public function AlmacenarVentaDebito(Request $request){
             //dd($request['venta']);
+
             $venta = json_decode($request['venta']);
-            //dd($venta->venta);
+            //dd($venta->total);
+            $total = $venta->total;
             $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($total);
             //dd($venta[1]->id_producto);
             //dd($venta);
-            $id_venta = ProductosController::InsertarVenta('TARJETA DÉBITO',$venta);
+            $id_venta = ProductosController::InsertarVenta('TARJETA DÉBITO',$venta,$total);
 
-
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
-                "id_nota"=>$id_venta
+                "id_nota"=>$consecutivo_formato
             );
 
             echo json_encode($data);//*/
         }
 
-        public function InsertarVenta($tipo_pago,$listado_venta){
-            $espacio = \Session::get('id_tienda')[0];
+        public function AlmacenarVentaCredito(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            //dd($venta->venta);
+            $total = $venta->total;
+            $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($venta[1]->id_producto);
+            //dd($venta);
+            $id_venta = ProductosController::InsertarVenta('TARJETA CRÉDITO',$venta,$total);
 
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
+            $data = array(
+                "id_nota"=>$consecutivo_formato
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function AlmacenarVentaEfectivo(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            //dd($venta->venta);
+            $total = $venta->total;
+            $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($venta[1]->id_producto);
+            //dd($venta);
+            $id_venta = ProductosController::InsertarVenta('EFECTIVO',$venta,$total);
+
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
+            $data = array(
+                "id_nota"=>$consecutivo_formato
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function AlmacenarVentaMixto(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            //dd($venta);
+            $pagos = $venta->pagos;
+            $total = $venta->total;
+            $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($venta[1]->id_producto);
+            //dd($pagos->debito);
+            $id_venta = ProductosController::InsertarVenta('MIXTO',$venta,$total);
+            //ProductosController::InsertarDatosPagoMixto($id_venta,$pagos);
+            DB::table('REL_PAGO_MIXTO')->insert(
+                [
+                    'PAGO_MIXTO_FK_VENTA' => $id_venta,
+                    'PAGO_MIXTO_EFECTIVO' => $pagos->efectivo,
+                    'PAGO_MIXTO_CREDITO' => $pagos->credito,
+                    'PAGO_MIXTO_DEBITO' => $pagos->debito,
+                    'created_at' => $fecha
+                ]
+            );//*/
+
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
+            $data = array(
+                "id_nota"=>$consecutivo_formato
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function AlmacenarVentaTransferencia(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            //dd($venta);
+            $operacion = $venta->operacion;
+            $total = $venta->total;
+            $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($venta[1]->id_producto);
+            //dd($pagos->debito);
+            $id_venta = ProductosController::InsertarVenta('TRANSFERENCIA',$venta,$total);
+            //ProductosController::InsertarDatosPagoMixto($id_venta,$pagos);
+            DB::table('REL_PAGO_TRANSFERENCIA')->insert(
+                [
+                    'PAGO_TRANSFERENCIA_FK_VENTA' => $id_venta,
+                    'PAGO_TRANSFERENCIA_OPERACION' => $operacion,
+                    'created_at' => $fecha
+                ]
+            );//*/
+
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
+            $data = array(
+                "id_nota"=>$consecutivo_formato
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function AlmacenarVentaDeposito(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            //dd($venta);
+            $ficha = $venta->ficha;
+            $total = $venta->total;
+            $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($venta[1]->id_producto);
+            //dd($pagos->debito);
+            $id_venta = ProductosController::InsertarVenta('DEPÓSITO',$venta,$total);
+            //ProductosController::InsertarDatosPagoMixto($id_venta,$pagos);
+            DB::table('REL_PAGO_DEPOSITO')->insert(
+                [
+                    'PAGO_DEPOSITO_FK_VENTA' => $id_venta,
+                    'PAGO_DEPOSITO_FICHA' => $ficha,
+                    'created_at' => $fecha
+                ]
+            );//*/
+
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
+            $data = array(
+                "id_nota"=>$consecutivo_formato
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function AlmacenarVentaNomina(Request $request){
+            //dd($request['venta']);
+            $venta = json_decode($request['venta']);
+            $id_trabajador = $request['id_trabajador'];
+            $nombre_trabajador = $request['nombre_trabajador'];
+            $quincenas = $request['quincenas'];
+            //dd($quincenas);
+            $total = $venta->total;
+            $venta = $venta->venta;
+            $fecha = ProductosController::ObtenerFechaHora();
+            //dd($venta[1]->id_producto);
+            //dd($pagos->debito);
+            $id_venta = ProductosController::InsertarVenta('NÓMINA',$venta,$total);
+            //ProductosController::InsertarDatosPagoMixto($id_venta,$pagos);
+            DB::table('REL_PAGO_NOMINA')->insert(
+                [
+                    'PAGO_NOMINA_FK_VENTA' => $id_venta,
+                    'PAGO_NOMINA_ID_TRAB' => $id_trabajador,
+                    'PAGO_NOMINA_NOMBRE_TRAB' => $nombre_trabajador,
+                    'PAGO_NOMINA_QUINCENAS_TRAB' => $quincenas,
+                    'created_at' => $fecha
+                ]
+            );//*/
+
+            for($i=0; $i<$quincenas; $i++){
+                $id_quincena = DB::table('TIENDAS_QUINCENAS')->insertGetId(
+                    [
+                        'QUINCENAS_ESTATUS' => 'PENDIENTE',
+                        'created_at' => $fecha
+                    ]
+                );
+                DB::table('REL_QUINCENAS_VENTA')->insert(
+                    [
+                        'REL_QUINCENAS_FK_VENTA' => $id_venta,
+                        'REL_QUINCENAS_FK_QUINCENA' => $id_quincena
+                    ]
+                );
+            }
+
+            //dd('epale');
+
+            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
+            $data = array(
+                "id_nota"=>$consecutivo_formato
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function InsertarVenta($tipo_pago,$listado_venta,$total){
+            $espacio = \Session::get('id_tienda')[0];
+            //dd($total);
             //bloqueamos las tablas para que no haya un conflicto al crear alguno de los datos únicos
             DB::raw('lock tables SOLICITUDES_SOLICITUD write');
 
@@ -109,6 +322,7 @@
                 [
                     'VENTAS_TIPO_PAGO' => $tipo_pago,
                     'VENTAS_CONSECUTIVO_ANUAL' => $consecutivo_anual,
+                    'VENTAS_TOTAL' => $total,
                     'created_at' => ProductosController::ObtenerFechaHora()
                 ]
             );//*/
@@ -120,6 +334,7 @@
                         'REL_VENTA_FK_VENTA' => $id_venta,
                         'REL_VENTA_FK_PROCUTO' => $listado->id_producto,
                         'REL_VENTA_FK_ESPACIO' => $espacio,
+                        'REL_VENTA_FK_USUARIO' => \Session::get('usuario')[0],
                         'REL_VENTA_PRECIO' => $listado->precio_venta,
                         'REL_VENTA_CANTIDAD' => $listado->cantidad,
                         'created_at' => ProductosController::ObtenerFechaHora()
@@ -132,8 +347,9 @@
             //finalizada la operaición, se desbloquea la tabla
             DB::raw('unlock tables');
             //dd($id_venta);
-            $consecutivo_formato = ProductosController::DarFormatoConsecutivo($consecutivo_anual);
-            return $consecutivo_formato;
+            
+            //return $consecutivo_anual;
+            return $id_venta;
 
         }
 
@@ -169,9 +385,32 @@
             return $cantidad;
         }
 
-        public function DarFormatoConsecutivo($consecutivo){
+        //esta funcion es solo para las solicitudes recien creadas
+        public function DarFormatoConsecutivo($id_venta,$fecha){
+            //dd($id_venta);
             $id_espacio = \Session::get('id_tienda')[0];
-            $anio = date('Y');
+            $anio = strtotime($fecha);
+            //dd(date('Y',$anio));
+            $anio = date('Y',$anio);
+            $datos_espacio = EspaciosController::ObtenerDatosEspacioId($id_espacio);
+            $datos_venta = DB::table('TIENDAS_VENTAS')
+                ->select('VENTAS_CONSECUTIVO_ANUAL')
+                ->where('VENTAS_ID',$id_venta)
+                ->get();
+            //dd($datos_venta[0]);
+            //dd($datos_espacio);
+            //$consecutivo = $datos_espacio->NOMENCLATURA_ESPACIO.'/'.$id_venta.'/'.$anio;
+            $consecutivo = $datos_espacio->NOMENCLATURA_ESPACIO.'/'.$datos_venta[0]->VENTAS_CONSECUTIVO_ANUAL.'/'.$anio;
+            return $consecutivo;
+        }
+
+        //esta funcion es para la consulta dentro de otras funciones
+        public function DarFormatoConsecutivo2($consecutivo,$fecha){
+            //dd($id_venta);
+            $id_espacio = \Session::get('id_tienda')[0];
+            $anio = strtotime($fecha);
+            //dd(date('Y',$anio));
+            $anio = date('Y',$anio);
             $datos_espacio = EspaciosController::ObtenerDatosEspacioId($id_espacio);
             //dd($datos_espacio);
             $consecutivo = $datos_espacio->NOMENCLATURA_ESPACIO.'/'.$consecutivo.'/'.$anio;
@@ -189,9 +428,11 @@
                     //dd($id_espacio);
                     //$dia_uno = date(date('Y').'-01-01');
                     //dd($dia_uno);
+                    $anio = date('Y');
+                    //$anio = '2015';
                     $join->on('REL_VENTA_PRODUCTO.REL_VENTA_FK_VENTA', '=', 'TIENDAS_VENTAS.VENTAS_ID')
                         ->where(['REL_VENTA_PRODUCTO.REL_VENTA_FK_ESPACIO'=>$id_espacio])
-                        ->whereYear('TIENDAS_VENTAS.created_at',date('Y'));
+                        ->whereYear('TIENDAS_VENTAS.created_at',$anio);
                 })
                 ->orderBy('TIENDAS_VENTAS.created_at', 'desc')
                 ->get();//*/
@@ -202,6 +443,7 @@
                 $consecutivo_actual = $rel_ventas[0]->VENTAS_CONSECUTIVO_ANUAL;
                 $consecutivo_anual = $consecutivo_actual + 1;
             }
+            //dd($consecutivo_anual);
             return $consecutivo_anual;
         }
 

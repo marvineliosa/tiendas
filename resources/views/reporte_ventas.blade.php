@@ -104,7 +104,7 @@
 
             '<tr>'+
               '<td>'+ "Remisión "+ success['ventas'][i]['VENTAS_CONSECUTIVO_ANUAL'] +'</td>'+
-              '<td>$ '+ (Math.floor(Math.random() * (max - min)) + min) +'</td>'+
+              '<td>$ '+ formatoMoneda(success['ventas'][i]['VENTAS_TOTAL']) +'</td>'+
               '<td>'+ success['ventas'][i]['VENTAS_TIPO_PAGO'] +'</td>'+
               '<td>'+ '' +'</td>'+
               '<td>'+ botones  +'</td>'+

@@ -58,6 +58,16 @@ Route::post('/productos/cancelar_movilizaciones', 'ProductosController@CancelarM
 
 Route::post('/venta/almacenar_venta', 'ProductosController@AlmacenarVenta');
 Route::post('/venta/almacenar_venta/debito', 'ProductosController@AlmacenarVentaDebito');
+Route::post('/venta/almacenar_venta/credito', 'ProductosController@AlmacenarVentaCredito');
+Route::post('/venta/almacenar_venta/efectivo', 'ProductosController@AlmacenarVentaEfectivo');
+Route::post('/venta/almacenar_venta/mixto', 'ProductosController@AlmacenarVentaMixto');
+Route::post('/venta/almacenar_venta/transferencia', 'ProductosController@AlmacenarVentaTransferencia');
+Route::post('/venta/almacenar_venta/deposito', 'ProductosController@AlmacenarVentaDeposito');
+Route::post('/venta/almacenar_venta/nomina', 'ProductosController@AlmacenarVentaNomina');
 
 Route::get('/reportes/ventas', 'ProductosController@VistaReporteVentas');
 Route::post('/reportes/reporte_intervalo', 'ProductosController@CrearReporteIntervalo');
+
+
+Route::get('/inventario', 'ProductosController@VistaRegistrarInventario');
+Route::post('/inventario/conteo_actual', 'ProductosController@RegresarConteo');

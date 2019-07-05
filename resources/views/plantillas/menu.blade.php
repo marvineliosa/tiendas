@@ -254,6 +254,28 @@
       //$("#cuerpoVinculacionDescripciones").html("");
     });
 
+    function formatoMoneda(numero) {
+      //numero = '3258.56';
+      console.log(numero);
+      numero = numero.toFixed(2);
+      numero = numero.toString();
+      console.log(numero);
+
+      if(numero>999999){
+        conPunto = numero.substring(0, numero.length-9);
+        conPunto2 = numero.substring(numero.length-9, numero.length-6);
+        conPunto3 = numero.substring(numero.length-6, numero.length);
+        numero = conPunto + ',' + conPunto2 + ',' + conPunto3;
+      }else{
+        if(numero>999){
+          conPunto = numero.substring(0, numero.length-6);
+          conPunto2 = numero.substring(numero.length-6, numero.length);
+          numero = conPunto + ',' + conPunto2;
+        }       
+      }
+      return numero;
+    }
+
     function ModalVerHistorial(id_producto){
       var success;
       var url = "/productos/ver_historial";
@@ -310,6 +332,7 @@
       success : function(json){
         //resultado = json;
         callback(json);
+        //$("#nombre_producto").focus();
       },
       error : function(xhr, status) {
         $("#textoModalMensaje").text('Existió un problema con la operación');
@@ -321,6 +344,7 @@
          $("#nombre_producto").focus();
       }
     });//*/
+    //$("#nombre_producto").focus();
   }
 
   //señor ajax de las recargas de tablas

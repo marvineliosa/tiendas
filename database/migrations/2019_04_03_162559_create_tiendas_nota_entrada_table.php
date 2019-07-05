@@ -15,7 +15,7 @@ class CreateTiendasNotaEntradaTable extends Migration
     {
         Schema::create('TIENDAS_NOTA_ENTRADA', function (Blueprint $table) {
             $table->increments('NOTA_ENTRADA_ID');
-            $table->integer('NOTA_ENTRADA_PRECIO_COMPRA');
+            $table->float('NOTA_ENTRADA_PRECIO_COMPRA');
             $table->integer('NOTA_ENTRADA_CANTIDAD');
             //$table->integer('NOTA_ENTRADA_INICIO')->nullable();
             //$table->integer('NOTA_ENTRADA_FIN')->nullable();

@@ -56,7 +56,7 @@
             }
         }
 
-        public function ObtenerListadoEspacios(){
+        public static function ObtenerListadoEspacios(){
             $espacios = DB::table('TIENDAS_ESPACIOS')
             ->select(
                         'ESPACIO_ID as ID_ESPACIO',
@@ -65,6 +65,7 @@
                         'ESPACIO_SIGLAS as NOMENCLATURA_ESPACIO',
                         'ESPACIO_TIPO as TIPO_ESPACIO'
                     )
+            ->orderBy('TIPO_ESPACIO','asc')
             ->get();
             return $espacios;
         }

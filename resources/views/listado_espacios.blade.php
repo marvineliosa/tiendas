@@ -1,5 +1,5 @@
 @extends('plantillas.menu')
-@section('title','Listado')
+@section('title','Espacios')
 @section('tittle_page','Listado de Espacios')
 
 @section('content')
