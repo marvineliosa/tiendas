@@ -17,6 +17,11 @@
          * @return Response
          */
 
+        public function GuardarConteo(Request $request){
+            $conteo = $request['contador'];
+            dd($conteo);
+        }
+
         public function RegresarConteo(Request $request){
             $id_producto = $request['id_producto'];
             $id_espacio = $request['id_espacio'];

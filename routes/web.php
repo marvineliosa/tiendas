@@ -71,3 +71,4 @@ Route::post('/reportes/reporte_intervalo', 'ProductosController@CrearReporteInte
 
 Route::get('/inventario', 'ProductosController@VistaRegistrarInventario');
 Route::post('/inventario/conteo_actual', 'ProductosController@RegresarConteo');
+Route::post('/inventario/guardar_conteo', 'ProductosController@GuardarConteo');

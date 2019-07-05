@@ -870,24 +870,24 @@
 		    	console.log('PAGO MIXTO');
 		    	var total = RegresaTotal();
 		    	var id_producto = $("#nombre_producto").val();
-				//console.log(id_producto);
-				var success;
-				var url = "/venta/almacenar_venta/mixto";
-				var dataForm = new FormData();
-				//console.log(array_articulos);
-				var pagos={'efectivo':cantidad_efectivo,'credito':cantidad_credito,'debito':cantidad_debito};
-				dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total,pagos:pagos}));
-				//lamando al metodo ajax - 1379.75 / 1563.58
-				metodoAjax(url,dataForm,function(success){
-					$('#ModalPagoMixto').modal('hide');
-					$("#ModalEleccionTipoPago").modal('hide');
-					//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
-					$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
-					$("#ModalCompraFinalizada").modal();
-					$("#GlCancelarCompra").attr('disabled',true);
-					$("#GlFinalizarCompra").attr('disabled',true);
+  				//console.log(id_producto);
+  				var success;
+  				var url = "/venta/almacenar_venta/mixto";
+  				var dataForm = new FormData();
+  				//console.log(array_articulos);
+  				var pagos={'efectivo':cantidad_efectivo,'credito':cantidad_credito,'debito':cantidad_debito};
+  				dataForm.append('venta',JSON.stringify({venta:array_articulos,total:total,pagos:pagos}));
+  				//lamando al metodo ajax - 1379.75 / 1563.58
+  				metodoAjax(url,dataForm,function(success){
+  					$('#ModalPagoMixto').modal('hide');
+  					$("#ModalEleccionTipoPago").modal('hide');
+  					//MensajeModal('¡Éxito!','La venta ha sido almacenada satisfactoriamente, el número de venta es: '+success['id_nota']);
+  					$("#TxtNumeroNota").text('Remisión: '+success['id_nota']);
+  					$("#ModalCompraFinalizada").modal();
+  					$("#GlCancelarCompra").attr('disabled',true);
+  					$("#GlFinalizarCompra").attr('disabled',true);
 
-				});//*/
+  				});//*/
 	    	}else{
 	    		MensajeModal('¡ATENCIÓN!','Aún no se ha cubierto el total');
 	    	}
