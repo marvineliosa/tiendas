@@ -17,9 +17,79 @@
          * @return Response
          */
 
+        public function ReiniciarConteo(Request $request){
+            //$cantidad = $request['cantidad'];
+            $select_bodega = $request['espacio'];
+            $id_producto = $request['id_producto'];
+            $update = DB::table('REL_CONTEO_INVENTARIO')
+                ->where([
+                            'CONTEO_FK_PROCUTO' => $id_producto,
+                            'CONTEO_FK_ESPACIO' => $select_bodega
+                        ])
+                ->update([
+                    'CONTEO_CANTIDAD' => 0,
+                    'created_at' => ProductosController::ObtenerFechaHora(),
+                    'updated_at' => null
+                ]);
+            $data = array(
+                "update"=>$update
+            );
+
+            echo json_encode($data);//*/
+        }
+
         public function GuardarConteo(Request $request){
-            $conteo = $request['contador'];
-            dd($conteo);
+            //dd($request);
+            $cantidad = $request['cantidad'];
+            $espacio = $request['espacio'];
+            $producto = $request['id_producto'];
+
+            $nueva_cantidad = ProductosController::AumentarConteo($producto,$espacio,$cantidad);
+
+            //dd($nueva_cantidad);
+            $data = array(
+                "nueva_cantidad"=>$nueva_cantidad
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function AumentarConteo($id_producto,$select_bodega,$cantidad){
+            $nueva_cantidad = $cantidad;
+            //verificamos si ya existe un registro en inventario
+            $existe_inventario = DB::table('REL_CONTEO_INVENTARIO')
+                ->where([
+                            'CONTEO_FK_PROCUTO'=> $id_producto,
+                            'CONTEO_FK_ESPACIO'=> $select_bodega
+                        ])
+                ->get();
+
+            //dd($existe_inventario);
+            //si no existe la relacion, creamos una nueva
+            if(count($existe_inventario)==0){
+                DB::table('REL_CONTEO_INVENTARIO')->insert(
+                    [
+                        'CONTEO_FK_PROCUTO'=> $id_producto,
+                        'CONTEO_FK_ESPACIO'=> $select_bodega,
+                        'CONTEO_CANTIDAD' => $cantidad,
+                        'created_at' => ProductosController::ObtenerFechaHora()
+                    ]
+                );//*/
+            }else{//en caso contrario solo le sumamos la cantidad registrada
+                //$nueva_cantidad = $existe_inventario[0]->CONTEO_CANTIDAD + $cantidad;
+                //dd($nueva_cantidad);
+                DB::table('REL_CONTEO_INVENTARIO')
+                    ->where([
+                                'CONTEO_FK_PROCUTO' => $id_producto,
+                                'CONTEO_FK_ESPACIO' => $select_bodega
+                            ])
+                    ->update([
+                        'CONTEO_CANTIDAD' => $cantidad,
+                        'updated_at' => ProductosController::ObtenerFechaHora()
+                    ]);
+                //dd($nueva_cantidad);
+            }
+            return $cantidad;
         }
 
         public function RegresarConteo(Request $request){
@@ -388,6 +458,40 @@
             }
             //DB::raw('unlock tables');
             return $cantidad;
+        }
+
+        public function AumentarInventario($id_producto,$select_bodega,$cantidad){
+            $nueva_cantidad = $cantidad;
+            //verificamos si ya existe un registro en inventario
+            $existe_inventario = DB::table('REL_INVENTARIO')
+                ->where([
+                            'DATOS_VENTA_FK_PROCUTO'=> $id_producto,
+                            'DATOS_VENTA_FK_ESPACIO'=> $select_bodega
+                        ])
+                ->get();
+
+            //dd($existe_inventario);
+            //si no existe la relacion, creamos una nueva
+            if(count($existe_inventario)==0){
+                DB::table('REL_INVENTARIO')->insert(
+                    [
+                        'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                        'DATOS_VENTA_FK_ESPACIO' => $select_bodega,
+                        'DATOS_VENTA_CANTIDAD' => $cantidad
+                    ]
+                );//*/
+            }else{//en caso contrario solo le sumamos la cantidad registrada
+                $nueva_cantidad = $existe_inventario[0]->DATOS_VENTA_CANTIDAD + $cantidad;
+                //dd($nueva_cantidad);
+                DB::table('REL_INVENTARIO')
+                    ->where([
+                                'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                                'DATOS_VENTA_FK_ESPACIO' => $select_bodega
+                            ])
+                    ->update(['DATOS_VENTA_CANTIDAD' => $nueva_cantidad]);
+                //dd($nueva_cantidad);
+            }
+            return $nueva_cantidad;
         }
 
         //esta funcion es solo para las solicitudes recien creadas
@@ -839,7 +943,6 @@
             );
 
             echo json_encode($data);//*/
-
         }
 
         public static function RegistraHistorialProducto($id_producto,$texto_historial){
@@ -858,7 +961,6 @@
                         'FK_HISTORIAL' => $id_historial
                     ]);
             }
-
         }
 
         public function RegistrarNotaVenta(Request $request){

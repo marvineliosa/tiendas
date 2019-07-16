@@ -1,6 +1,6 @@
 @extends('plantillas.menu')
-@section('title','Venta')
-@section('tittle_page','Punto de venta')
+@section('title','Inventario')
+@section('tittle_page','Conteo de inventario')
 
 @section('content')
 <div class="row">
@@ -61,7 +61,7 @@
               </div>
 
               <div class="col-md-3 col-sm-3 col-xs-12">
-                <button id="BtnAgregarInventario" type="button" class="btn btn-primary btn-md btn-block" onclick="AgregarCantidadInventario()" disabled="true">Agregar al inventario</button>
+                <button id="BtnAgregarInventario" type="button" class="btn btn-primary btn-md btn-block" onclick="ModalAgregarInventario()" disabled="true">Agregar al inventario</button>
               </div>
 
               <div class="col-md-3 col-sm-3 col-xs-12">
@@ -71,9 +71,73 @@
             </div>
 
 	      </div>
+
 	  </div>
 	</div>
 </div>
+<!-- MODALES -->
+
+    <!-- modal agregar existencias -->
+    <div class="modal fade" id="ModalAgregarExistencias" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-horizontal form-label-left">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Artículo</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                  <input type="number" class="form-control" id="nota_venta_id_producto" min="0" value='' disabled>
+                </div>
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Cantidad*</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                  <input type="number" class="form-control" placeholder="" id="nota_venta_cantidad" min="0" value='' disabled="true">
+                </div>
+              </div>
+              <!-- Precio de compra y venta -->
+              <div class="form-group">
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Precio de compra*</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                  <input type="number" class="form-control" placeholder="" id="nota_venta_precio_compra" min="0" value='' step=".10">
+                </div>
+
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Bodega destino*</label>
+                <!-- <div class="col-md-4 col-sm-4 col-xs-12" id="">
+                  <input type="text" class="form-control" placeholder="" id="nota_venta_espacio" value=''>
+                </div> -->
+                <div class="col-md-4 col-sm-4 col-xs-12">
+
+                  <select class="form-control" id="nota_venta_select_bodega" disabled="true">
+                    <option value="SELECCIONAR">-- SELECCIONAR --</option>
+                    @foreach($espacios as $espacio)
+                      <option value="{{$espacio->ID_ESPACIO}}">{{$espacio->NOMBRE_ESPACIO}}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <!-- Observaciones -->
+              <div class="form-group">
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Observaciones</label>
+                <div class="col-md-10 col-sm-10 col-xs-12">
+                  <textarea class="form-control" id="nota_venta_observaciones" rows="3" placeholder="" style="resize:none;"></textarea>
+                </div>
+              </div>
+
+
+          </div><!-- fin div form -->
+          </div>
+          <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="AgregarCantidadInventario()">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 @endsection
 
 @section('script')
@@ -139,29 +203,105 @@
       //$("#nombre_producto").focus();
     }
 
+    function GuardarConteo(){
+      if(GLContador > 0){
+        console.log('GUARDAR CONTEO');
+        var espacio = $("#SelectEspacios").val();
+
+        var success;
+        var url = "/inventario/guardar_conteo";
+        var dataForm = new FormData();
+        dataForm.append('id_producto',GLCodigo);
+        dataForm.append('cantidad',GLContador);
+        dataForm.append('espacio',espacio);
+        //lamando al metodo ajax
+        metodoAjax(url,dataForm,function(success){
+          //aquí se escribe todas las operaciones que se harían en el succes
+          //la variable success es el json que recibe del servidor el método AJAX
+          $("#ModalAgregarExistencias").modal('hide');
+          MensajeModal("¡ÉXITO!","Conteo almacenado satisfactoriamente");
+        });
+
+
+      }else{
+        MensajeModal('¡ATENCIÓN!','Aún no existe un conteo actual');
+      }
+    }
+
     function ReiniciarConteo(){
-      console.log('ReiniciarConteo');
-      GLContador = 0;
-      $("#LabelCantidadConteo").text(GLContador);
+      if(GLContador > 0){
+        console.log('Reiniciar conteo');
+        var espacio = $("#SelectEspacios").val();
+        var success;
+        var url = "/inventario/reiniciar_conteo";
+        var dataForm = new FormData();
+        dataForm.append('id_producto',GLCodigo);
+        dataForm.append('espacio',espacio);
+        //lamando al metodo ajax
+        metodoAjax(url,dataForm,function(success){
+          //aquí se escribe todas las operaciones que se harían en el succes
+          //la variable success es el json que recibe del servidor el método AJAX
+          MensajeModal("¡ÉXITO!","Conteo reiniciado satisfactoriamente");
+          GLContador = 0;
+          $("#LabelCantidadConteo").text(GLContador);
+        });
+      }else{
+
+      }
       $("#nombre_producto").focus();
-      console.log(GLContador);
+    }
+
+    function ModalAgregarInventario(){
+      var espacio =  $("#SelectEspacios").val();
+      $("#nota_venta_select_bodega").val(espacio);
+      $("#nota_venta_id_producto").val(GLCodigo);
+      $("#nota_venta_cantidad").val(GLContador);
+      $("#ModalAgregarExistencias").modal();
     }
 
     function AgregarCantidadInventario(){
 
       if(GLContador>0){
         console.log('AGREGAR CANTIDAD A INVENTARIO');
-        var success;
-        var url = "/inventario/guardar_conteo";
         var dataForm = new FormData();
-        dataForm.append('contador',GLContador);
-        //lamando al metodo ajax
+        var success;
+        var url = "/productos/agregar_nota";
+        var dataForm = new FormData();
+        var precio_compra = $("#nota_venta_precio_compra").val();
+        var espacio = $("#SelectEspacios").val();
+        var observaciones = $("#nota_venta_observaciones").val();
 
+        dataForm.append('id_producto',GLCodigo);
+        dataForm.append('cantidad',GLContador);
+        dataForm.append('precio_compra',precio_compra);
+        //dataForm.append('consecutivo_inicial',consecutivo_inicial);
+        //dataForm.append('consecutivo_final',consecutivo_final);
+        dataForm.append('select_bodega',espacio);
+        dataForm.append('observaciones',observaciones);
+        //lamando al metodo ajax
         metodoAjax(url,dataForm,function(success){
           //aquí se escribe todas las operaciones que se harían en el succes
           //la variable success es el json que recibe del servidor el método AJAX
-          MensajeModal("¡EXITO!","El contador se ha almacenado correctamente");
-        });//*/
+          $("#ModalAgregarExistencias").modal('hide');
+          MensajeModal("¡ÉXITO!","Nota de venta registrada satisfactoriamente");
+        });
+
+        // console.log('AGREGAR CANTIDAD A INVENTARIO');
+        // var success;
+        // var url = "/inventario/agregar_inventario";
+        // var dataForm = new FormData();
+        // var espacio = $("#SelectEspacios").val();
+        // dataForm.append('espacio',espacio);
+        // dataForm.append('contador',GLContador);
+        // //lamando al metodo ajax
+
+        // metodoAjax(url,dataForm,function(success){
+        //   //aquí se escribe todas las operaciones que se harían en el succes
+        //   //la variable success es el json que recibe del servidor el método AJAX
+        //   MensajeModal("¡EXITO!","El contador se ha almacenado correctamente");
+        // });//*/
+      }else{
+        MensajeModal('¡ATENCIÓN!','Aún no existe un conteo actual');
       }
 
     }
@@ -196,14 +336,18 @@
       dataForm.append('id_espacio',id_espacio);
       //lamando al metodo ajax
       metodoAjax(url,dataForm,function(success){
-        console.log(success);
+        //console.log(success);
         if(success['producto']){
           GLCodigo = id_producto;
           $("#LabelNombreProducto").text(success['producto']['NOMBRE_PRODUCTO']);
           //$("#LabelCantidadConteo").text(success['producto']['NOMBRE_PRODUCTO']);
-          if(success['conteo'].length > 0){
-            //GLContador = 
+          //console.log('EPALELELELELE' +success['conteo']['CONTEO_CANTIDAD']);
+          if(success['conteo']['CONTEO_CANTIDAD']){
+            GLContador = success['conteo']['CONTEO_CANTIDAD'];
+            console.log(GLContador);
+            $("#LabelCantidadConteo").text(success['conteo']['CONTEO_CANTIDAD']);
           }else{
+            console.log('No hay datos');
             $("#LabelCantidadConteo").text(0);
           }
           //console.log($("#BtnReiniciarConteo"));
