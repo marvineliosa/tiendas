@@ -256,10 +256,10 @@
 
     function formatoMoneda(numero) {
       //numero = '3258.56';
-      console.log(numero);
+      //console.log(numero);
       numero = numero.toFixed(2);
       numero = numero.toString();
-      console.log(numero);
+      //console.log(numero);
 
       if(numero>999999){
         conPunto = numero.substring(0, numero.length-9);
@@ -440,6 +440,40 @@
         }
         $("#ModalDetalleProducto").modal();
       });
+    }
+
+    crearDatatable();
+    function crearDatatable(dato_busqueda,numero_pagina){
+      //$('#TablaDatos').DataTable().destroy();
+      var tabla = $('#TablaDatos').DataTable({
+          //responsive: true,
+          "searching": true,
+          "paging":   true,
+          "info":     true,
+          "ordering": true,
+          "pageLength": 10,
+          //'displayStart': numero_pagina,
+          language: {
+            emptyTable: "No hay datos para mostrar en la tabla",
+            zeroRecords: "No hay datos para mostrar en la tabla",
+            "search": "Buscar:",
+            "info":"Se muestra los registros _START_ a _END_ de _TOTAL_ totales.",
+            "infoEmpty":"No se ha encontrado registros.",
+            "lengthMenu":"Mostrando _MENU_ registros",
+            "infoFiltered":"(Filtrado de un total de _MAX_ registros)",
+            "search": "Buscar: ",
+            paginate: {
+              "first":      "Primero",
+              "last":       "Ultimo",
+              "next":       "Siguiente",
+              "previous":   "Anterior"
+            },
+          }
+        });//*/
+        if(dato_busqueda){
+          tabla.search( dato_busqueda ).draw();
+          $( ".paginate_button  [data-dt-idx='"+numero_pagina+"']" ).trigger("click");
+        }
     }
 </script>
 

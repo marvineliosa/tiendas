@@ -19,8 +19,10 @@
 
         public function VerInventarioEspacio($id_espacio){
             //dd($id_espacio);
+            //dd('EPALE');
             $inventario = ProductosController::ObtenerInventarioEspacioId($id_espacio);
-            dd($inventario);
+            //dd($inventario);
+            return view('listado_inventario')->with(['productos'=>$inventario]);
         }
 
         public static function ObtenerDatosEspacioId($id_espacio){

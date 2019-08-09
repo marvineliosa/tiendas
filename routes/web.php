@@ -67,6 +67,7 @@ Route::post('/venta/almacenar_venta/nomina', 'ProductosController@AlmacenarVenta
 
 Route::get('/reportes/ventas', 'ProductosController@VistaReporteVentas');
 Route::post('/reportes/reporte_intervalo', 'ProductosController@CrearReporteIntervalo');
+Route::post('/reportes/obtner_detalle', 'ProductosController@ObtenerDetalleVenta');
 
 
 Route::get('/inventario', 'ProductosController@VistaRegistrarInventario');

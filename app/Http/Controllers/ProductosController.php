@@ -17,6 +17,19 @@
          * @return Response
          */
 
+        public function ObtenerDetalleVenta(Request $request){
+            //dd($request['id_venta']);
+            $id_venta = $request['id_venta'];
+            $datos = ProductosController::ObtenerDatosVenta($id_venta);
+            //dd($datos);
+
+            $data = array(
+                "datos"=>$datos
+            );
+
+            echo json_encode($data);//*/
+        }
+
         public function ReiniciarConteo(Request $request){
             //$cantidad = $request['cantidad'];
             $select_bodega = $request['espacio'];
@@ -148,19 +161,33 @@
         }
 
         public function ObtenerDatosVenta($id_venta){
-            /*$tmp_movilizaciones = DB::table('REL_MOVILIZACION_PRODUCTO')
-                ->join('TIENDAS_MOVILIZACION_INVENTARIO', function ($join) use($id_producto,$id_espacio) {
-                    //dd($id_producto);
-                    $join->on('REL_MOVILIZACION_PRODUCTO.REL_MOV_FK_MOVILIZACION', '=', 'TIENDAS_MOVILIZACION_INVENTARIO.MOVILIZACION_ID')
-                        ->where(['REL_MOVILIZACION_PRODUCTO.REL_MOV_FK_PROCUTO'=>$id_producto,'TIENDAS_MOVILIZACION_INVENTARIO.MOVILIZACION_DESTINO'=>$id_espacio]);
-                })
-                ->get();//*/
+            //$id_venta = 1;
+            //dd($id_venta);
             $ventas = DB::table('REL_VENTA_PRODUCTO')
-                ->select('REL_VENTA_FK_VENTA')
-                ->distinct()
-                ->get();
+                ->join('TIENDAS_VENTAS', function ($join) use($id_venta){
+                    $join->on('REL_VENTA_PRODUCTO.REL_VENTA_FK_VENTA','=','TIENDAS_VENTAS.VENTAS_ID')
+                        ->where(['REL_VENTA_PRODUCTO.REL_VENTA_FK_VENTA' => $id_venta,'TIENDAS_VENTAS.VENTAS_ID'=>$id_venta]);
+                })
+                ->select(
+                    //'REL_VENTA_PRODUCTO.REL_VENTA_FK_VENTA as FK_VENTA',
+                    'REL_VENTA_PRODUCTO.REL_VENTA_FK_PROCUTO as FK_PROCUTO',
+                    'REL_VENTA_PRODUCTO.REL_VENTA_FK_ESPACIO as FK_ESPACIO',
+                    'REL_VENTA_PRODUCTO.REL_VENTA_FK_USUARIO as FK_USUARIO',
+                    'REL_VENTA_PRODUCTO.REL_VENTA_PRECIO as PRECIO_VENTA',
+                    'REL_VENTA_PRODUCTO.REL_VENTA_CANTIDAD as CANTIDAD_VENTA',
+                    'TIENDAS_VENTAS.VENTAS_ID as ID_VENTA',
+                    'TIENDAS_VENTAS.VENTAS_TIPO_PAGO as TIPO_PAGO',
+                    'TIENDAS_VENTAS.VENTAS_CONSECUTIVO_DIARIO as CONSECUTIVO_DIARIO',
+                    'TIENDAS_VENTAS.VENTAS_CONSECUTIVO_ANUAL as CONSECUTIVO_ANUAL',
+                    'REL_VENTA_PRODUCTO.created_at as FECHA_CREACION'
+                )
+                ->get();//*/
 
-            dd($ventas);
+                foreach ($ventas as $venta) {
+                    $venta->NOMBRE_PRODUCTO = ProductosController::ObtenerNombreProductoId($venta->FK_PROCUTO);
+                }
+            return $ventas;
+            //dd($ventas);
         }
 
         public function VistaReporteVentas(){
@@ -1058,7 +1085,8 @@
                 $relacion->NOMBRE_PRODUCTO = $nombre_producto;
                 //dd($nombre_producto);
             }
-            dd($rel_inventario);
+            return($rel_inventario);
+            //dd($rel_inventario);
         }
 
         //esta funcion solo regresa las existencias en espacios que tengan productos, es decir, si una tienda no cuenta con el producto, esta no aparecerá en la lista
