@@ -113,29 +113,31 @@
   </div>
 
 
-  <!-- Modal Detalle Devolución -->
-  <div class="modal fade" id="ModalDetalleDevolucion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Modal Devoluciones -->
+  <div class="modal fade" id="ModalDevoluciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 class="modal-title" id="TituloModalDetalleDevolucion" align="center">Detalle de Venta</h2>
+          <h2 class="modal-title" id="TituloModalDevoluciones" align="center">Devoluciones</h2>
           <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>-->
         </div>
         <div class="modal-body">
-          <h3  id="TituloModalDetalleVenta" align="center"> </h3>
+          <h3  id="TituloModalDevoluciones" align="center"> </h3>
           <table class="table table-bordered">
-            <thead id="HeadTablaArchivos">
-              <tr>
+            <thead id="HeadTablaDevoluciones">
+              <tr align="center">
+                <th scope="col"></th>
                 <th scope="col">Codigo</th>
                 <th scope="col">Producto</th>
-                <th scope="col">Cantidad</th>
-                <th scope="col">Precio</th>
+                <th scope="col">Cantidad Vendida</th>
+                <th scope="col">Cantidad Devolución</th>
+                <th scope="col">Precio de Venta</th>
                 <th scope="col">Subtotal</th>
               </tr>
             </thead>
-            <tbody id="CuerpoModalDetalleVenta">
+            <tbody id="CuerpoModalDevoluciones">
               
             </tbody>
           </table>
@@ -146,15 +148,96 @@
       </div>
     </div>
   </div>
+
 @endsection
 
 @section('script')
   <script type="text/javascript">
 
     //$("#ModalDetalleVenta").modal();
+    //obtener los valores seleccionados
+    //https://programacionextrema.com/2015/11/09/obtener-todos-los-checkbox-seleccionados-en-jquery/
 
+    function CalcularSubtotalDevolucion(id_producto,precio){
+      var cantidad = $("#cant_dev_"+id_producto).val();
+      console.log("Cantidad: "+cantidad);
+      subtotal = parseInt(precio) * parseInt(cantidad);
+      console.log("subtotal:" + subtotal);
+      $("#subtotal_dev_"+id_producto).text('$ '+ formatoMoneda(subtotal));
+    }
 
+    function seleccionArticulo(id_producto,elemento){
+      
+      console.log($(elemento).prop('checked'));
+      if( $(elemento).prop('checked')){
+        console.log('checkbox_'+id_producto+' seleccionado');
+        $("#tr_"+id_producto).addClass('success');
+      }else{
+        console.log('No seleccionado');
+        $("#tr_"+id_producto).removeClass('success');
+      }
+      // console.log('---------');
+      // console.log($(elemento).is(':checked'));
+      // if ($(elemento).is(':checked')) {
+      //   console.log('checkbox_'+id_producto+' seleccionado');
+      // }
+    }
 
+    function Devolucion(id_venta){
+      //console.log(fecha_inicio);
+      var success;
+      var url = "/reportes/obtner_detalle";
+      var dataForm = new FormData();
+      dataForm.append('id_venta',id_venta);
+      //$('#TablaDatos').DataTable().destroy();
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        console.log(success);
+        $("#CuerpoModalDevoluciones").html('');
+        var total = 0;
+        for(var i = 0; i < success['datos'].length; i++){
+          var subtotal = parseInt(success['datos'][i]['CANTIDAD_VENTA']) * parseInt(success['datos'][i]['PRECIO_VENTA']);
+            console.log('subtotal: '+subtotal);
+            total = parseInt(total) + parseInt(subtotal);
+          $("#CuerpoModalDevoluciones").append(
+            '<tr id="tr_'+success['datos'][i]['FK_PROCUTO']+'">'+
+              '<td style="width: 5%;">'+
+                '<div class="form-check">'+
+                  '<input type="checkbox" class="form-check-input" id="checkbox_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)">'+
+                '</div>'+
+              '</td>'+
+
+              '<td style="width: 10%;">'+success['datos'][i]['FK_PROCUTO']+'</td>'+
+
+              '<td>'+success['datos'][i]['NOMBRE_PRODUCTO']+'</td>'+
+              '<td style="width: 10%;">'+success['datos'][i]['CANTIDAD_VENTA']+'</td>'+
+
+              '<td style="width: 10%;">'+
+                '<input type="number" class="form-control" id="cant_dev_'+success['datos'][i]['FK_PROCUTO']+'" value="0" max="'+success['datos'][i]['CANTIDAD_VENTA']+'" min="0" onchange="CalcularSubtotalDevolucion(' + success['datos'][i]['FK_PROCUTO']+','+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) + ')">'+
+              '</td>'+
+
+              '<td style="width: 12%;">$ '+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) +'</td>'+
+
+              '<td style="width: 15%;" id="subtotal_dev_'+success['datos'][i]['FK_PROCUTO']+'">$ '+ formatoMoneda(0) +'</td>'+
+            '</tr>'
+          );
+        }
+
+        console.log(total);
+        $("#CuerpoModalDevoluciones").append(
+            '<tr>'+
+              '<td></td>'+
+              '<td></td>'+
+              '<td></td>'+
+              '<td></td>'+
+              '<td></td>'+
+              '<td>Total</td>'+
+              '<td>$ '+ formatoMoneda(parseInt(total)) +'</td>'+
+            '</tr>'
+          );
+        $("#ModalDevoluciones").modal();
+      });
+    }
 
     function DetalleVenta(id_venta){
       //console.log(fecha_inicio);
@@ -194,10 +277,6 @@
           );
         $("#ModalDetalleVenta").modal();
       });
-    }
-
-    function Devolucion(id_venta){
-      alert(id_venta);
     }
 
     function GenerarReporte(){
