@@ -545,10 +545,10 @@
 		var i = 1;
 		var array_articulos = new Array();
 		var contador_articulos = 0;
-		function CancelarSubmit(){
-	      console.log("Epale");
-	      return false;
-	    }
+		// function CancelarSubmit(){
+	 //      console.log("Epale");
+	 //      return false;
+	 //    }
 
 	    //$("#ModalCompraFinalizada").modal();
 

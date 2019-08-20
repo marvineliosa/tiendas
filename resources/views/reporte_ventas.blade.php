@@ -114,7 +114,7 @@
 
 
   <!-- Modal Devoluciones -->
-  <div class="modal fade" id="ModalDevoluciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="ModalDevoluciones" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -124,7 +124,7 @@
           </button>-->
         </div>
         <div class="modal-body">
-          <h3  id="TituloModalDevoluciones" align="center"> </h3>
+          <h3  id="TituloModalDevoluciones" align="center"> Descripción de la venta</h3>
           <table class="table table-bordered">
             <thead id="HeadTablaDevoluciones">
               <tr align="center">
@@ -141,6 +141,88 @@
               
             </tbody>
           </table>
+          <div align="right">
+            <button type="button" class="btn btn-primary" onclick="LlenarTablaDevolucion()">Seleccionar</button>
+          </div>
+          
+          <div id="DatosCambio" hidden="true">
+            <hr>
+            <div class="form-horizontal form-label-left">
+              <!-- nombre del producto -->
+              <form class="form-group" onsubmit="return CancelarSubmit();">
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                  <input type="number" class="form-control" placeholder="Ingrese el código" id="nombre_producto" min="0">
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                  <button type="submit" class="btn btn-primary" onclick="TraerArticulo()">Buscar Producto</button>
+                </div>
+              </form>
+            </div>
+
+            <table class="table table-bordered">
+              <thead id="HeadTablaDetalle">
+                <tr align="center">
+                  <th scope="col" colspan="2" style="width: 50%;">Producto a Devolver</th>
+                  <th scope="col" colspan="2" style="width: 50%;">Producto a Cambio</th>
+                </tr>
+              </thead>
+              <tbody id="CuerpoTablaDetalle">
+                <tr>
+                  <th scope="row" style="width: 20%;">Código</th>
+                  <td id="td_devolucion-codigo"></td>
+                  <th scope="row" style="width: 20%;">Código</th>
+                  <td id="td_cambio-codigo"></td>
+                </tr>
+                <tr>
+                  <th scope="row" style="width: 20%;">Nombre</th>
+                  <td id="td_devolucion-nombre"></td>
+                  <th scope="row" style="width: 20%;">Nombre</th>
+                  <td id="td_cambio-nombre"></td>
+                </tr>
+                <tr>
+                  <th scope="row" style="width: 20%;">Cantidad</th>
+                  <td id="td_devolucion-cantidad"></td>
+                  <th scope="row" style="width: 20%;">Cantidad</th>
+                  <td id="td_cambio-cantidad">
+                    <input type="number" class="form-control" id="cantidad_cambio" value="0" min="0" onchange="CalcularSubtotalCambio()" disabled="true">
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row" style="width: 20%;">Precio</th>
+                  <td id="td_devolucion-precio"></td>
+                  <th scope="row" style="width: 20%;">Precio</th>
+                  <td id="td_cambio-precio"></td>
+                </tr>
+                <tr>
+                  <th scope="row" style="width: 20%;">Subtotal</th>
+                  <td id="td_devolucion-subtotal"></td>
+                  <th scope="row" style="width: 20%;">Subtotal</th>
+                  <td id="td_cambio-subtotal"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div align="right">
+              <button type="button" class="btn btn-warning" onclick="RealizarDevolucion()">Realizar Devolución</button>
+            </div>
+          </div>
+
+          <hr>
+          <h3  id="TituloModalDevoluciones" align="center"> Artículos a Cambio </h3>
+          <table class="table table-bordered">
+            <thead id="HeadTablaDevueltos">
+              <tr align="center">
+                <th scope="col">Codigo</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Cantidad Devolución</th>
+                <th scope="col">Fecha Devolución</th>
+              </tr>
+            </thead>
+            <tbody id="CuerpoTablaDevueltos">
+              
+            </tbody>
+          </table>
+
+        
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -154,35 +236,125 @@
 @section('script')
   <script type="text/javascript">
 
-    //$("#ModalDetalleVenta").modal();
-    //obtener los valores seleccionados
-    //https://programacionextrema.com/2015/11/09/obtener-todos-los-checkbox-seleccionados-en-jquery/
+    //esta funcion llena los datos de la tabla para su comparacion
+    function LlenarTablaDevolucion(){
+      var id_producto = seleccionado;
+      var cantidad = $("#cant_dev_"+id_producto).val();
+      if(cantidad > 0){
+        for(var i = 0; i < array_articulos.length; i++){
+          if(array_articulos[i]['FK_PROCUTO'] == id_producto){
+            $("#td_devolucion-codigo").text(array_articulos[i]['FK_PROCUTO']);
+            $("#td_devolucion-nombre").text(array_articulos[i]['NOMBRE_PRODUCTO']);
+            //$("#td_devolucion-cantidad").text(  ); //se llena en CalcularSubtotalDevolucion()
+            $("#td_devolucion-precio").text("$ "+formatoMoneda(array_articulos[i]['PRECIO_VENTA']));
+            //$("#td_devolucion-subtotal").text(array_articulos[i]['NOMBRE_PRODUCTO']); //se llena en CalcularSubtotalDevolucion()
+          }
+        }
+        $("#DatosCambio").show();
+      }else{
+        MensajeModal('¡Atención!','Debe elegir la cantidad a devolver');
+      }
+    }
 
+    //esta funcion trae los datos del articulo seleccionado para hacer el cambio
+    var producto_cambio;
+    function TraerArticulo(){
+      var id_producto = $("#nombre_producto").val();
+
+      var success;
+      var url = "/productos/obtener_datos";
+      var dataForm = new FormData();
+      dataForm.append('id_producto',id_producto);
+      //$('#TablaDatos').DataTable().destroy();
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        if(success['producto']){
+          if(parseFloat(success['producto']['PRECIO_VENTA']) < subtotal_devolucion){
+            $("#cantidad_cambio").attr('disabled',false);
+            producto_cambio = success['producto'];
+            producto_cambio['ID_PRODUCTO'] = id_producto;
+            //console.log(producto_cambio);
+            $("#td_cambio-codigo").text(id_producto);
+            $("#td_cambio-nombre").text(producto_cambio['NOMBRE_PRODUCTO']);
+            $("#cantidad_cambio").val(1);
+            $("#td_cambio-precio").text("$ " + formatoMoneda(producto_cambio['PRECIO_VENTA']));
+            $("#td_cambio-subtotal").text('$ '+formatoMoneda(producto_cambio['PRECIO_VENTA']));
+          }else{
+            MensajeModal('¡Atención!','El precio del artículo '+producto_cambio['NOMBRE_PRODUCTO']+' es mayor al monto de devolución.');
+          }
+        }
+      });
+    }
+
+    //esta funcion obtiene y agrega el subtotal al articulo seleccionado para devolver
+    var subtotal_devolucion = 0;
     function CalcularSubtotalDevolucion(id_producto,precio){
       var cantidad = $("#cant_dev_"+id_producto).val();
-      console.log("Cantidad: "+cantidad);
-      subtotal = parseInt(precio) * parseInt(cantidad);
-      console.log("subtotal:" + subtotal);
+      //console.log("Cantidad: "+cantidad);
+      subtotal = parseFloat(precio) * parseInt(cantidad);
+      //console.log("subtotal:" + subtotal);
       $("#subtotal_dev_"+id_producto).text('$ '+ formatoMoneda(subtotal));
-    }
 
-    function seleccionArticulo(id_producto,elemento){
-      
-      console.log($(elemento).prop('checked'));
-      if( $(elemento).prop('checked')){
-        console.log('checkbox_'+id_producto+' seleccionado');
-        $("#tr_"+id_producto).addClass('success');
-      }else{
-        console.log('No seleccionado');
-        $("#tr_"+id_producto).removeClass('success');
+      if($("#radio_"+id_producto).prop('checked')){
+        $("#td_devolucion-cantidad").text( cantidad );
+        $("#td_devolucion-subtotal").text('$ ' + formatoMoneda(subtotal) );
       }
-      // console.log('---------');
-      // console.log($(elemento).is(':checked'));
-      // if ($(elemento).is(':checked')) {
-      //   console.log('checkbox_'+id_producto+' seleccionado');
-      // }
+      subtotal_devolucion = subtotal;
+      //total = total +
+    }
+    
+    //esta funcion calcula el subtotal de los articulos seleccionados a cambio
+    function CalcularSubtotalCambio(){
+      //var id_producto = producto_cambio['ID_PRODUCTO'];
+      var precio = producto_cambio['PRECIO_VENTA'];
+      var cantidad = $("#cantidad_cambio").val();
+      subtotal = parseFloat(precio) * parseFloat(cantidad);
+      if(subtotal > subtotal_devolucion){
+        //mandamos mensaje de alerta
+        MensajeModal('¡Atención!','El subtotal del artículo es mayor al monto de devolución.');
+        //Obtenemos el numero de unidades maxima que se puedan pagar con el subtotal a devolver
+        var tmp_cantidad = parseInt(parseFloat(subtotal_devolucion)/parseFloat(precio))
+        $("#cantidad_cambio").val( tmp_cantidad );
+        //calculamos el precio de la cantidad resultante multiplicado por el precio original
+        var tmp_subtotal = parseInt(tmp_cantidad)*parseFloat(precio);
+        $("#td_cambio-subtotal").text('$ '+formatoMoneda(tmp_subtotal));
+        //$("#cantidad_cambio").val(1);
+      }else if(cantidad >producto_cambio['INVENTARIO_SESION']){
+        //mandamos mensaje de alerta
+        MensajeModal('¡Atención!','El límite de inventario del artículo '+producto_cambio['NOMBRE_PRODUCTO']+' es de ' + producto_cambio['INVENTARIO_SESION']);
+        //obtenemos el subtotal que pondrá el límite de artículos disponible
+        subtotal = parseFloat(precio) * parseFloat( producto_cambio['INVENTARIO_SESION'] );
+        //agregamos el dato en el campo de cantidad y de subtotal
+        $("#cantidad_cambio").val( producto_cambio['INVENTARIO_SESION'] );
+        $("#td_cambio-subtotal").text('$ '+formatoMoneda(subtotal));
+      }else{
+        console.log('SUBTOTAL CAMBIO: '+subtotal);
+        $("#td_cambio-subtotal").text('$ '+formatoMoneda(subtotal));
+      }
     }
 
+    //esta funcion detecta cuando se selecciona un radio button
+    var seleccionado;
+    function seleccionArticulo(id_producto,elemento){
+      $("#td_cambio-codigo").text('');
+      $("#td_cambio-nombre").text('');
+      $("#cantidad_cambio").val(0);
+      $("#td_cambio-precio").text('');
+      $("#td_cambio-subtotal").text('');
+      $("#cantidad_cambio").attr('disabled',true);
+      if( $(elemento).prop('checked')){
+        //console.log('radio_'+id_producto+' seleccionado');
+        $("#tr_"+seleccionado).removeClass('warning');
+        $("#tr_"+id_producto).addClass('warning');
+        seleccionado = id_producto;
+        $("#DatosCambio").hide();
+      }
+
+      $(".cantidades").val(0);
+    }
+
+    //esta funcion obtiene los datos de la compra realizada y llena la tabla con la informacion
+    var array_articulos = new Array();
     function Devolucion(id_venta){
       //console.log(fecha_inicio);
       var success;
@@ -192,7 +364,8 @@
       //$('#TablaDatos').DataTable().destroy();
       //lamando al metodo ajax
       metodoAjax(url,dataForm,function(success){
-        console.log(success);
+        //console.log(success);
+        array_articulos = success['datos'];
         $("#CuerpoModalDevoluciones").html('');
         var total = 0;
         for(var i = 0; i < success['datos'].length; i++){
@@ -203,7 +376,9 @@
             '<tr id="tr_'+success['datos'][i]['FK_PROCUTO']+'">'+
               '<td style="width: 5%;">'+
                 '<div class="form-check">'+
-                  '<input type="checkbox" class="form-check-input" id="checkbox_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)">'+
+
+                  // '<input type="checkbox" class="form-check-input" id="checkbox_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)">'+
+                  '<input type="radio" name="numero" value="1" id="radio_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)">'+
                 '</div>'+
               '</td>'+
 
@@ -213,7 +388,7 @@
               '<td style="width: 10%;">'+success['datos'][i]['CANTIDAD_VENTA']+'</td>'+
 
               '<td style="width: 10%;">'+
-                '<input type="number" class="form-control" id="cant_dev_'+success['datos'][i]['FK_PROCUTO']+'" value="0" max="'+success['datos'][i]['CANTIDAD_VENTA']+'" min="0" onchange="CalcularSubtotalDevolucion(' + success['datos'][i]['FK_PROCUTO']+','+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) + ')">'+
+                '<input type="number" class="form-control cantidades" id="cant_dev_'+success['datos'][i]['FK_PROCUTO']+'" value="0" max="'+success['datos'][i]['CANTIDAD_VENTA']+'" min="0" onchange="CalcularSubtotalDevolucion(' + success['datos'][i]['FK_PROCUTO']+','+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) + ')">'+
               '</td>'+
 
               '<td style="width: 12%;">$ '+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) +'</td>'+
@@ -224,21 +399,22 @@
         }
 
         console.log(total);
-        $("#CuerpoModalDevoluciones").append(
-            '<tr>'+
-              '<td></td>'+
-              '<td></td>'+
-              '<td></td>'+
-              '<td></td>'+
-              '<td></td>'+
-              '<td>Total</td>'+
-              '<td>$ '+ formatoMoneda(parseInt(total)) +'</td>'+
-            '</tr>'
-          );
+        // $("#CuerpoModalDevoluciones").append(
+        //     '<tr>'+
+        //       '<td></td>'+
+        //       '<td></td>'+
+        //       '<td></td>'+
+        //       '<td></td>'+
+        //       '<td></td>'+
+        //       '<td>Total</td>'+
+        //       '<td>$ '+ formatoMoneda(parseInt(total)) +'</td>'+
+        //     '</tr>'
+        //   );
         $("#ModalDevoluciones").modal();
       });
     }
 
+    //esta funcion muestra el detalle de la venta realizada, similar a la de devolucion pero sin funcionalidad de devolucion
     function DetalleVenta(id_venta){
       //console.log(fecha_inicio);
       var success;
@@ -279,6 +455,7 @@
       });
     }
 
+    //esta funcion obtiene el intervalo entre las fechas ingresadas por el usuario y obtiene todas las ventas en ese rango
     function GenerarReporte(){
       var min = 70;
       var max = 2000;

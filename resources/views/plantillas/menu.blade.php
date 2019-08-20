@@ -45,6 +45,7 @@
      }
      .test.modal-open {
         overflow: auto;
+        
      }
     </style>
   </head>
@@ -253,6 +254,11 @@
       $('body').addClass('test');//solución para que no se recorra el body hacia la izquierda
       //$("#cuerpoVinculacionDescripciones").html("");
     });
+
+    function CancelarSubmit(){
+        //console.log("Epale");
+        return false;
+      }
 
     function formatoMoneda(numero) {
       //numero = '3258.56';

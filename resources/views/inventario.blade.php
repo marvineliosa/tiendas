@@ -321,7 +321,7 @@
 
 	    //$("#ModalCompraFinalizada").modal();
     function ModoBusqueda(){
-      console.log('Epale');
+      //console.log('Epale');
       $("#BtnReiniciarConteo").attr('disabled',true);
       $("#BtnCompararInventario").attr('disabled',true);
       $("#BtnGuardarConteo").attr('disabled',true);
