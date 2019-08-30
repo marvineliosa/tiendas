@@ -75,3 +75,7 @@ Route::post('/inventario/conteo_actual', 'ProductosController@RegresarConteo');
 Route::post('/inventario/guardar_conteo', 'ProductosController@GuardarConteo');
 Route::post('/inventario/reiniciar_conteo', 'ProductosController@ReiniciarConteo');
 //Route::post('/inventario/agregar_inventario', 'ProductosController@AgregarInventario');
+
+Route::post('/devolucion/almacenar', 'ProductosController@AlmacenarDevolucion');
+
+Route::get('/codigo/{codigo}/imprimir', 'ProductosController@ImprimirCodigo');

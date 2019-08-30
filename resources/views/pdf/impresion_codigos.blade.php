@@ -13,7 +13,7 @@
 		    table {
 		      border-collapse: collapse;
 		    }
-		    body { font-family: 'Lucida Console', Monaco, monospace; font-size: 12px;}
+		    body { font-family: 'Lucida Console', Monaco, monospace; font-size: 11px;}
 
 		  </style>
 	</head>
@@ -34,9 +34,12 @@
 <script type="text/javascript">
 	llenaCodigos();
 	function llenaCodigos(){
-		var numero = 123456789;
+		var producto = <?php echo json_encode($producto) ?>;
+		console.log(producto);
+		var numero = producto['CODIGO'];
 		var nombre_producto = 'NOMBRE COMPLETO DEL PRODUCTO A IMPRIMIR';
 		var nombre_producto = '&nbsp'+'CHAMARRA ELITE MARINO FEMENIL TALLA XL'+'&nbsp';
+		var nombre_producto =  producto['NOMBRE_PRODUCTO'] + ' '+ producto['COLOR_PRODUCTO'] + ' '+ producto['TALLA_PRODUCTO'] +' '+  producto['GENERO_PRODUCTO'];
 		//var nombre_producto = '&nbsp'+'CHAMARRA ELITE MARINO VARONIL XS'+'&nbsp';
 		for(var i = 0; i < 10; i++){
 			//var img = '<img id="codigo-'+i+'"/>';
@@ -45,7 +48,7 @@
 							'<span align="center">'+'Producto'+'</span>'+
 						'</div>';//*/
 			var img = 	'<img id="codigo-'+i+'" /><br>'+
-						'<sup align="center">'+nombre_producto+'</sup>';//*/
+						'<sup align="center">'+nombre_producto.toUpperCase()+'</sup>';//*/
 
 			//console.log(img);
 			//var div = $("#codigos");
@@ -58,7 +61,7 @@
 				'</tr>'
 			);
 			JsBarcode("#codigo-"+i, numero, {
-			  height: 41
+			  height: 40
 			});
 		}
 		//window.print();

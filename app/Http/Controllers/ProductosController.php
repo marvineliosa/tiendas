@@ -17,6 +17,80 @@
          * @return Response
          */
 
+        public function ImprimirCodigo($codigo){
+            $producto = ProductosController::ObtenerProductoId($codigo);
+            //dd($producto);
+            return view('pdf.impresion_codigos') ->with (["producto"=>$producto]);
+
+        }
+
+        public function AlmacenarDevolucion(Request $request){
+            $usuario = \Session::get('usuario')[0];
+            $mensaje = '';
+            $exito = false;
+            //dd($usuario);//
+            //dd($request);
+            //verificamos si el articulo a devolver ya se ha devuelto con anterioridad
+            $fl_dev = ProductosController::VerificaDevoluciones1($request['id_venta'],$request['id_producto_devolver'],$request['id_producto_cambio']);
+            //dd($fl_dev);
+            //recibimos true o false, donde true es que ya existe una devolucion y false significa que podemos continuar con el registro de devolucion
+            if(!$fl_dev){
+                $id_devolucion = DB::table('TIENDAS_DEVOLUCIONES')->insertGetId(
+                    [
+                        'DEVOLUCIONES_PROCUTO_ID' => $request['id_producto_devolver'],
+                        'DEVOLUCIONES_CANTIDAD' => $request['cantidad_devolucion'],
+                        'created_at' => ProductosController::ObtenerFechaHora()
+                    ]
+                );
+
+                $id_cambio = DB::table('TIENDAS_DEVOLUCIONES')->insertGetId(
+                    [
+                        'DEVOLUCIONES_PROCUTO_ID' => $request['id_producto_cambio'],
+                        'DEVOLUCIONES_CANTIDAD' => $request['cantidad_cambio'],
+                        'created_at' => ProductosController::ObtenerFechaHora()
+                    ]
+                );
+
+                //dd('-> '.$id_devolucion.' -> '.$id_cambio);
+                DB::table('REL_DEVOLUCIONES')->insert([
+                    [
+                        'FK_VENTA' => $request['id_venta'],
+                        'FK_DEV_PROD_INICIAL' => $id_devolucion,
+                        'FK_DEV_PROD_CAMBIO' => $id_cambio,
+                        'FK_USUARIO' => $usuario,
+                        'REL_DEV_MOTIVO' => $request['motivo_devolucion'],
+                    ]
+                ]);
+                $mensaje = "La devolución se ha realizado satisfactoriamente";
+                $exito = true;
+            }else{
+                $mensaje = 'El producto seleccionado ya ha sido devuelto con anterioridad';
+            }
+
+            $data = array(
+                "exito"=>$exito,
+                "mensaje"=>$mensaje
+            );
+
+            echo json_encode($data);//*/
+
+        }
+
+        public function VerificaDevoluciones1($id_venta,$id_devuelto,$id_cambio){
+            $fl_existe = true;
+            $rel_devoluciones = DB::table('REL_DEVOLUCIONES')
+                ->where([
+                            'FK_VENTA'=>$id_venta
+                        ])
+                ->get();
+            if(count($rel_devoluciones) > 0){
+                dd($rel_devoluciones);
+            }else{
+                $fl_existe = false;
+            }
+            return $fl_existe;
+        }
+
         public function ObtenerDetalleVenta(Request $request){
             //dd($request['id_venta']);
             $id_venta = $request['id_venta'];
@@ -1238,6 +1312,7 @@
                 //$producto[0]->EXTISTENCIAS_ESPACIO = 
                 //$producto[0]->INVENTARIO = ProductosController::ObtenerExistenciasCompletasTodasTiendas($id_producto);
                 $producto[0]->TOTAL_NOTAS_ENTRADA = count(ProductosController::ObtenerNotasEntrada($id_producto));
+                $producto[0]->CODIGO = $id_producto;
 
                 return $producto[0];
             }else{

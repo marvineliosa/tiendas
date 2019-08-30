@@ -990,11 +990,13 @@
 
 	    function verCodigoBarras(codigo){
 			JsBarcode("#codigo", codigo);
+			gl_abrirCodigo = codigo;
 	    	$("#ModalCodigoBarras").modal();
 	    }
 
+	    var gl_abrirCodigo = null;
 	    function abrirCodigo(){
-	    	window.open('/codigo/imprimir','_blank');
+	    	window.open('/codigo/'+gl_abrirCodigo+'/imprimir','_blank');
 	    }
 
 	    function ejemploAjax(){

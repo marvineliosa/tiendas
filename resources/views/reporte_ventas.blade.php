@@ -141,6 +141,10 @@
               
             </tbody>
           </table>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Motivo de la devolución</label>
+            <textarea class="form-control" id="MotivoDevolucion" rows="2"></textarea>
+          </div>
           <div align="right">
             <button type="button" class="btn btn-primary" onclick="LlenarTablaDevolucion()">Seleccionar</button>
           </div>
@@ -236,11 +240,65 @@
 @section('script')
   <script type="text/javascript">
 
+    //funcion para generar la devolución de un artículo
+    function RealizarDevolucion(){
+      //datos del producto a devolver
+      var id_producto_devolver = seleccionado;
+      var cantidad_devolucion = $("#cant_dev_"+id_producto_devolver).val();
+      var motivo_devolucion = $("#MotivoDevolucion").val();
+      //datos articulo a cambio
+      //console.log(producto_cambio);
+      var id_producto_cambio = ((producto_cambio)?producto_cambio['ID_PRODUCTO']:null);
+      var cantidad_cambio = $("#cantidad_cambio").val();
+
+      if(producto_cambio == null){
+        MensajeModal('¡Atención!','Debe ingresar los datos del artículo a cambio');
+      }else if(cantidad_devolucion <= 0){
+        MensajeModal('¡Atención!','Debe elegir la cantidad a devolver');
+      }else if(motivo_devolucion == ''){
+        MensajeModal('¡Atención!','Debe especificar el motivo de la devolución');
+      }else if(cantidad_cambio <= 0){
+        MensajeModal('¡Atención!','Debe elegir la cantidad a de articulos a cambio');
+      } else{
+        // console.log("ID Articulo devuelto: "+ id_producto_devolver);
+        // console.log("Cantidad Articulo devuelto: "+ cantidad_devolucion);
+        // console.log("Motivo Articulo devuelto: "+ motivo_devolucion);
+        // console.log("ID Articulo cambio: "+ id_producto_cambio);
+        // console.log("Cantidad Cambio: "+ cantidad_cambio);
+        // console.log('Enviando...');
+
+        var success;
+        var url = "/devolucion/almacenar";
+        var dataForm = new FormData();
+        dataForm.append('id_producto_devolver', id_producto_devolver);
+        dataForm.append('cantidad_devolucion', cantidad_devolucion);
+        dataForm.append('motivo_devolucion', motivo_devolucion);
+        dataForm.append('id_producto_cambio', id_producto_cambio);
+        dataForm.append('cantidad_cambio', cantidad_cambio);
+        dataForm.append('id_venta', GL_IdVentaDevolucion);
+        //lamando al metodo ajax
+        metodoAjax(url,dataForm,function(success){
+          //aquí se escribe todas las operaciones que se harían en el succes
+          //la variable success es el json que recibe del servidor el método AJAX
+          //MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
+        });
+
+
+      }
+    }
+
     //esta funcion llena los datos de la tabla para su comparacion
     function LlenarTablaDevolucion(){
       var id_producto = seleccionado;
       var cantidad = $("#cant_dev_"+id_producto).val();
-      if(cantidad > 0){
+      var motivo = $("#MotivoDevolucion").val();
+      if(id_producto == null){
+        MensajeModal('¡Atención!','´Debe seleccionar un articulo para su devolución');
+      }else if(cantidad <= 0){
+        MensajeModal('¡Atención!','Debe elegir la cantidad a devolver');
+      }else if(motivo == ''){
+        MensajeModal('¡Atención!','Debe especificar el motivo de la devolución');
+      }else{
         for(var i = 0; i < array_articulos.length; i++){
           if(array_articulos[i]['FK_PROCUTO'] == id_producto){
             $("#td_devolucion-codigo").text(array_articulos[i]['FK_PROCUTO']);
@@ -251,8 +309,6 @@
           }
         }
         $("#DatosCambio").show();
-      }else{
-        MensajeModal('¡Atención!','Debe elegir la cantidad a devolver');
       }
     }
 
@@ -269,7 +325,7 @@
       //lamando al metodo ajax
       metodoAjax(url,dataForm,function(success){
         if(success['producto']){
-          if(parseFloat(success['producto']['PRECIO_VENTA']) < subtotal_devolucion){
+          if(parseFloat(success['producto']['PRECIO_VENTA']) <= subtotal_devolucion){
             $("#cantidad_cambio").attr('disabled',false);
             producto_cambio = success['producto'];
             producto_cambio['ID_PRODUCTO'] = id_producto;
@@ -280,7 +336,8 @@
             $("#td_cambio-precio").text("$ " + formatoMoneda(producto_cambio['PRECIO_VENTA']));
             $("#td_cambio-subtotal").text('$ '+formatoMoneda(producto_cambio['PRECIO_VENTA']));
           }else{
-            MensajeModal('¡Atención!','El precio del artículo '+producto_cambio['NOMBRE_PRODUCTO']+' es mayor al monto de devolución.');
+            //console.log(success);
+            MensajeModal('¡Atención!','El precio del artículo '+success['producto']['NOMBRE_PRODUCTO']+' es mayor al monto de devolución.');
           }
         }
       });
@@ -328,7 +385,7 @@
         $("#cantidad_cambio").val( producto_cambio['INVENTARIO_SESION'] );
         $("#td_cambio-subtotal").text('$ '+formatoMoneda(subtotal));
       }else{
-        console.log('SUBTOTAL CAMBIO: '+subtotal);
+        //console.log('SUBTOTAL CAMBIO: '+subtotal);
         $("#td_cambio-subtotal").text('$ '+formatoMoneda(subtotal));
       }
     }
@@ -342,6 +399,7 @@
       $("#td_cambio-precio").text('');
       $("#td_cambio-subtotal").text('');
       $("#cantidad_cambio").attr('disabled',true);
+      producto_cambio = null;
       if( $(elemento).prop('checked')){
         //console.log('radio_'+id_producto+' seleccionado');
         $("#tr_"+seleccionado).removeClass('warning');
@@ -355,7 +413,9 @@
 
     //esta funcion obtiene los datos de la compra realizada y llena la tabla con la informacion
     var array_articulos = new Array();
+    var GL_IdVentaDevolucion;
     function Devolucion(id_venta){
+
       //console.log(fecha_inicio);
       var success;
       var url = "/reportes/obtner_detalle";
@@ -364,13 +424,14 @@
       //$('#TablaDatos').DataTable().destroy();
       //lamando al metodo ajax
       metodoAjax(url,dataForm,function(success){
+        GL_IdVentaDevolucion = id_venta;
         //console.log(success);
         array_articulos = success['datos'];
         $("#CuerpoModalDevoluciones").html('');
         var total = 0;
         for(var i = 0; i < success['datos'].length; i++){
           var subtotal = parseInt(success['datos'][i]['CANTIDAD_VENTA']) * parseInt(success['datos'][i]['PRECIO_VENTA']);
-            console.log('subtotal: '+subtotal);
+            //console.log('subtotal: '+subtotal);
             total = parseInt(total) + parseInt(subtotal);
           $("#CuerpoModalDevoluciones").append(
             '<tr id="tr_'+success['datos'][i]['FK_PROCUTO']+'">'+
