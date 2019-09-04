@@ -462,11 +462,73 @@
         </div>
       </div>
     </div>
+
+    <!-- modal traspasar producto -->
+    <div class="modal fade" id="ModalAgregarInventario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll; max-height:100%;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Agregar Existencias</h5>
+          </div>
+          <div class="modal-body">
+          	<div class="form-horizontal form-label-left">
+
+	            <!-- Bodega origen -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Espacio*</label>
+	              <div class="col-md-8 col-sm-8 col-xs-12">
+	                <select class="form-control" id="select_tienda">
+	                </select>
+	              </div>
+	            </div>
+	          	<!-- nombre del producto -->
+	            <div class="form-group">
+	              <label class="control-label col-md-2 col-sm-2 col-xs-12">Cantidad</label>
+	              <div class="col-md-4 col-sm-4 col-xs-12">
+	                <input type="number" class="form-control" placeholder="" id="cantidad_inventario">
+	              </div>
+	            </div>
+        	</div><!-- fin div form -->
+
+          </div>
+          <div class="modal-footer">
+        	<button type="button" class="btn btn-primary" onclick="AgregarExistencias()">Registrar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 @endsection
 
 @section('script')
 	<script type="text/javascript">
 		//$("#ModalAgregarProducto").modal();
+		function AgregarExistencias(){
+			var select_tienda = $("#select_tienda").val();
+			var cantidad = $("#cantidad_inventario").val();
+			console.log(select_tienda);
+			//alert(GL_agregar_existencias);
+			/*console.log(GL_agregar_existencias);
+			var success;
+			var url = "/productos/cancelar_movilizaciones";
+			var dataForm = new FormData();
+			dataForm.append('id_movilizacion',id_movilizacion);
+			//lamando al metodo ajax
+			metodoAjax(url,dataForm,function(success){
+				//aquí se escribe todas las operaciones que se harían en el succes
+				//la variable success es el json que recibe del servidor el método AJAX
+				//MensajeModal('¡ÉXITO!','Se ha marcado como recibida la movilización de 
+				MensajeModal('¡ÉXITO!',success['mensaje']);
+				$("#ModalListadoMovilizacion").modal('hide');
+			});//*/
+		}
+
+		var GL_agregar_existencias;
+		function ModalAgregarExistencias(id_producto){
+			GL_agregar_existencias = id_producto;
+			LlenarTiendas('select_tienda',id_producto,'destino');
+			$("#ModalAgregarInventario").modal();
+		}
 
 		function CancelarMovilizacion(id_movilizacion){
 			console.log(id_movilizacion);
@@ -500,8 +562,7 @@
 				//MensajeModal('¡ÉXITO!','Se ha marcado como recibida la movilización de inventario. Se ha registrado exitosamente '+tmp[1]+'" unidades al inventario de '+'"'+tmp[2]+'"');
 				MensajeModal('¡ÉXITO!',success['mensaje']);
 				$("#ModalAceptarMovilizacion").modal('hide');
-			});//*/
-			
+			});//*/		
 		}
 
 		function RegistrarMovilizacionInventario(){

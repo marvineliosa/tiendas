@@ -38,6 +38,7 @@
             \Session::forget('categoria');
             \Session::forget('id_tienda');
             \Session::forget('responsable');
+            \Session::forget('nombre_tienda');
             //dd($request);
             $usruario = $request['usuario'];
             $contrasena = $request['contrasena'];
@@ -52,6 +53,7 @@
                 \Session::push('categoria',$existe[0]->LOGIN_CATEGORIA);
                 \Session::push('responsable',$existe[0]->LOGIN_RESPONSABLE);
                 \Session::push('id_tienda',UsuariosController::ObtenerTiendaUsuario($existe[0]->LOGIN_ID));
+                \Session::push('nombre_tienda',EspaciosController::ObtenerNombreEspacio(\Session::get('id_tienda')[0]));
 
             }
 
@@ -59,6 +61,7 @@
                 "usuario"=>\Session::get('usuario')[0],
                 "categoria"=>\Session::get('categoria')[0],
                 "id_tienda"=>\Session::get('id_tienda')[0],
+                "nombre_tienda"=>\Session::get('nombre_tienda')[0],
                 "responsable"=>\Session::get('responsable')[0],
                 "exito" => $fl
             );

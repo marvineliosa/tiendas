@@ -17,6 +17,15 @@
          * @return Response
          */
 
+        public function InsertarInventarioDirecto(Request $request){
+            dd($request);
+            $id_producto = $request['id_producto'];
+            $select_bodega = $request['bodega'];
+            $cantidad = $request['cantidad'];
+            $inventario = ProductosController::AumentarInventario($id_producto,$select_bodega,$cantidad);
+
+        }
+
         public function ImprimirCodigo($codigo){
             $producto = ProductosController::ObtenerProductoId($codigo);
             //dd($producto);
@@ -931,6 +940,7 @@
         }
 
         public function RegistrarMovilizacionInventario(Request $request){
+            dd($request);
             $id_producto = $request['id_producto'];
             $tienda_origen = $request['id_tienda_origen'];
             $tienda_destino = $request['id_tienda_destino'];

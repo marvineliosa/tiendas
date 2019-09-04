@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Impresión de Códigos</title>
+		<title>{{$producto->CODIGO}}</title>
 		<style>
 		    table {
 		      border: #b2b2b2 1px solid;
@@ -39,7 +39,7 @@
 		var numero = producto['CODIGO'];
 		var nombre_producto = 'NOMBRE COMPLETO DEL PRODUCTO A IMPRIMIR';
 		var nombre_producto = '&nbsp'+'CHAMARRA ELITE MARINO FEMENIL TALLA XL'+'&nbsp';
-		var nombre_producto =  producto['NOMBRE_PRODUCTO'] + ' '+ producto['COLOR_PRODUCTO'] + ' '+ producto['TALLA_PRODUCTO'] +' '+  producto['GENERO_PRODUCTO'];
+		var nombre_producto =  producto['NOMBRE_PRODUCTO'] + ' '+ producto['COLOR_PRODUCTO'] + ' '+ ((producto['TALLA_PRODUCTO']=='SIN TALLA')?'':producto['TALLA_PRODUCTO']) +' '+  producto['GENERO_PRODUCTO'];
 		//var nombre_producto = '&nbsp'+'CHAMARRA ELITE MARINO VARONIL XS'+'&nbsp';
 		for(var i = 0; i < 10; i++){
 			//var img = '<img id="codigo-'+i+'"/>';
