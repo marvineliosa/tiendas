@@ -18,12 +18,20 @@
          */
 
         public function InsertarInventarioDirecto(Request $request){
-            dd($request);
+            //dd($request);
             $id_producto = $request['id_producto'];
-            $select_bodega = $request['bodega'];
+            $select_bodega = $request['id_tienda'];
             $cantidad = $request['cantidad'];
-            $inventario = ProductosController::AumentarInventario($id_producto,$select_bodega,$cantidad);
+            //dd($request['id_tienda']);
+            $inventario = ProductosController::InsertarInventario($id_producto,$select_bodega,$cantidad);
 
+            $mensaje = "Inventario modificado satisfactoriamente";
+            $data = array(
+                "inventario"=>$inventario,
+                'mensaje' => $mensaje
+            );
+
+            echo json_encode($data);//*/
         }
 
         public function ImprimirCodigo($codigo){
@@ -40,9 +48,11 @@
             //dd($usuario);//
             //dd($request);
             //verificamos si el articulo a devolver ya se ha devuelto con anterioridad
-            $fl_dev = ProductosController::VerificaDevoluciones1($request['id_venta'],$request['id_producto_devolver'],$request['id_producto_cambio']);
+            $devolucion = ProductosController::VerificaProductoDevuelto($request['id_venta'],$request['id_producto_devolver']);
             //dd($fl_dev);
             //recibimos true o false, donde true es que ya existe una devolucion y false significa que podemos continuar con el registro de devolucion
+            $fl_dev = $devolucion['fl_existe'];
+            //dd($fl_dev);
             if(!$fl_dev){
                 $id_devolucion = DB::table('TIENDAS_DEVOLUCIONES')->insertGetId(
                     [
@@ -78,6 +88,7 @@
 
             $data = array(
                 "exito"=>$exito,
+                "fl_dev"=>$fl_dev,
                 "mensaje"=>$mensaje
             );
 
@@ -85,19 +96,57 @@
 
         }
 
-        public function VerificaDevoluciones1($id_venta,$id_devuelto,$id_cambio){
+        public function VerificaProductoDevuelto($id_venta,$id_devuelto){
             $fl_existe = true;
             $rel_devoluciones = DB::table('REL_DEVOLUCIONES')
                 ->where([
                             'FK_VENTA'=>$id_venta
                         ])
                 ->get();
+            $array_devolucion = array();
+            $array_cambio = array();
+            //dd(count($devolucion));
+            //dd($rel_devoluciones);
             if(count($rel_devoluciones) > 0){
-                dd($rel_devoluciones);
+                //dd($rel_devoluciones);
+                foreach ($rel_devoluciones as $devolucion) {
+                    $fl_inicial = DB::table('TIENDAS_DEVOLUCIONES')
+                        ->where([
+                                    'DEVOLUCIONES_ID' => $devolucion->FK_DEV_PROD_INICIAL,
+                                    'DEVOLUCIONES_PROCUTO_ID' => $id_devuelto
+                                ])
+                        ->get();
+
+                    $fl_cambio = DB::table('TIENDAS_DEVOLUCIONES')
+                        ->where([
+                                    'DEVOLUCIONES_ID' => $devolucion->FK_DEV_PROD_CAMBIO
+                                ])
+                        ->get();
+                    //dd($devolucion->FK_DEV_PROD_INICIAL.'- -'.$devolucion->FK_DEV_PROD_CAMBIO);
+                    if(count($fl_inicial)>0){
+                        //dd($fl_cambio);
+                        $fl_cambio[0]->NOMBRE_PRODUCTO = ProductosController::ObtenerNombreProductoId($fl_cambio[0]->DEVOLUCIONES_PROCUTO_ID);
+                        //$fl_cambio[0]->NOMBRE_PRODUCTO = 'EPALE';
+                        //dd($fl_cambio->NOMBRE_PRODUCTO);
+                        $array_devolucion = $fl_inicial;
+                        $array_cambio = $fl_cambio;
+                        //dd($array_cambio);
+                        //$fl_existe = true;
+                        break;
+                    }
+                }
+                if(count($array_devolucion)==0){
+                    $fl_existe = false;
+                }
             }else{
                 $fl_existe = false;
             }
-            return $fl_existe;
+            $devolucion = array(
+                'devolucion' => ((count($array_devolucion)>0)?$array_devolucion[0]:$array_devolucion),
+                'cambio' => ((count($array_cambio)>0)?$array_cambio[0]:$array_cambio),
+                'fl_existe' => $fl_existe
+            );
+            return $devolucion;
         }
 
         public function ObtenerDetalleVenta(Request $request){
@@ -210,7 +259,15 @@
         }
 
         public function CrearReporteIntervalo(Request $request){
-            //dd($request['fecha_fin']);
+            //dd($request);
+            $tienda = null;
+            //if(strcmp($tienda,'undefined')==0){
+            if(strcasecmp($request['tienda'], "undefined")==0){
+                $tienda = \Session::get('id_tienda')[0];
+            }else{
+                $tienda = $request['tienda'];
+            }
+            //dd($tienda);
             $fecha_inicio = str_replace('/', '-', $request['fecha_inicio']);
             //echo date('Y-m-d', strtotime($date));
             $fecha_inicio = date("Y-m-d", strtotime($fecha_inicio));
@@ -220,12 +277,45 @@
             //$fecha_fin = $request['fecha_fin'];
             //dd($fecha_inicio.'/'.$fecha_fin);
             //date("Y-m-d", strtotime($var) )
-            $ventas = DB::table('TIENDAS_VENTAS')
+
+            /*$rel_ventas = DB::table('REL_VENTA_PRODUCTO')
+                ->where()
+                ->distinct()//*/
+
+
+            /*$ventas = DB::table('TIENDAS_VENTAS')
                      //->select('VENTAS_ID')
                      //->whereIn('DATOS_CGA_ESTATUS',$array_estatus)
                      ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
                      ->orderBy('created_at','desc')
-                     ->get();
+                     ->get();//*/
+            if(strcmp($tienda, 'TODOS')==0){
+                //dd('epalepa');
+                $rel_ventas = DB::table('REL_VENTA_PRODUCTO')
+                         ->select('REL_VENTA_FK_VENTA')
+                         ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
+                         ->orderBy('created_at','desc')
+                         ->distinct()
+                         ->get();
+            }else{
+                $rel_ventas = DB::table('REL_VENTA_PRODUCTO')
+                         ->select('REL_VENTA_FK_VENTA','created_at')
+                         ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
+                         ->where('REL_VENTA_FK_ESPACIO',$tienda)
+                         ->orderBy('created_at','desc')
+                         ->distinct()
+                         ->get();
+            }
+            //dd($rel_ventas);
+            $ventas = array();
+            foreach ($rel_ventas as $rel_venta){
+                $tmp_venta = DB::table('TIENDAS_VENTAS')
+                     ->where('VENTAS_ID',$rel_venta->REL_VENTA_FK_VENTA)
+                     ->get();//
+                $ventas[] = $tmp_venta[0];
+            }//*/
+            //$ventas = $query->addSelect('REL_VENTA_FK_VENTA')->get();
+
             //dd($ventas);
 
             foreach ($ventas as $venta) {
@@ -268,14 +358,27 @@
 
                 foreach ($ventas as $venta) {
                     $venta->NOMBRE_PRODUCTO = ProductosController::ObtenerNombreProductoId($venta->FK_PROCUTO);
+                    $tmp_devolucion = ProductosController::VerificaProductoDevuelto($id_venta,$venta->FK_PROCUTO);
+                    $venta->DEVOLUCION = $tmp_devolucion;
+                    //dd($tmp_devolucion['fl_existe']);
+                    //$venta->DEVOLUCION = $tmp_devolucion['devolucion'];
+                    // if($tmp_devolucion['fl_existe']){
+                    //     $venta->DEVOLUCION = $tmp_devolucion['devolucion'];
+                    // }else{
+                    //     $venta->DEVOLUCION = $tmp_devolucion;
+                    // }
+                    //$venta->DEVOLUCION = $tmp_devolucion[]
                 }
+            //dd($ventas);
             return $ventas;
             //dd($ventas);
         }
 
         public function VistaReporteVentas(){
 
-            return view('reporte_ventas');
+            $espacios = EspaciosController::ObtenerListadoEspacios();
+            //dd($espacios);
+            return view('reporte_ventas')->with(['espacios'=>$espacios]);
         }
 
         public function VistaRegistrarInventario(){
@@ -570,6 +673,43 @@
             return $cantidad;
         }
 
+        //esta función sustituye el inventario que existe por la cantidad que es recibida en el método
+        public function InsertarInventario($id_producto,$select_bodega,$cantidad){
+            //$nueva_cantidad = $cantidad;
+            //verificamos si ya existe un registro en inventario
+            $existe_inventario = DB::table('REL_INVENTARIO')
+                ->where([
+                            'DATOS_VENTA_FK_PROCUTO'=> $id_producto,
+                            'DATOS_VENTA_FK_ESPACIO'=> $select_bodega
+                        ])
+                ->get();
+
+            //dd($existe_inventario);
+            //si no existe la relacion, creamos una nueva
+            if(count($existe_inventario)==0){
+                //dd('Epale!');
+                //dd('Epale!');
+                DB::table('REL_INVENTARIO')->insert(
+                    [
+                        'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                        'DATOS_VENTA_FK_ESPACIO' => $select_bodega,
+                        'DATOS_VENTA_CANTIDAD' => $cantidad
+                    ]
+                );//*/
+            }else{//en caso contrario solo le sumamos la cantidad registrada
+                //$nueva_cantidad = $existe_inventario[0]->DATOS_VENTA_CANTIDAD + $cantidad;
+                //dd($nueva_cantidad);
+                DB::table('REL_INVENTARIO')
+                    ->where([
+                                'DATOS_VENTA_FK_PROCUTO' => $id_producto,
+                                'DATOS_VENTA_FK_ESPACIO' => $select_bodega
+                            ])
+                    ->update(['DATOS_VENTA_CANTIDAD' => $cantidad]);
+                //dd($nueva_cantidad);
+            }
+            return $cantidad;
+        }
+
         public function AumentarInventario($id_producto,$select_bodega,$cantidad){
             $nueva_cantidad = $cantidad;
             //verificamos si ya existe un registro en inventario
@@ -625,8 +765,9 @@
 
         //esta funcion es para la consulta dentro de otras funciones
         public function DarFormatoConsecutivo2($consecutivo,$fecha){
-            //dd($id_venta);
+            //dd($consecutivo);
             $id_espacio = \Session::get('id_tienda')[0];
+            //dd($id_espacio);
             $anio = strtotime($fecha);
             //dd(date('Y',$anio));
             $anio = date('Y',$anio);
@@ -940,7 +1081,7 @@
         }
 
         public function RegistrarMovilizacionInventario(Request $request){
-            dd($request);
+            //dd($request);
             $id_producto = $request['id_producto'];
             $tienda_origen = $request['id_tienda_origen'];
             $tienda_destino = $request['id_tienda_destino'];

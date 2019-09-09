@@ -26,6 +26,7 @@
         }
 
         public static function ObtenerDatosEspacioId($id_espacio){
+
             $espacio = DB::table('TIENDAS_ESPACIOS')
                 ->select(
                             'ESPACIO_NOMBRE as NOMBRE_ESPACIO',
@@ -33,12 +34,14 @@
                             'ESPACIO_SIGLAS as NOMENCLATURA_ESPACIO',
                             'ESPACIO_TIPO as TIPO_ESPACIO'
                         )
+                ->where('ESPACIO_ID',$id_espacio)
                 ->orderBy('ESPACIO_TIPO', 'desc')
                 ->get();
             if(count($espacio)>0){
                 return $espacio[0];
             }else{
-                return null;
+                return '--';
+                //return null;
             }
         }
 

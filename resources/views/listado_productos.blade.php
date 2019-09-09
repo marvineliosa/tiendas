@@ -505,14 +505,17 @@
 		//$("#ModalAgregarProducto").modal();
 		function AgregarExistencias(){
 			var select_tienda = $("#select_tienda").val();
+			var id_tienda = array_destino[select_tienda]['ID_ESPACIO'];
 			var cantidad = $("#cantidad_inventario").val();
-			console.log(select_tienda);
+			console.log(id_tienda);
 			//alert(GL_agregar_existencias);
-			/*console.log(GL_agregar_existencias);
+			console.log(GL_agregar_existencias);
 			var success;
-			var url = "/productos/cancelar_movilizaciones";
+			var url = "/inventario/agregar_existencias";
 			var dataForm = new FormData();
-			dataForm.append('id_movilizacion',id_movilizacion);
+			dataForm.append('id_tienda',id_tienda);
+			dataForm.append('cantidad',cantidad);
+			dataForm.append('id_producto',GL_agregar_existencias);
 			//lamando al metodo ajax
 			metodoAjax(url,dataForm,function(success){
 				//aquí se escribe todas las operaciones que se harían en el succes
