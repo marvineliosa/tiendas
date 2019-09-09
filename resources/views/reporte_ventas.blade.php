@@ -41,7 +41,7 @@
                 </fieldset>
               </div>
 
-              @if(in_array(\Session::get('usuario')[0],['ADMINISTRADOR','ENCARGADO']))
+              @if(in_array(\Session::get('categoria')[0],['ADMINISTRADOR','ENCARGADO']))
               <div class="col-md-3 col-sm-3 col-xs-12">
                 <select class="form-control" id="SelectEspacio">
                   <option value="TODOS">TODOS</option>

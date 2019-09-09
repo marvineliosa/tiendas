@@ -17,6 +17,12 @@
          * @return Response
          */
 
+        public function VistaRemision($remision){
+            $venta = ProductosController::ObtenerDatosVenta($remision);
+            //dd($venta);
+            return view('pdf.remision') ->with (["detalles"=>$venta]);
+        }
+
         public function InsertarInventarioDirecto(Request $request){
             //dd($request);
             $id_producto = $request['id_producto'];
@@ -1421,12 +1427,14 @@
             //dd('epale');
             $producto = DB::table('TIENDAS_PRODUCTOS')
                 ->where('PRODUCTOS_ID',$id_producto)
-                ->select(
-                    'PRODUCTOS_NOMBRE as NOMBRE_PRODUCTO'
-                )
+                // ->select(
+                //     'PRODUCTOS_NOMBRE as NOMBRE_PRODUCTO'
+                // )
                 ->get();
+            //dd($producto);
             if(count($producto)>0){
-                return $producto[0]->NOMBRE_PRODUCTO;
+                return $producto[0]->PRODUCTOS_NOMBRE.' '.$producto[0]->PRODUCTOS_COLOR.' '.$producto[0]->PRODUCTOS_TALLA.' '.$producto[0]->PRODUCTOS_GENERO;
+                //return $producto[0]->NOMBRE_PRODUCTO;
             }else{
                 return null;
             }

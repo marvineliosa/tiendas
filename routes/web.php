@@ -23,8 +23,9 @@ Route::get('/codigo', function () {
 
 
 Route::get('/codigo/imprimir', function () {
-    return view('pdf.impresion_codigos');
+    return view('pdf.prueba_jspdf');
 });
+Route::get('/remision/{venta}', 'ProductosController@VistaRemision');
 
 Route::get('/venta', function () {
     return view('venta');

@@ -597,7 +597,7 @@
 							$("#cuerpoVenta").append(
 								'<tr id="tr_'+ id_producto +'">'+
 									'<td>'+ id_producto +'</td>'+
-									'<td>'+success['producto']['NOMBRE_PRODUCTO'] +'</td>'+
+									'<td>'+success['producto']['NOMBRE_PRODUCTO'] + ' '+ success['producto']['COLOR_PRODUCTO'] + ' '+ success['producto']['TALLA_PRODUCTO'] + ' '+ success['producto']['GENERO_PRODUCTO'] +'</td>'+
 									'<td>'+'<input type="number" class="form-control" id="contador_'+ id_producto +'" value="1" onchange="cambio(this,'+id_producto+','+success['producto']['PRECIO_VENTA']+','+success['producto']['INVENTARIO_SESION']+' )">'+'</td>'+
 									'<td>$ '+success['producto']['PRECIO_VENTA']+'</td>'+
 									'<td id="subtotal_'+ id_producto +'" >$ '+ success['producto']['PRECIO_VENTA']+'</td>'+
