@@ -40,6 +40,19 @@
                   </div>
                 </fieldset>
               </div>
+
+              @if(in_array(\Session::get('usuario')[0],['ADMINISTRADOR','ENCARGADO']))
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <select class="form-control" id="SelectEspacio">
+                  <option value="TODOS">TODOS</option>
+                  @foreach($espacios as $espacio)
+                    @if(strcmp($espacio->TIPO_ESPACIO,'TIENDA')==0)
+                      <option value="{{$espacio->ID_ESPACIO}}">{{$espacio->NOMBRE_ESPACIO}}</option>
+                    @endif
+                  @endforeach
+                </select>
+              </div>
+              @endif
               <div class="col-md-3 col-sm-3 col-xs-12">
                 <button type="button" class="btn btn-primary btn-md btn-block" onclick="GenerarReporte()">Generar Reporte</button>
               </div>
@@ -281,6 +294,13 @@
           //aquí se escribe todas las operaciones que se harían en el succes
           //la variable success es el json que recibe del servidor el método AJAX
           //MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
+          // if(success['fl_dev']){
+          //   MensajeModal("¡Atención!",success['mensaje']);
+          // }
+          MensajeModal("¡Atención!",success['mensaje']);
+          if(!success['fl_dev']){
+            $("#ModalDevoluciones").modal('hide');
+          }
         });
 
 
@@ -415,7 +435,7 @@
     var array_articulos = new Array();
     var GL_IdVentaDevolucion;
     function Devolucion(id_venta){
-
+      $("#CuerpoTablaDevueltos").html('');
       //console.log(fecha_inicio);
       var success;
       var url = "/reportes/obtner_detalle";
@@ -431,15 +451,15 @@
         var total = 0;
         for(var i = 0; i < success['datos'].length; i++){
           var subtotal = parseInt(success['datos'][i]['CANTIDAD_VENTA']) * parseInt(success['datos'][i]['PRECIO_VENTA']);
-            //console.log('subtotal: '+subtotal);
-            total = parseInt(total) + parseInt(subtotal);
+          AppendTablaCambio(success['datos'][i]['DEVOLUCION']['cambio']);
+          //console.log('subtotal: '+subtotal);
+          total = parseInt(total) + parseInt(subtotal);
+          var fl_devuelto = success['datos'][i]['DEVOLUCION']['fl_existe'];
           $("#CuerpoModalDevoluciones").append(
             '<tr id="tr_'+success['datos'][i]['FK_PROCUTO']+'">'+
               '<td style="width: 5%;">'+
                 '<div class="form-check">'+
-
-                  // '<input type="checkbox" class="form-check-input" id="checkbox_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)">'+
-                  '<input type="radio" name="numero" value="1" id="radio_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)">'+
+                  '<input type="radio" name="numero" value="1" id="radio_'+success['datos'][i]['FK_PROCUTO']+'" onclick="seleccionArticulo('+success['datos'][i]['FK_PROCUTO']+',this)" '+((fl_devuelto)?'disabled':'')+'>'+
                 '</div>'+
               '</td>'+
 
@@ -449,30 +469,42 @@
               '<td style="width: 10%;">'+success['datos'][i]['CANTIDAD_VENTA']+'</td>'+
 
               '<td style="width: 10%;">'+
-                '<input type="number" class="form-control cantidades" id="cant_dev_'+success['datos'][i]['FK_PROCUTO']+'" value="0" max="'+success['datos'][i]['CANTIDAD_VENTA']+'" min="0" onchange="CalcularSubtotalDevolucion(' + success['datos'][i]['FK_PROCUTO']+','+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) + ')">'+
+                '<input type="number" class="form-control cantidades" id="cant_dev_'+success['datos'][i]['FK_PROCUTO']+'" value="0" max="'+success['datos'][i]['CANTIDAD_VENTA']+'" min="0" onchange="CalcularSubtotalDevolucion(' + success['datos'][i]['FK_PROCUTO']+','+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) + ')"'+((fl_devuelto)?'disabled':'')+'>'+
               '</td>'+
-
               '<td style="width: 12%;">$ '+ formatoMoneda(success['datos'][i]['PRECIO_VENTA']) +'</td>'+
 
               '<td style="width: 15%;" id="subtotal_dev_'+success['datos'][i]['FK_PROCUTO']+'">$ '+ formatoMoneda(0) +'</td>'+
             '</tr>'
           );
         }
-
-        console.log(total);
-        // $("#CuerpoModalDevoluciones").append(
-        //     '<tr>'+
-        //       '<td></td>'+
-        //       '<td></td>'+
-        //       '<td></td>'+
-        //       '<td></td>'+
-        //       '<td></td>'+
-        //       '<td>Total</td>'+
-        //       '<td>$ '+ formatoMoneda(parseInt(total)) +'</td>'+
-        //     '</tr>'
-        //   );
+        //console.log(total);
+        $("#MotivoDevolucion").val('');
+        $("#DatosCambio").hide();
         $("#ModalDevoluciones").modal();
       });
+    }
+
+    function AppendTablaCambio(cambio){
+      //console.log();
+      if(cambio['DEVOLUCIONES_PROCUTO_ID']){
+        $("#CuerpoTablaDevueltos").append(
+            '<tr>'+
+              '<td>'+
+                cambio['DEVOLUCIONES_PROCUTO_ID']+
+              '</td>'+
+              '<td>'+
+                cambio['NOMBRE_PRODUCTO']+
+              '</td>'+
+              '<td>'+
+                cambio['DEVOLUCIONES_CANTIDAD']+
+              '</td>'+
+              '<td>'+
+                cambio['created_at']+
+              '</td>'+
+            '</tr>'
+          );
+      }
+
     }
 
     //esta funcion muestra el detalle de la venta realizada, similar a la de devolucion pero sin funcionalidad de devolucion
@@ -522,12 +554,14 @@
       var max = 2000;
       var fecha_inicio = $("#FechaInicioCalendario").val();
       var fecha_fin = $("#FechaFinCalendario").val();
+      var tienda = $("#SelectEspacio").val();
       //console.log(fecha_inicio);
       var success;
       var url = "/reportes/reporte_intervalo";
       var dataForm = new FormData();
       dataForm.append('fecha_inicio',fecha_inicio);
       dataForm.append('fecha_fin',fecha_fin);
+      dataForm.append('tienda',tienda);
       $('#TablaDatos').DataTable().destroy();
       //lamando al metodo ajax
       metodoAjax(url,dataForm,function(success){
