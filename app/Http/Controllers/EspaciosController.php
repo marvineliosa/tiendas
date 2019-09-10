@@ -40,7 +40,7 @@
             if(count($espacio)>0){
                 return $espacio[0];
             }else{
-                return '--';
+                return null;
                 //return null;
             }
         }

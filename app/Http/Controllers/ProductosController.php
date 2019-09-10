@@ -19,8 +19,10 @@
 
         public function VistaRemision($remision){
             $venta = ProductosController::ObtenerDatosVenta($remision);
+            $datos_venta = ProductosController::ObtenerDatosGeneralesVentaId($remision);
+            //dd($datos_venta);
             //dd($venta);
-            return view('pdf.remision') ->with (["detalles"=>$venta]);
+            return view('pdf.remision') ->with (["detalles"=>$venta,"datos_venta"=>$datos_venta]);
         }
 
         public function InsertarInventarioDirecto(Request $request){
@@ -326,7 +328,7 @@
 
             foreach ($ventas as $venta) {
                 //dd($venta->created_at);
-                $formato = ProductosController::DarFormatoConsecutivo2($venta->VENTAS_CONSECUTIVO_ANUAL, $venta->created_at);
+                $formato = ProductosController::DarFormatoConsecutivo2($venta->VENTAS_ID,$venta->VENTAS_CONSECUTIVO_ANUAL, $venta->created_at);
                 //$formato = ProductosController::DarFormatoConsecutivo($venta->VENTAS_ID, $venta->created_at);
                 $venta->VENTAS_CONSECUTIVO_ANUAL = $formato;
             }
@@ -378,6 +380,33 @@
             //dd($ventas);
             return $ventas;
             //dd($ventas);
+        }
+
+        public function ObtenerDatosGeneralesVentaId($id_venta){
+            $venta = DB::table('TIENDAS_VENTAS')
+                ->where('VENTAS_ID',$id_venta)
+                ->get();
+            //dd($venta);
+            if(count($venta)>0){
+                $fecha_hora = ProductosController::ConvertirFechaHora($venta[0]->created_at);
+                $venta[0]->FECHA_VENTA = $fecha_hora['fecha'];
+                $venta[0]->HORA_VENTA = $fecha_hora['hora'];
+                $venta[0]->CONSECUTIVO_ANUAL = ProductosController::DarFormatoConsecutivo2($venta[0]->VENTAS_ID,$venta[0]->VENTAS_CONSECUTIVO_ANUAL,$venta[0]->created_at);
+                return $venta[0];
+            }else{
+                return null;
+            }
+        }
+
+        public function ConvertirFechaHora($fecha){
+            //dd($fecha);
+            $old_date_timestamp = strtotime($fecha);
+            $new_date = date('d/m/Y', $old_date_timestamp);
+            //dd($new_date);
+            $hora = date('H:i:s', $old_date_timestamp);
+            //dd($hora);
+            $fecha_hora = array('fecha' => $new_date, 'hora'=> $hora);
+            return $fecha_hora;
         }
 
         public function VistaReporteVentas(){
@@ -770,14 +799,20 @@
         }
 
         //esta funcion es para la consulta dentro de otras funciones
-        public function DarFormatoConsecutivo2($consecutivo,$fecha){
+        public function DarFormatoConsecutivo2($id_venta,$consecutivo,$fecha){
             //dd($consecutivo);
-            $id_espacio = \Session::get('id_tienda')[0];
-            //dd($id_espacio);
+            // $id_espacio = \Session::get('id_tienda')[0];
+            // dd($id_espacio);
             $anio = strtotime($fecha);
             //dd(date('Y',$anio));
             $anio = date('Y',$anio);
-            $datos_espacio = EspaciosController::ObtenerDatosEspacioId($id_espacio);
+
+            $id_espacio = DB::table('REL_VENTA_PRODUCTO')
+                ->select('REL_VENTA_FK_ESPACIO')
+                ->where('REL_VENTA_FK_VENTA',$id_venta)
+                ->first();
+
+            $datos_espacio = EspaciosController::ObtenerDatosEspacioId($id_espacio->REL_VENTA_FK_ESPACIO);
             //dd($datos_espacio);
             $consecutivo = $datos_espacio->NOMENCLATURA_ESPACIO.'/'.$consecutivo.'/'.$anio;
             return $consecutivo;
