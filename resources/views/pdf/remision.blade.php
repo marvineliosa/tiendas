@@ -14,42 +14,74 @@
 		<title>Remision</title>
 	</head>
 	<body id="cuerpoPagina">
-		<div><br></div>
-		<div id="Parte1">
-			<div class="form-inline">
-			  <div class="form-group col-md-4">
-			    NOTA de remisión
-			  </div>
-			  <div class="form-group col-md-4">
-			    {{$datos_venta->FECHA_VENTA}}
-			  </div>
-			  <div class="form-group col-md-4">
-			    {{$datos_venta->CONSECUTIVO_ANUAL}}
-			  </div>
-			</div>
-			<br>
+			<table class="table table">
+	      <thead id="HeadTablaDevoluciones">
+	        <tr align="center">
+	          <td style="font-size: 12px;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;">NOTA de remisión</td>
+	          <td style="font-size: 12px;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;">Fecha de venta: {{$datos_venta->FECHA_VENTA}}</td>
+	          <td style="font-size: 12px;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;">{{$datos_venta->CONSECUTIVO_ANUAL}}</td>
+	        </tr>
+	      </thead>
+	    </table>
+		<div id="codigos">
+			<table class="table table" style="background-color: #013c5a;">
+		      <thead id="HeadTablaDevoluciones">
+		        <tr align="">
+		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;" class="align-middle"><img src="images/logo-buap.png" width="150" height="50" /></td>
+		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;"></td>
+		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;">
+		          	<p style="color:white;">
+		          		<strong>{{$datos_venta->TIENDA->NOMBRE_ESPACIO}}</strong> 
+		          	</p>
+		          	<p style="color:white;font-size: 10px;">
+		          		{{$datos_venta->TIENDA->UBICACION_ESPACIO}}
+		          	</p>
+		          </td>
+		        </tr>
+		      </thead>
+		    </table>
 		</div>
-		<div id="codigos" style="background-color: #013c5a;">
-			epale
-		</div>
-		<table class="table table-bordered">
-            <thead id="HeadTablaDevoluciones">
-              <tr align="center">
-                <th scope="col"></th>
-                <th scope="col">Codigo</th>
-                <th scope="col">Producto</th>
-                <th scope="col">Cantidad Vendida</th>
-                <th scope="col">Cantidad Devolución</th>
-                <th scope="col">Precio de Venta</th>
-                <th scope="col">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody id="CuerpoModalDevoluciones">
-              @foreach($detalles as $venta)
-              	
-              @endforeach
-            </tbody>
-          </table>
+		<table class="table table-bordered" style="width:100%;">
+	      <tbody id="CuerpoModalDevoluciones">
+        	<tr>
+        		<td align="" style="width: 20%;">Nombre:</td>
+        		<td align="center" style=""></td>
+        	</tr>
+        	<tr>
+        		<td align="" style="width: 20%;">Correo electrónico:</td>
+        		<td align="center"></td>
+        	</tr>
+	      </tbody>
+	    </table>
+		<table class="table table-bordered" style="width:100%;">
+	      <thead id="HeadTablaDevoluciones">
+	        <tr align="center">
+	          <th scope="col" style="width: 10%; text-align:center;">Codigo</th>
+	          <th scope="col" style="width: 10%; text-align:center;">Cantidad</th>
+	          <th scope="col" style="width: 30%; text-align:center;">Producto</th>
+	          <th scope="col" style="width: 10%; text-align:center;">Precio Unitario</th>
+	          <th scope="col" style="width: 10%; text-align:center;">Importe</th>
+	        </tr>
+	      </thead>
+	      <tbody id="CuerpoModalDevoluciones">
+	        @foreach($detalles as $venta)
+	        	<tr>
+	        		<td align="center"> {{$venta->FK_PROCUTO}} </td>
+	        		<td align="center"> {{$venta->CANTIDAD_VENTA}} </td>
+	        		<td style="font-size: 15px;"> {{$venta->NOMBRE_PRODUCTO}} </td>
+	        		<td align="right"> {{'$'.number_format($venta->PRECIO_VENTA,2)}} </td>
+	        		<td align="right"> {{'$'.number_format( ($venta->CANTIDAD_VENTA * $venta->PRECIO_VENTA),2)}} </td>
+	        	</tr>
+	        @endforeach
+	        	<tr>
+	        		<td align="center"></td>
+	        		<td align="center"></td>
+	        		<td align="center"></td>
+	        		<td align="right">TOTAL: </td>
+	        		<td align="right"> {{'$'.number_format( ($datos_venta->VENTAS_TOTAL),2)}} </td>
+	        	</tr>
+	      </tbody>
+	    </table>
 	</body>
 </html>
 

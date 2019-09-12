@@ -22,7 +22,10 @@
             $datos_venta = ProductosController::ObtenerDatosGeneralesVentaId($remision);
             //dd($datos_venta);
             //dd($venta);
-            return view('pdf.remision') ->with (["detalles"=>$venta,"datos_venta"=>$datos_venta]);
+            $pdf = \PDF::loadView('pdf.remision',["detalles"=>$venta,"datos_venta"=>$datos_venta])->setPaper('letter', 'portrait');
+            return $pdf->stream($datos_venta->CONSECUTIVO_ANUAL.'.pdf', array("Attachment" => 0));
+
+            //return view('pdf.remision') ->with (["detalles"=>$venta,"datos_venta"=>$datos_venta]);
         }
 
         public function InsertarInventarioDirecto(Request $request){
@@ -282,21 +285,6 @@
 
             $fecha_fin = str_replace('/', '-', $request['fecha_fin']);
             $fecha_fin = date("Y-m-d", strtotime($fecha_fin));
-            //$fecha_fin = $request['fecha_fin'];
-            //dd($fecha_inicio.'/'.$fecha_fin);
-            //date("Y-m-d", strtotime($var) )
-
-            /*$rel_ventas = DB::table('REL_VENTA_PRODUCTO')
-                ->where()
-                ->distinct()//*/
-
-
-            /*$ventas = DB::table('TIENDAS_VENTAS')
-                     //->select('VENTAS_ID')
-                     //->whereIn('DATOS_CGA_ESTATUS',$array_estatus)
-                     ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
-                     ->orderBy('created_at','desc')
-                     ->get();//*/
             if(strcmp($tienda, 'TODOS')==0){
                 //dd('epalepa');
                 $rel_ventas = DB::table('REL_VENTA_PRODUCTO')
@@ -306,8 +294,9 @@
                          ->distinct()
                          ->get();
             }else{
+                //dd('stop');
                 $rel_ventas = DB::table('REL_VENTA_PRODUCTO')
-                         ->select('REL_VENTA_FK_VENTA','created_at')
+                         ->select('REL_VENTA_FK_VENTA')
                          ->whereBetween('created_at', [$fecha_inicio, $fecha_fin])
                          ->where('REL_VENTA_FK_ESPACIO',$tienda)
                          ->orderBy('created_at','desc')
@@ -322,10 +311,6 @@
                      ->get();//
                 $ventas[] = $tmp_venta[0];
             }//*/
-            //$ventas = $query->addSelect('REL_VENTA_FK_VENTA')->get();
-
-            //dd($ventas);
-
             foreach ($ventas as $venta) {
                 //dd($venta->created_at);
                 $formato = ProductosController::DarFormatoConsecutivo2($venta->VENTAS_ID,$venta->VENTAS_CONSECUTIVO_ANUAL, $venta->created_at);
@@ -333,11 +318,9 @@
                 $venta->VENTAS_CONSECUTIVO_ANUAL = $formato;
             }
             //dd($ventas);
-
             $data = array(
                 "ventas"=>$ventas
             );
-
             echo json_encode($data);//*/
         }
 
@@ -392,6 +375,8 @@
                 $venta[0]->FECHA_VENTA = $fecha_hora['fecha'];
                 $venta[0]->HORA_VENTA = $fecha_hora['hora'];
                 $venta[0]->CONSECUTIVO_ANUAL = ProductosController::DarFormatoConsecutivo2($venta[0]->VENTAS_ID,$venta[0]->VENTAS_CONSECUTIVO_ANUAL,$venta[0]->created_at);
+                $espacio = ProductosController::ObtenerEspacioVenta($id_venta); 
+                $venta[0]->TIENDA = EspaciosController::ObtenerDatosEspacioId($espacio);
                 return $venta[0];
             }else{
                 return null;
@@ -816,6 +801,14 @@
             //dd($datos_espacio);
             $consecutivo = $datos_espacio->NOMENCLATURA_ESPACIO.'/'.$consecutivo.'/'.$anio;
             return $consecutivo;
+        }
+
+        public function ObtenerEspacioVenta($id_venta){
+            $id_espacio = DB::table('REL_VENTA_PRODUCTO')
+                ->select('REL_VENTA_FK_ESPACIO')
+                ->where('REL_VENTA_FK_VENTA',$id_venta)
+                ->first();
+            return $id_espacio->REL_VENTA_FK_ESPACIO;
         }
 
         public function ObtenerConsecutivoAnual(){

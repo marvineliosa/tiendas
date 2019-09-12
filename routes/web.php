@@ -25,6 +25,10 @@ Route::get('/codigo', function () {
 Route::get('/codigo/imprimir', function () {
     return view('pdf.prueba_jspdf');
 });
+Route::get('/qr', function () {
+    return view('pdf.prueba');
+});
+
 Route::get('/remision/{venta}', 'ProductosController@VistaRemision');
 
 Route::get('/venta', function () {
