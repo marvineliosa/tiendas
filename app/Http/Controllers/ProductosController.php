@@ -17,12 +17,113 @@
          * @return Response
          */
 
+        public function EnviarMailRemision(Request $request){
+            //dd($request);
+            $remision = $request['id_venta'];
+            $update = ProductosController::UpdateDatosCliente($remision,$request['cliente'],$request['mail']);
+            $venta = ProductosController::ObtenerDatosVenta($remision);
+            $datos_venta = ProductosController::ObtenerDatosGeneralesVentaId($remision);
+            //dd($datos_venta);
+            //dd($venta);
+            $pdf = \PDF::loadView('pdf.remision',["detalles"=>$venta,"datos_venta"=>$datos_venta])->setPaper('letter', 'portrait');
+            $ruta = 'public/temporal/prueba.pdf';
+
+            if(Storage::exists($ruta)){//revisamos si existe el archivo
+              Storage::delete($ruta);
+            }
+
+            Storage::put($ruta, $pdf->output());
+            //dd('Guardado');
+
+            $datos = array(
+                'ruta' => $ruta,
+                'nombre' => $request['cliente'],
+                'mail' => $request['mail'],
+                'remision' => $datos_venta->FECHA_VENTA,
+                'fecha_venta' => $datos_venta->FECHA_VENTA
+                );
+            MailsController::EnviarFacturaMail($datos);
+            //file_put_contents('public/temporal/Brochure.pdf', $output);
+            $data = array(
+                "terminado"=>'terminado'
+            );
+
+            echo json_encode($data);//*/
+            //dd('Terminado');
+        }
+
+        public function ObtenerMailRemision($id_venta){
+            //dd('entra');
+             $existe = DB::table('REL_DATOS_REMISION')
+                ->where('REL_REMISION_FK_VENTA',$id_venta)
+                ->get();
+            if(count($existe)>0){
+                return $existe[0];
+            }else{
+                return null;
+            }
+        }
+
+        public function UpdateDatosCliente($id_venta,$nombre,$correo){
+            $existe = DB::table('REL_DATOS_REMISION')
+                ->where('REL_REMISION_FK_VENTA',$id_venta)
+                ->get();
+            if(count($existe)>0){
+                //dd('Update');
+                DB::table('REL_DATOS_REMISION')
+                    ->where('REL_REMISION_FK_VENTA',$id_venta)
+                    ->update([
+                        'REL_DATOS_NOMBRE' => $nombre,
+                        'REL_DATOS_CORREO'=>$correo,
+                        'updated_at'=>ProductosController::ObtenerFechaHora()
+                    ]);
+            }else{
+                //dd('Insert');
+                DB::table('REL_DATOS_REMISION')
+                    ->insert(
+                        [
+                            'REL_REMISION_FK_VENTA' => $id_venta,
+                            'REL_DATOS_NOMBRE' => $nombre,
+                            'REL_DATOS_CORREO' => $correo,
+                            'created_at' => ProductosController::ObtenerFechaHora()
+                        ]
+                    );
+            }
+            //dd('fin');
+        }  
+
+        public function RegresarCorreoRemision(Request $request){
+            //dd($request['id_venta']);
+            $venta = ProductosController::ObtenerDatosRemision($request['id_venta']);
+            //dd($venta);
+            $data = array(
+                "venta"=>$venta
+            );
+
+            echo json_encode($data);//*/
+        }
+
+        public function ObtenerDatosRemision($id_venta){
+            //dd($id_venta);
+            $datos_remision = DB::table('REL_DATOS_REMISION')
+                ->where('REL_REMISION_FK_VENTA',$id_venta)
+                ->get();
+            //dd($datos_remision);
+            if(count($datos_remision)>0){
+                return $datos_remision[0];
+            }else{
+                return null;
+            }
+        }
+
         public function VistaRemision($remision){
             $venta = ProductosController::ObtenerDatosVenta($remision);
             $datos_venta = ProductosController::ObtenerDatosGeneralesVentaId($remision);
             //dd($datos_venta);
             //dd($venta);
             $pdf = \PDF::loadView('pdf.remision',["detalles"=>$venta,"datos_venta"=>$datos_venta])->setPaper('letter', 'portrait');
+
+            
             return $pdf->stream($datos_venta->CONSECUTIVO_ANUAL.'.pdf', array("Attachment" => 0));
 
             //return view('pdf.remision') ->with (["detalles"=>$venta,"datos_venta"=>$datos_venta]);
@@ -377,6 +478,15 @@
                 $venta[0]->CONSECUTIVO_ANUAL = ProductosController::DarFormatoConsecutivo2($venta[0]->VENTAS_ID,$venta[0]->VENTAS_CONSECUTIVO_ANUAL,$venta[0]->created_at);
                 $espacio = ProductosController::ObtenerEspacioVenta($id_venta); 
                 $venta[0]->TIENDA = EspaciosController::ObtenerDatosEspacioId($espacio);
+                $datos_mail = ProductosController::ObtenerMailRemision($id_venta);
+                //dd($datos_mail);
+                if(isset($datos_mail->REL_DATOS_NOMBRE)){
+                    $venta[0]->NOMBRE_CLIENTE = $datos_mail->REL_DATOS_NOMBRE;
+                    $venta[0]->MAIL = $datos_mail->REL_DATOS_CORREO;
+                }else{
+                    $venta[0]->NOMBRE_CLIENTE = '';
+                    $venta[0]->MAIL = '';
+                }
                 return $venta[0];
             }else{
                 return null;
@@ -434,9 +544,10 @@
             //dd($venta[1]->id_producto);
             //dd($venta);
             $id_venta = ProductosController::InsertarVenta('TARJETA DÉBITO',$venta,$total);
-
+            //dd($id_venta);
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -456,6 +567,7 @@
 
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -475,6 +587,7 @@
 
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -505,6 +618,7 @@
 
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -533,6 +647,7 @@
 
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -561,6 +676,7 @@
 
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -610,6 +726,7 @@
 
             $consecutivo_formato = ProductosController::DarFormatoConsecutivo($id_venta,$fecha);
             $data = array(
+                "id_venta"=>$id_venta,
                 "id_nota"=>$consecutivo_formato
             );
 
@@ -618,7 +735,7 @@
 
         public function InsertarVenta($tipo_pago,$listado_venta,$total){
             $espacio = \Session::get('id_tienda')[0];
-            //dd($total);
+            //dd($listado_venta);
             //bloqueamos las tablas para que no haya un conflicto al crear alguno de los datos únicos
             DB::raw('lock tables SOLICITUDES_SOLICITUD write');
 
@@ -637,19 +754,21 @@
 
             //insertamos cada producto vendido en la tabla de relaciones
             foreach ($listado_venta as $listado) {
-                DB::table('REL_VENTA_PRODUCTO')->insert(
-                    [
-                        'REL_VENTA_FK_VENTA' => $id_venta,
-                        'REL_VENTA_FK_PROCUTO' => $listado->id_producto,
-                        'REL_VENTA_FK_ESPACIO' => $espacio,
-                        'REL_VENTA_FK_USUARIO' => \Session::get('usuario')[0],
-                        'REL_VENTA_PRECIO' => $listado->precio_venta,
-                        'REL_VENTA_CANTIDAD' => $listado->cantidad,
-                        'created_at' => ProductosController::ObtenerFechaHora()
-                    ]
-                );
-                //aqui disminuimos el inventario de los productos que se vendieron en su respectivo espacio
-                ProductosController::DisminuirInventario($listado->id_producto,$espacio,$listado->cantidad);
+                if($listado!=null){
+                    DB::table('REL_VENTA_PRODUCTO')->insert(
+                        [
+                            'REL_VENTA_FK_VENTA' => $id_venta,
+                            'REL_VENTA_FK_PROCUTO' => $listado->id_producto,
+                            'REL_VENTA_FK_ESPACIO' => $espacio,
+                            'REL_VENTA_FK_USUARIO' => \Session::get('usuario')[0],
+                            'REL_VENTA_PRECIO' => $listado->precio_venta,
+                            'REL_VENTA_CANTIDAD' => $listado->cantidad,
+                            'created_at' => ProductosController::ObtenerFechaHora()
+                        ]
+                    );
+                    //aqui disminuimos el inventario de los productos que se vendieron en su respectivo espacio
+                    ProductosController::DisminuirInventario($listado->id_producto,$espacio,$listado->cantidad);
+                }
             }
             
             //finalizada la operaición, se desbloquea la tabla
@@ -1336,12 +1455,16 @@
             $inventario = array();
             $rel_inventario = DB::table('REL_INVENTARIO')
                 ->where('DATOS_VENTA_FK_ESPACIO',$id_espacio)
+                ->select(
+                    'DATOS_VENTA_FK_PROCUTO AS CODIGO',
+                    'DATOS_VENTA_CANTIDAD AS CANTIDAD'
+                    )
                 ->get();
             foreach ($rel_inventario as $relacion) {
                 //$id_espacio = $relacion->DATOS_VENTA_FK_ESPACIO;
-                $id_producto = $relacion->DATOS_VENTA_FK_PROCUTO;
+                $id_producto = $relacion->CODIGO;
                 $nombre_producto = ProductosController::ObtenerNombreProductoId($id_producto);
-                $relacion->NOMBRE_PRODUCTO = $nombre_producto;
+                $relacion->PRODUCTO = $nombre_producto;
                 //dd($nombre_producto);
             }
             return($rel_inventario);

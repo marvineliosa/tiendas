@@ -12,6 +12,19 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 		<title>Remision</title>
+
+	<style type="text/css">
+		td.total{
+			border-left:	1px solid white;
+			border-bottom:	1px solid white;
+			border-right:	1px solid white;
+		}
+		td.total2{
+			border-left-color:		white;
+			border-bottom-color:	white;
+			border-right-color:	white;
+		}
+	</style>
 	</head>
 	<body id="cuerpoPagina">
 			<table class="table table">
@@ -24,10 +37,10 @@
 	      </thead>
 	    </table>
 		<div id="codigos">
-			<table class="table table" style="background-color: #013c5a;">
+			<table class="table table-sm" style="background-color: #013c5a;">
 		      <thead id="HeadTablaDevoluciones">
 		        <tr align="">
-		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;" class="align-middle"><img src="images/logo-buap.png" width="150" height="50" /></td>
+		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;" class="align-middle"><img src="images/logo-buap.png" width="150" height="67"></td>
 		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;"></td>
 		          <td style="width: 33%;border-top: 0px;border-right: 0px;border-bottom: 0px solid black;border-left: 0px;">
 		          	<p style="color:white;">
@@ -41,19 +54,19 @@
 		      </thead>
 		    </table>
 		</div>
-		<table class="table table-bordered" style="width:100%;">
+		<table class="table table-bordered table-sm" style="width:100%;">
 	      <tbody id="CuerpoModalDevoluciones">
         	<tr>
-        		<td align="" style="width: 20%;">Nombre:</td>
-        		<td align="center" style=""></td>
+        		<td align="right" style="width: 25%;">Nombre:</td>
+        		<td align="center" style="">{{$datos_venta->NOMBRE_CLIENTE}}</td>
         	</tr>
         	<tr>
-        		<td align="" style="width: 20%;">Correo electrónico:</td>
-        		<td align="center"></td>
+        		<td align="right" style="width: 25%;">Correo electrónico:</td>
+        		<td align="center">{{$datos_venta->MAIL}}</td>
         	</tr>
 	      </tbody>
 	    </table>
-		<table class="table table-bordered" style="width:100%;">
+		<table class="table table-bordered table-sm" style="width:100%;">
 	      <thead id="HeadTablaDevoluciones">
 	        <tr align="center">
 	          <th scope="col" style="width: 10%; text-align:center;">Codigo</th>
@@ -74,9 +87,9 @@
 	        	</tr>
 	        @endforeach
 	        	<tr>
-	        		<td align="center"></td>
-	        		<td align="center"></td>
-	        		<td align="center"></td>
+	        		<td align="center" class="total2"></td>
+	        		<td align="center" class="total2"></td>
+	        		<td align="center" class="" style="border-bottom-color:white;"></td>
 	        		<td align="right">TOTAL: </td>
 	        		<td align="right"> {{'$'.number_format( ($datos_venta->VENTAS_TOTAL),2)}} </td>
 	        	</tr>

@@ -161,6 +161,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/es.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
 
+    <!-- Exportar a excel -->
+    <script src="{{ asset('js-xlsx/dist/xlsx.full.min.js') }}"></script>
+    <script src="{{ asset('FileSaver/dist/FileSaver.min.js') }}"></script>
+
     <!-- Modal mensaje -->
     <div class="modal fade" id="ModalMensaje" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">

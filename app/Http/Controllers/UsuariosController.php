@@ -17,6 +17,24 @@
          * @return Response
          */
 
+        public function ObtenerListadoUsuarios(){
+            $usuarios = DB::table('TIENDAS_LOGIN')
+                ->select(
+                            'LOGIN_ID as UAURIO',
+                            'LOGIN_RESPONSABLE as RESPONSABLE',
+                            'LOGIN_CATEGORIA as CATEGORIA'
+                        )
+                ->get();
+            return $usuarios;
+        }
+
+        public function VistaListadoUsuarios(){
+            //dd('Vista usuarios');
+            $usuarios = UsuariosController::ObtenerListadoUsuarios();
+            //dd($usuarios);
+            return view('listado_usuarios')->with(['usuarios'=>$usuarios]);
+        }
+
         public static function ObtenerNombreUsuario($usuario){
             //dd($usuario);
             $nombre = DB::table('TIENDAS_LOGIN')

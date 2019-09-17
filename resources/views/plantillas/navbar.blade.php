@@ -33,11 +33,14 @@
                       <li><a href="/productos">Listado de productos</a></li>
                     </ul>
                   </li>
+                  @if(in_array(\Session::get('categoria')[0], ['ADMINISTRADOR','ENCARGADO']))
                   <li><a><i class="fa fa-map-marker"></i> Espacios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/espacios">Tiendas/Bodegas</a></li>
                     </ul>
                   </li>
+                  @endif
+
                   <li><a><i class="fa fa-shopping-cart"></i> Venta <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/venta">Venta de artículos</a></li>
@@ -51,19 +54,25 @@
                       <li><a href="/reportes/ventas">Reporte de ventas</a></li>
                     </ul>
                   </li>
+
                   <li><a><i class="fa fa-file"></i> Inventarios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/inventario">Elaborar inventario</a></li>
+                      @if(in_array(\Session::get('categoria')[0], ['CAJERO']))
+                        <li><a href="/espacios/{{\Session::get('id_tienda')[0]}}/inventario">Inventario interno</a></li>
+                      @endif
                     </ul>
                   </li>
+
+                  @if(in_array(\Session::get('categoria')[0], ['ADMINISTRADOR','ENCARGADO']))
                   <li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="/usuarios">Registrar usuario</a></li>
                     </ul>
                   </li>
+                  @endif
                   <li><a href="/salir"><i class="fa fa-sign-out"></i> Salir </a>
                   </li>
-
                   
                 </ul>
               </div>

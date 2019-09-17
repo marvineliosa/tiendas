@@ -8,7 +8,9 @@
 	    <div class="x_panel">
 	      <div class="x_title">
 	        <h2>Listado de productos</h2>
+	        @if(in_array(\Session::get('categoria')[0], ['ADMINISTRADOR','ENCARGADO']))
 	        <button type="button" class="btn btn-primary pull-right" onclick="ModalAgregarProducto()">Registrar Producto</button>
+	        @endif
 	        <div class="clearfix"></div>
 	      </div>
 	      <input type="" name="" style="display: none" id="id_producto" value="">
@@ -20,8 +22,6 @@
 	    </div>
 	  </div>
 	</div>
-
-  	
 
     <!-- modal agregar producto -->
     <div class="modal fade" id="ModalAgregarProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

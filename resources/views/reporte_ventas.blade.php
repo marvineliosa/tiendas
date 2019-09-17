@@ -247,11 +247,92 @@
       </div>
     </div>
   </div>
+  <!-- Modal CompraFinalizada -->
+  <div class="modal fade" id="ModalEnviarRemision" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" align="center">
+          <h2 class="modal-title" id="exampleModalLabel">Remisión</h2>
+        </div>
+        <div class="modal-body">
+
+          <!-- <h2 class="modal-title" id="TxtFinalizacionCompra" align="center">La compra ha sido almacenada satisfactoriamente, por favor ingrese el correo electrónico al que se enviará la remisión.</h2> -->
+          <h2 class="modal-title" align="center"><strong  id="TxtNumeroNota"></strong></h2>
+          <div class="form-horizontal form-label-left">
+            <!-- nombre -->
+            <div class="form-group">
+              <label class="control-label col-md-2 col-sm-2 col-xs-12">Cliente</label>
+              <div class="col-md-10 col-sm-10 col-xs-12">
+                <input type="email" class="form-control" placeholder="" id="cliente_remision">
+              </div>
+            </div>
+            <!-- correo electronico -->
+            <div class="form-group">
+              <label class="control-label col-md-2 col-sm-2 col-xs-12">Correo Electrónico</label>
+              <div class="col-md-10 col-sm-10 col-xs-12">
+                <input type="email" class="form-control" placeholder="" id="email_remision">
+              </div>
+            </div>
+            
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" onclick="EnviarRemision()">Enviar remisión</button>
+          <button type="button" class="btn btn-primary" onclick="ImprimirRemision()">Imprimir remisión</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 @endsection
 
 @section('script')
   <script type="text/javascript">
+
+    function ImprimirRemision(){
+      window.open('/remision/'+Gl_enviar_remision,'_blank');
+    }
+
+    function EnviarRemision(){
+      var url = '/mail/enviar_remision';
+      var cliente = $("#cliente_remision").val();
+      var mail = $("#email_remision").val();
+      var success;
+      var dataForm = new FormData();
+      dataForm.append('id_venta',Gl_enviar_remision);
+      dataForm.append('cliente',cliente);
+      dataForm.append('mail',mail);
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        MensajeModal('¡ÉXITO!','La nota de venta se ha enviado satisfactoriamente al correo '+mail);
+        //$('#ModalPagoDebito').modal('hide');
+
+      });
+    }
+
+    //funcion para abrir el modal de enviar/imprimir remision
+    var Gl_enviar_remision = null;
+    function ModalEnviarRemision(id_venta){
+      Gl_enviar_remision = id_venta;
+      var success;
+      var url = "/remision/obtener_datos";
+      var dataForm = new FormData();
+      dataForm.append('id_venta', id_venta);
+      //lamando al metodo ajax
+      metodoAjax(url,dataForm,function(success){
+        $("#cliente_remision").val('');
+        $("#email_remision").val('');
+        if(success['venta']){
+          console.log('');
+          $("#cliente_remision").val(success['venta']['REL_DATOS_NOMBRE']);
+          $("#email_remision").val(success['venta']['REL_DATOS_CORREO']);
+        }
+        $("#ModalEnviarRemision").modal();
+      });
+
+    }
 
     //funcion para generar la devolución de un artículo
     function RealizarDevolucion(){
@@ -568,7 +649,7 @@
         //aquí se escribe todas las operaciones que se harían en el succes
         //la variable success es el json que recibe del servidor el método AJAX
         //MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
-        $("#fecha_tabla").text("Ventas del día "+fecha_inicio + ' al día '+fecha_fin);
+        $("#fecha_tabla").text("Ventas del díass "+fecha_inicio + ' al día '+fecha_fin);
         $("#body-reportes").html('');
         for (var i = 0; i < success['ventas'].length; i++) {
           var botones = '<button type="button" class="btn btn-default btn-xs" onclick="DetalleVenta('+ success['ventas'][i]['VENTAS_ID'] +')" data-toggle="tooltip" data-placement="top" title="VER DETALLE">'+
@@ -576,6 +657,9 @@
           '</button>'+
           '<button type="button" class="btn btn-default btn-xs" onclick="Devolucion('+ success['ventas'][i]['VENTAS_ID'] +')" data-toggle="tooltip" data-placement="top" title="DEVOLUCIÓN">'+
             '<span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>'+
+          '</button>'+
+          '<button type="button" class="btn btn-default btn-xs" onclick="ModalEnviarRemision('+ success['ventas'][i]['VENTAS_ID'] +')" data-toggle="tooltip" data-placement="top" title="DEVOLUCIÓN">'+
+            '<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>'+
           '</button>';
           $("#body-reportes").append(
 

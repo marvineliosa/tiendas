@@ -20,8 +20,6 @@ Route::get('/codigo', function () {
     return view('codigo');
 });
 
-
-
 Route::get('/codigo/imprimir', function () {
     return view('pdf.prueba_jspdf');
 });
@@ -85,3 +83,10 @@ Route::post('/inventario/agregar_existencias', 'ProductosController@InsertarInve
 Route::post('/devolucion/almacenar', 'ProductosController@AlmacenarDevolucion');
 
 Route::get('/codigo/{codigo}/imprimir', 'ProductosController@ImprimirCodigo');
+
+Route::post('/remision/obtener_datos', 'ProductosController@RegresarCorreoRemision');
+
+//Route::get('/mail/enviar_remision', 'ProductosController@EnviarMailRemision');
+Route::post('/mail/enviar_remision', 'ProductosController@EnviarMailRemision');
+
+Route::get('/usuarios', 'UsuariosController@VistaListadoUsuarios');
