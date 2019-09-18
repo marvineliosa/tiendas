@@ -90,3 +90,4 @@ Route::post('/remision/obtener_datos', 'ProductosController@RegresarCorreoRemisi
 Route::post('/mail/enviar_remision', 'ProductosController@EnviarMailRemision');
 
 Route::get('/usuarios', 'UsuariosController@VistaListadoUsuarios');
+Route::post('/usuarios/registrar', 'UsuariosController@RegistrarUsuario');

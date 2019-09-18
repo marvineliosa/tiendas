@@ -17,6 +17,45 @@
          * @return Response
          */
 
+        public function RegistrarUsuario(Request $request){
+            //dd($request);
+            $mensaje = '';
+            $existe_usuario = DB::table('TIENDAS_LOGIN')
+                ->where('LOGIN_ID',$request['usuario'])
+                ->get();
+            if(count($existe_usuario)>0){
+                $mensaje = "El usuario ".$request['usuario']." ya se encuentra registrado en el sistema, es necesario eliminarlo para realizar alguna modificación.";
+            }else{
+                DB::table('TIENDAS_LOGIN')->insert(
+                    [
+                        'LOGIN_ID' => $request['usuario'],
+                        'LOGIN_CONTRASENIA' => UsuariosController::randomPassword(),
+                        'LOGIN_CATEGORIA' => $request['categoria'],
+                        'LOGIN_RESPONSABLE' => $request['nombre'],
+                        'created_at' => ProductosController::ObtenerFechaHora()
+                    ]
+                );
+                if(strcmp($request['espacio'], 'NADA')!=0){
+                    DB::table('REL_USUARIO_ESPACIO')->insert(
+                        [
+                            'FK_USUARIO' => $request['usuario'],
+                            'FK_ESPACIO' => $request['espacio']
+                        ]
+                    );
+                }
+                if(strpos($request['usuario'], '@')){
+                    //enviar contraseña por mail
+                }
+                $mensaje = 'Se ha registrado satisfactoriamente al usuario '.$request['usuario'];
+            }
+
+            $data = array(
+                "mensaje" => $mensaje
+            );
+
+            echo json_encode($data);//*/
+        }
+
         public function ObtenerListadoUsuarios(){
             $usuarios = DB::table('TIENDAS_LOGIN')
                 ->select(
@@ -31,8 +70,9 @@
         public function VistaListadoUsuarios(){
             //dd('Vista usuarios');
             $usuarios = UsuariosController::ObtenerListadoUsuarios();
+            $espacios = EspaciosController::ObtenerListadoEspacios();
             //dd($usuarios);
-            return view('listado_usuarios')->with(['usuarios'=>$usuarios]);
+            return view('listado_usuarios')->with(['usuarios'=>$usuarios,'espacios'=>$espacios]);
         }
 
         public static function ObtenerNombreUsuario($usuario){
@@ -104,6 +144,17 @@
             }else{
                 return null;
             }
+        }
+
+        public static function randomPassword() {
+            $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890._@';
+            $pass = array(); //remember to declare $pass as an array
+            $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+            for ($i = 0; $i < 10; $i++) {
+                $n = rand(0, $alphaLength);
+                $pass[] = $alphabet[$n];
+            }
+            return implode($pass); //turn the array into a string
         }
 
 
