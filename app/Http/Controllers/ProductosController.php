@@ -370,6 +370,17 @@
             //dd($ventas);
         }
 
+        public function ObtenerDatosFactura($id_venta){
+            $factura = DB::table('REL_VENTA_FACTURA')
+                ->where('REL_FACTURA_FK_VENTA',$id_venta)
+                ->get();
+            if(count($factura)>0){
+                return $factura[0]->REL_FACTURA_NUMERO;
+            }else{
+                return null;
+            }
+        }
+
         public function CrearReporteIntervalo(Request $request){
             //dd($request);
             $tienda = null;
@@ -415,6 +426,8 @@
             foreach ($ventas as $venta) {
                 //dd($venta->created_at);
                 $formato = ProductosController::DarFormatoConsecutivo2($venta->VENTAS_ID,$venta->VENTAS_CONSECUTIVO_ANUAL, $venta->created_at);
+                $venta->VENTAS_FACTURA = ProductosController::ObtenerDatosFactura($venta->VENTAS_ID);
+
                 //$formato = ProductosController::DarFormatoConsecutivo($venta->VENTAS_ID, $venta->created_at);
                 $venta->VENTAS_CONSECUTIVO_ANUAL = $formato;
             }

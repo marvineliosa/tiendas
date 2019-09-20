@@ -64,6 +64,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
+        <button type="button" class="btn btn-primary pull-right" onclick="ModalEnlazarFacturas()">Enlazar Facturas</button>
         <div class="x_title">
           <h2 id="fecha_tabla" ></h2>
           
@@ -286,10 +287,63 @@
     </div>
   </div>
 
+  <!-- Modal CompraFinalizada -->
+  <div class="modal fade" id="ModalFacturarVentas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" align="center">
+          <h2 class="modal-title" id="exampleModalLabel">Remisión</h2>
+        </div>
+        <div class="modal-body">
+
+          <!-- <h2 class="modal-title" id="TxtFinalizacionCompra" align="center">La compra ha sido almacenada satisfactoriamente, por favor ingrese el correo electrónico al que se enviará la remisión.</h2> -->
+          <h2 class="modal-title" align="center"><strong  id="TxtNumeroNota"></strong></h2>
+          <div class="form-horizontal form-label-left">
+            <!-- nombre -->
+            <table class="table table-striped" id="TablaDatos">
+              <thead>
+                <tr>
+                  <th>Remisión</th>
+                  <th>Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td> REMISION </td>
+                  <td> 
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                      <!-- <label class="form-check-label" for="exampleCheck1">Check me out</label> -->
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            
+          </div>
+
+        </div>
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary pull-right" onclick="EnlazarRemisiones()">Enlazar remisiones</button>
+
+          <div class="col-md-4 col-sm-4 col-xs-12 pull-right" align="right">
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Ingresar factura">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 @endsection
 
 @section('script')
   <script type="text/javascript">
+
+    function ModalEnlazarFacturas(){
+      $("#ModalFacturarVentas").modal();
+    }
 
     function ImprimirRemision(){
       window.open('/remision/'+Gl_enviar_remision,'_blank');

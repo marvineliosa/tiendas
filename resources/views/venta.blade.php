@@ -37,25 +37,25 @@
 	      	</table>
 
 			<table class="" id="TablaVenta" WIDTH="100%">
-	          <thead>
-	            <tr>
-	              <th style="vertical-align: middle; width: 10%;"></th>
-	              <th style="vertical-align: middle; width: 30%;"></th>
-	              <th style="vertical-align: middle; width: 20%;"></th>
-	              <th style="text-align: ; width: 15%;">&nbsp&nbspTotal:</th>
-	              <th style="vertical-align: middle; width: 15%;" id="total_cuenta">&nbsp&nbsp$ 0.00</th>
-	              <th style="vertical-align: middle; width: 10%;"></th>
-	            </tr>
-	          </thead>
-	          <tbody>
-	          	<td></td>
-	          	<td></td>
-	          	<td></td>
-	          	<td><br><br><br><button id="GlCancelarCompra" type="button" class="btn btn-danger pull-right" onclick="CancelarCompra()">Cancelar Compra</button></td>
-	          	<td><br><br><br><button id="GlFinalizarCompra" type="button" class="btn btn-primary" onclick="ModalTipoPago()">Filanizar Compra</button></td>
+        <thead>
+          <tr>
+            <th style="vertical-align: middle; width: 10%;"></th>
+            <th style="vertical-align: middle; width: 30%;"></th>
+            <th style="vertical-align: middle; width: 20%;"></th>
+            <th style="text-align: ; width: 15%;">&nbsp&nbspTotal:</th>
+            <th style="vertical-align: middle; width: 15%;" id="total_cuenta">&nbsp&nbsp$ 0.00</th>
+            <th style="vertical-align: middle; width: 10%;"></th>
+          </tr>
+        </thead>
+        <tbody>
+        	<td></td>
+        	<td></td>
+        	<td></td>
+        	<td><br><br><br><button id="GlCancelarCompra" type="button" class="btn btn-danger pull-right" onclick="CancelarCompra()">Cancelar Compra</button></td>
+        	<td><br><br><br><button id="GlFinalizarCompra" type="button" class="btn btn-primary" onclick="ModalTipoPago()">Filanizar Compra</button></td>
 
-	          </tbody>
-	      	</table>
+        </tbody>
+    	</table>
 
 	      </div>
 	  </div>
