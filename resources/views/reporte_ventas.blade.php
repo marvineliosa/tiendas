@@ -64,6 +64,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
+        <button type="button" class="btn btn-success pull-right" onclick="DescargarReporte()">Descargar Reporte</button>
         <button type="button" class="btn btn-primary pull-right" onclick="ModalEnlazarFacturas()">Enlazar Facturas</button>
         <div class="x_title">
           <h2 id="fecha_tabla" ></h2>
@@ -292,31 +293,37 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header" align="center">
-          <h2 class="modal-title" id="exampleModalLabel">Remisión</h2>
+          <h2 class="modal-title" id="exampleModalLabel">Enlazar remisiones con facturas</h2>
+        </div>
+        <div class="modal-header" align="right">
+          <label class="form-check-label" for="check_seleccionar_todo">Seleccionar todo</label>
+          <input type="checkbox" class="form-check-input" onclick="SeleccionarTodo()" id="check_seleccionar_todo">
         </div>
         <div class="modal-body">
 
           <!-- <h2 class="modal-title" id="TxtFinalizacionCompra" align="center">La compra ha sido almacenada satisfactoriamente, por favor ingrese el correo electrónico al que se enviará la remisión.</h2> -->
           <h2 class="modal-title" align="center"><strong  id="TxtNumeroNota"></strong></h2>
-          <div class="form-horizontal form-label-left">
+          <div class="form-horizontal form-label-left" align="center">
             <!-- nombre -->
-            <table class="table table-striped" id="TablaDatos">
+            <table class="table table-striped" id="TablaDatos" style="width: 100%">
               <thead>
                 <tr>
-                  <th>Remisión</th>
-                  <th>Seleccionar</th>
+                  <th style="text-align: center;">Remisión</th>
+                  <th style="text-align: center;">Fecha</th>
+                  <th style="text-align: center;">Total</th>
+                  <th style="text-align: center;">Seleccionar</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
+              <tbody id="BodyTablaFacturas">
+                <!-- <tr>
                   <td> REMISION </td>
                   <td> 
-                    <div class="form-check">
+                    <div class="form-check" align="center">
                       <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                      <!-- <label class="form-check-label" for="exampleCheck1">Check me out</label> -->
+                     
                     </div>
                   </td>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
             
@@ -329,7 +336,7 @@
           <button type="button" class="btn btn-primary pull-right" onclick="EnlazarRemisiones()">Enlazar remisiones</button>
 
           <div class="col-md-4 col-sm-4 col-xs-12 pull-right" align="right">
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Ingresar factura">
+            <input type="text" class="form-control" id="InputFactura" placeholder="Ingresar factura">
           </div>
         </div>
       </div>
@@ -341,8 +348,138 @@
 @section('script')
   <script type="text/javascript">
 
+    function GenerarArrayVentas(){
+      var ventas_reporte = new Array();
+      var total = 0;
+      for(var i = 0; i < Gl_ventas.length; i++){
+        var objeto = {
+          'REMISION':Gl_ventas[i]['VENTAS_CONSECUTIVO_ANUAL'],
+          'FECHA DE VENTA':Gl_ventas[i]['FECHA_VENTA'],
+          'FACTURA':Gl_ventas[i]['VENTAS_FACTURA'],
+          'TIPO DE PAGO':Gl_ventas[i]['VENTAS_TIPO_PAGO'],
+          'IMPORTE':Gl_ventas[i]['VENTAS_TOTAL']
+        }
+        ventas_reporte[i] = objeto;
+        total = total + Gl_ventas[i]['VENTAS_TOTAL'];
+      }
+        var objeto = {
+          'REMISION':'',
+          'FECHA DE VENTA':'',
+          'FACTURA':'',
+          'TIPO DE PAGO':'TOTAL' ,
+          'IMPORTE':total
+        }
+        ventas_reporte[parseInt(Gl_ventas.length) + parseInt(1)] = objeto;
+      return ventas_reporte;
+    }
+
+    function DescargarReporte(){
+      //Gl_ventas
+
+      //console.log(inventario);
+      //console.log(success['']);
+      var wb = XLSX.utils.book_new();
+      wb.Props = {
+              Title: "Reporte de Inventaio",
+              Subject: "Reporte",
+              Author: "Marvin Eliosa",
+              CreatedDate: new Date()
+      };
+      wb.SheetNames.push("Reporte");
+      //var ws_data = [['hello' , 'world']];  //a row with 2 columns
+      var ws_data = GenerarArrayVentas();  //a row with 2 columns
+      //var ws_data = GenerarArrayVentas();  //a row with 2 columns
+
+      //var ws = XLSX.utils.json_to_sheet();
+
+      //ventasWs.A1.s = "NOMBRE DE PRUEBA";
+      var ventasWs = XLSX.utils.json_to_sheet(ws_data);
+
+      // A workbook is the name given to an Excel file
+      var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+      // add Worksheet to Workbook
+      // Workbook contains one or more worksheets
+      //XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+      XLSX.utils.book_append_sheet(wb, ventasWs, 'Reporte de ventas')   
+      
+      // export Excel file
+      var nombre_archivo = 'Reporte_de_ventas'+'.xlsx';
+      XLSX.writeFile(wb, nombre_archivo)
+    }
+
     function ModalEnlazarFacturas(){
+      console.log(Gl_ventas);
+      $("#BodyTablaFacturas").html("");
+      console.log(Gl_ventas.length);
+      for(var i = 0; i < Gl_ventas.length; i++){
+        //console.log(Gl_ventas[i]['VENTAS_FACTURA']);
+        if(!Gl_ventas[i]['VENTAS_FACTURA']){
+          //console.log('Entra');
+          $("#BodyTablaFacturas").append(
+            '<tr>'+
+              '<td align="center">'+Gl_ventas[i]['VENTAS_CONSECUTIVO_ANUAL']+' </td>'+
+              '<td align="center">'+Gl_ventas[i]['FECHA_VENTA']+' </td>'+
+              '<td align="center">$ '+Gl_ventas[i]['VENTAS_TOTAL']+' </td>'+
+              '<td align="center">'+
+                '<div class="form-check">'+
+                  '<input type="checkbox" class="form-check-input" id="'+Gl_ventas[i]['VENTAS_ID']+'" value="'+Gl_ventas[i]['VENTAS_ID']+'">'+
+                '</div>'+
+              '</td>'+
+            '</tr>'
+          );
+        }
+      }
       $("#ModalFacturarVentas").modal();
+    } 
+
+    function EnlazarRemisiones(){
+      var factura = $("#InputFactura").val();
+      console.log(factura);
+      var array_remisiones = [];
+      $('#TablaDatos input:checked').each(function() {
+          array_remisiones.push($(this).attr('value'));
+      });
+      if(factura == ''){
+        MensajeModal('¡Atención!','Por favor ingrese la factura con la que quiere enlazar las remisiones.');
+      }else if(array_remisiones.length == 0){
+        MensajeModal('¡Atención!','Aún no se ha seleccionado remisiones para enlazar.');
+      }else{
+        console.log(array_remisiones);
+        var url = '/remisiones/enlazar_facturas';
+        var success;
+        var dataForm = new FormData();
+        dataForm.append('factura',factura);
+        dataForm.append('remisiones',JSON.stringify({remisiones:array_remisiones}));
+        //lamando al metodo ajax
+        metodoAjax(url,dataForm,function(success){
+          $("#ModalFacturarVentas").modal('hide');
+          GenerarReporte();
+          MensajeModal('¡ÉXITO!','Se ha enlazado correctamente las solicitudes');
+          //$('#ModalPagoDebito').modal('hide');
+
+        });
+      }
+    }
+
+    var GL_check = false;
+    function SeleccionarTodo(){
+      //console.log('Entra');
+      $('#TablaDatos input').each(function() {
+          //selected.push($(this).attr('value'));
+          if(GL_check){
+            $(this).prop('checked', false);
+          }else{
+            $(this).prop('checked', true);
+          }
+          //console.log(GL_check);
+      });
+      if(GL_check){
+        GL_check = false;
+      }else{
+        GL_check = true;
+      }
+      //console.log(GL_check);
     }
 
     function ImprimirRemision(){
@@ -684,6 +821,7 @@
     }
 
     //esta funcion obtiene el intervalo entre las fechas ingresadas por el usuario y obtiene todas las ventas en ese rango
+    var Gl_ventas = null;
     function GenerarReporte(){
       var min = 70;
       var max = 2000;
@@ -703,6 +841,7 @@
         //aquí se escribe todas las operaciones que se harían en el succes
         //la variable success es el json que recibe del servidor el método AJAX
         //MensajeModal("TITULO DEL MODAL","MENSAJE DEL MODAL");
+        Gl_ventas = success['ventas'];
         $("#fecha_tabla").text("Ventas del díass "+fecha_inicio + ' al día '+fecha_fin);
         $("#body-reportes").html('');
         for (var i = 0; i < success['ventas'].length; i++) {
@@ -722,7 +861,7 @@
               '<td>'+ "Remisión "+ success['ventas'][i]['VENTAS_CONSECUTIVO_ANUAL'] +'</td>'+
               '<td>$ '+ formatoMoneda(success['ventas'][i]['VENTAS_TOTAL']) +'</td>'+
               '<td>'+ success['ventas'][i]['VENTAS_TIPO_PAGO'] +'</td>'+
-              '<td>'+ '' +'</td>'+
+              '<td>'+ ((success['ventas'][i]['VENTAS_FACTURA'])?success['ventas'][i]['VENTAS_FACTURA']:'') +'</td>'+
               '<td>'+ botones  +'</td>'+
             '</tr>'
 

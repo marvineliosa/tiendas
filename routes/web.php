@@ -91,3 +91,6 @@ Route::post('/mail/enviar_remision', 'ProductosController@EnviarMailRemision');
 
 Route::get('/usuarios', 'UsuariosController@VistaListadoUsuarios');
 Route::post('/usuarios/registrar', 'UsuariosController@RegistrarUsuario');
+
+
+Route::post('/remisiones/enlazar_facturas', 'ProductosController@EnlazarVentasFacturas');

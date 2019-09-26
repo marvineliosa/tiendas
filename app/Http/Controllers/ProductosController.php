@@ -17,6 +17,32 @@
          * @return Response
          */
 
+        public function EnlazarVentasFacturas(Request $request){
+            //dd($request);
+            $remisiones = json_decode($request['remisiones']);
+            $remisiones = $remisiones->remisiones;
+            //dd($remisiones);
+            $factura = $request['factura'];
+            foreach ($remisiones as $remision) {
+                //dd($remision);
+                DB::table('REL_VENTA_FACTURA')
+                    ->insert(
+                        [   
+                            'REL_FACTURA_FK_VENTA' => $remision,
+                            'REL_FACTURA_NUMERO' => $factura,
+                            'created_at' => ProductosController::ObtenerFechaHora()
+                        ]
+                    );
+            }
+            $data = array(
+                "terminado"=>'terminado'
+            );
+
+            echo json_encode($data);//*/
+            // $productos = json_decode($request['productos']);
+            // $productos = $productos->productos;
+        }
+
         public function EnviarMailRemision(Request $request){
             //dd($request);
             $remision = $request['id_venta'];
@@ -427,7 +453,10 @@
                 //dd($venta->created_at);
                 $formato = ProductosController::DarFormatoConsecutivo2($venta->VENTAS_ID,$venta->VENTAS_CONSECUTIVO_ANUAL, $venta->created_at);
                 $venta->VENTAS_FACTURA = ProductosController::ObtenerDatosFactura($venta->VENTAS_ID);
-
+                $fecha = $venta->created_at;
+                $anio = strtotime($fecha);
+                $fecha = date('d/m/Y',$anio);
+                $venta->FECHA_VENTA = $fecha;
                 //$formato = ProductosController::DarFormatoConsecutivo($venta->VENTAS_ID, $venta->created_at);
                 $venta->VENTAS_CONSECUTIVO_ANUAL = $formato;
             }
